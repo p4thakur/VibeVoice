@@ -1,0 +1,17 @@
+Google sent just 2% extra requests, and the slowest responses dropped from 1,800 milliseconds to 74. This trick is called a hedged request, and it fixes the tail latency problem from the last video.
+
+Quick recap. In a big system, a page waits for the slowest of many servers. Most are fast, but a few are randomly slow, and those few decide how long you wait.
+
+You can't predict which server will be slow. A server that's fine now can stall for a garbage collection pause a millisecond later. So instead of trying to predict, Google hedged.
+
+Here's the idea. Data lives on more than one replica. Send your request to one replica. Then wait a short time. If the answer hasn't come back, don't keep waiting. Send the same request to a second replica. Whichever answers first wins, and you cancel the other.
+
+Think of it like a checkout line. If your line stops moving, you don't stand there hoping. You step into another line, and you only do it when yours is clearly stuck.
+
+The cost is tiny, because most requests answer quickly and never trigger the backup. Only the slowest requests get a second copy. And the chance that both replicas are stuck at the same moment is far smaller than the chance of one being stuck.
+
+In a benchmark in the paper, reading 1,000 values spread across 100 servers, the slowest 0.1% of responses took 1,800 milliseconds. After waiting just 10 milliseconds before sending a backup request, that dropped to 74 milliseconds. Total extra load: about 2%.
+
+There are rules. The request must be safe to run twice, so reads work best. And you must hedge only when the system has spare capacity, otherwise the extra load makes the slowness worse.
+
+You can't remove random slowness. But you can stop waiting on it.

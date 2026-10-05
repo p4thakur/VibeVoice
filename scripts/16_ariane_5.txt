@@ -1,0 +1,21 @@
+A rocket worth hundreds of millions of dollars was destroyed because one number didn't fit in its box. It all happened 37 seconds after launch.
+
+It's June 4, 1996, in French Guiana. Ariane 5, the European Space Agency's brand-new rocket, is on its first flight. Ten years of work. Four scientific satellites on board.
+
+The engines ignite. The rocket lifts off. And about 37 seconds later, it veers off course, tears itself apart, and the safety system blows it up. Roughly $370 million, gone.
+
+The cause was one line of software, in the system that tells the rocket which way it's pointing.
+
+Here's the problem. The software tracked the rocket's sideways speed as a 64-bit decimal number. At one point, it converted that number into a 16-bit integer. A 16-bit signed integer can hold, at most, 32,767.
+
+On the old rocket, Ariane 4, the sideways speed never got that high. So the conversion always fit. The code was reused on Ariane 5 without a second look. But Ariane 5 was faster and more powerful. Its sideways speed went right past the limit.
+
+The conversion failed. An overflow error. And nobody had written code to handle it for that variable, so the unit shut down.
+
+The backup unit didn't help. It was identical, running the same software, and it failed the same way a fraction of a second earlier. Then the main computer read the error message as if it were real flight data, and commanded the engines to swing hard. The rocket tilted, broke up, and exploded.
+
+Even stranger, the calculation wasn't needed after liftoff at all. It only ran because Ariane 4 had needed it.
+
+The code never had a bug on Ariane 4. It was perfectly correct for the rocket it was written for. It was wrong for a rocket that didn't exist yet.
+
+Reused code carries its old assumptions with it. And a backup that's an exact copy shares exactly the same flaws.

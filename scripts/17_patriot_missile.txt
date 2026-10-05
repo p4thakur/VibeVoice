@@ -1,0 +1,17 @@
+A missile defense system missed an incoming missile in 1991 because it couldn't store the number 0.1 exactly. That small error cost 28 lives.
+
+It's February 25, 1991, during the Gulf War, in Dhahran, Saudi Arabia. An Iraqi Scud missile is flying toward a US Army barracks. A Patriot battery is supposed to shoot it down. It never fires. The Scud hits, and 28 soldiers are killed.
+
+The Patriot battery had been running continuously for about 100 hours. And that mattered.
+
+Here's why. The system measured time in tenths of a second. It counted ticks as a whole number, then multiplied by 0.1 to turn them into seconds.
+
+But in binary, 0.1 can't be written exactly. It's like 1 divided by 3 in decimal: 0.3333, going on forever. The computer has to cut it off somewhere. The Patriot stored it in a 24-bit register, so it chopped it off, and every tick carried a tiny error: about one ten-millionth of a second.
+
+That's nothing. Unless you add it up. After 100 hours, there had been 3.6 million ticks, and the clock had drifted by about 0.34 seconds.
+
+Now put that next to a Scud missile, which travels at roughly 1,700 meters per second. In 0.34 seconds, it moves over half a kilometer. The Patriot looked for the incoming missile in the place where it was supposed to be, saw nothing, and decided there was no threat.
+
+The problem had been spotted before. A software fix was on its way, and reached the base the day after the attack.
+
+An error that's too small to see in one second becomes deadly after 100 hours. And when you use numbers a computer can't store exactly, the error doesn't go away. It waits, and it grows.

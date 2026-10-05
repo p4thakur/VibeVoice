@@ -1,0 +1,19 @@
+Exactly-once delivery is mathematically impossible. Yet every payment system seems to offer it. Here's the trick behind the lie, and it starts with two armies.
+
+In the Two Generals problem, two armies sit on opposite sides of a valley. They'll only win if they attack at the same time. They can only communicate by messenger, and any messenger might be captured.
+
+General A sends: attack at dawn. But did it arrive? A can't know unless B confirms. So B sends back: got it. But did that arrive? B can't know unless A confirms the confirmation. And that message can be lost too. This goes on forever. No number of messages ever gives both sides certainty.
+
+Your servers have the same problem. When a sender transmits a message and hears nothing back, it can't tell whether the message was lost or only the acknowledgement was lost.
+
+So it has two choices. At-most-once: send it once and never retry. If it gets lost, it's gone forever. Or at-least-once: keep retrying until you hear back. Nothing is lost, but the receiver may get the same message several times.
+
+There is no third option where the network guarantees exactly one delivery.
+
+So how do payment systems promise it? They don't deliver once. They deliver many times, and make the duplicates harmless.
+
+Every message carries a unique ID. The receiver keeps track of the IDs it has already handled. If a duplicate arrives, it recognises the ID and ignores it. The message may be delivered three times, but its effect is applied once.
+
+That's the real name for it: effectively-once processing. At-least-once delivery, plus an idempotent receiver. Kafka's famous exactly-once feature works this way inside its own system, using sequence numbers and transactions.
+
+You can't make the network deliver exactly once. You can make the receiver act exactly once.

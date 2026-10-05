@@ -1,0 +1,17 @@
+Add one server to a 100-server cache, and 99% of your keys vanish. Unless you use consistent hashing. Here's how that works, and why every big distributed database depends on it.
+
+Start with the obvious way to spread keys across servers: take the key's hash and compute hash mod N, where N is the number of servers. With 100 servers, every key lands on a server between 0 and 99. Simple, fast, even.
+
+Now add one server. N becomes 101, and the answer to hash mod 101 is different for almost every key. Only about 1 key in 101 stays where it was. So 99% of your keys now point at the wrong server. Every one of those lookups is a cache miss, all at the same moment, and all of that traffic crashes into your database at once.
+
+Consistent hashing fixes this with one idea: hash the servers too, and put everything on a circle. Imagine a ring of numbers. Each server sits at the point its name hashes to. Each key sits at the point its own hash lands on. A key belongs to the first server you meet walking clockwise.
+
+Now add a server. It lands somewhere on the ring and takes over only the stretch between itself and the server before it. That's roughly 1 in 101 keys, about 1%. Everyone else stays exactly where they were. Remove a server, and only its keys move, to the next one along.
+
+So the cost of scaling goes from 99% reshuffled to 1%.
+
+One problem: with only a few points on the ring, one server can end up with a huge arc and the others with slivers. The fix is virtual nodes. Each physical server appears many times around the ring, often hundreds, and the load evens out.
+
+The idea came from MIT researchers in 1997 and was the foundation of Akamai. Dynamo and Cassandra use it to decide where your data lives.
+
+Same servers, same keys, one clever circle, and growth stops being a disaster.

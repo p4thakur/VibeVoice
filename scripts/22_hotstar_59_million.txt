@@ -1,0 +1,19 @@
+On November 19, 2023, 59 million people watched the same cricket match at the same moment, on one app. It didn't crash. So how do you serve one video to a whole country?
+
+Start with the obvious problem. If 59 million people each had a stream coming straight from one data center, no data center on Earth could cope.
+
+But live video has a secret that makes it easier. Everyone is watching the same thing. The stream is chopped into small chunks, a few seconds long. And in any given few seconds, 59 million phones are all asking for the same chunk.
+
+That changes everything. The chunk doesn't go out 59 million times from one place. It goes out once to a network of caching servers, called a CDN, spread across the country and close to viewers. Each cache fetches the chunk once, then hands copies to everyone nearby. The origin sees a trickle. The caches do the heavy lifting.
+
+And not everyone gets the same quality. Every chunk is prepared at several quality levels, and your phone picks the best one your network can handle, switching as it goes. A weak connection gets a blurrier picture, not a frozen screen.
+
+The hard part isn't the video, though. It's everything around it. Logging in. Loading your profile. Checking your subscription. Showing ads. Those requests are different for every person, so they can't be cached, and every one of them hits a real server.
+
+The usual answer to a traffic spike is autoscaling, adding servers when load rises. But a new server takes minutes to start up and become healthy, and crowds don't wait. A wicket falls, or a star walks out to bat, and millions open the app within the same minute.
+
+So the engineers plan ahead. They estimate the crowd, and warm up capacity before the first ball is bowled, instead of reacting once it arrives. And they prepare to switch off non-essential features first, to protect the one thing that matters, the stream.
+
+The result was a record: 59 million at once, beating the 53 million from just days earlier.
+
+The trick to streaming to a nation is to make 59 million viewers look like one.

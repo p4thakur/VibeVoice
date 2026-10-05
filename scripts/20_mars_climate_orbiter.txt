@@ -1,0 +1,17 @@
+NASA lost a $327 million spacecraft because one team used pounds and the other used newtons.
+
+It's September 23, 1999. The Mars Climate Orbiter has flown for nine months and 670 million kilometers. Now it needs to fire its engine and slip into orbit around Mars. It swings behind the planet, exactly as planned. And then it never comes out the other side. Contact is lost for good.
+
+What happened? The spacecraft wasn't broken. Its numbers were.
+
+Here's the setup. Throughout the journey, the spacecraft fired tiny thrusters to keep itself stable. Each firing slightly changed its path. Engineers on the ground had to track every one of these pushes to predict where the spacecraft really was.
+
+The software built by Lockheed Martin calculated the strength of each push in pound-force seconds, which is the imperial unit. But NASA's navigation software, at the Jet Propulsion Laboratory, read the same numbers as newton-seconds, the metric unit.
+
+One pound-force is about 4.45 newtons. So every single push was read as more than four times smaller than it really was. And nothing in the data said which unit it was. It was just a number.
+
+Each error was small. But they added up over nine months. When the orbiter arrived, it wasn't where NASA thought. It came in at around 57 kilometers above Mars, when the plan was about 226. The minimum safe height was 80. At 57 kilometers, it hit the thin upper atmosphere, and it burned up or skipped off into space.
+
+Some navigators had noticed the path looked a bit off. But the doubts never got through.
+
+The two systems worked perfectly on their own. The bug lived in the gap between them. Nobody checked what the number meant. A value without a unit is only half of a fact.

@@ -1,0 +1,17 @@
+Around 2012, WhatsApp kept 2 million phones connected to a single server at the same time. One machine. How is that possible?
+
+First, why it's hard. A typical server gives every connection its own thread. Each thread costs memory, and the operating system has to juggle them all. Somewhere around ten thousand connections, most servers begin to struggle. Engineers even gave it a name: the C10K problem.
+
+WhatsApp took a different path. They built their servers in Erlang, a language designed for phone networks. In Erlang, each connection is a lightweight process, not a heavy thread. It uses only a few kilobytes. The Erlang runtime can manage millions of them, each isolated, each talking to the others by passing messages. If one crashes, only that one goes down.
+
+And most of those 2 million connections are doing nothing. A phone connects and waits. It sits idle until a message arrives. So the real limits aren't speed. They're memory and operating system limits.
+
+The machine was a single server with 24 logical CPU cores and about 100 GB of RAM, running FreeBSD. Divide that memory between 2 million connections, and each one gets roughly 50 kilobytes to live in.
+
+They got there one bottleneck at a time. First around 425,000 connections, where something broke. They fixed it, and reached a million. They fixed the next thing, and reached 2 million. At their peak, they even touched 2.8 million, and then hit a wall at 3.
+
+The results speak for themselves. By 2014, around 32 engineers were supporting about 450 million users and 50 billion messages every day. That year, Facebook bought the company for $19 billion.
+
+The lesson isn't about Erlang. It's about fit. WhatsApp's problem was millions of mostly sleeping conversations. So they chose the tool that makes a sleeping conversation almost free.
+
+Pick the tool for the shape of the problem.

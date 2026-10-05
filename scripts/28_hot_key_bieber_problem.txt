@@ -1,0 +1,23 @@
+At Instagram, the biggest accounts, like Justin Bieber's, produced a kind of traffic that normal users never did. Engineers used his name as shorthand for the problem. Today it's called the hot key, and it can bring down even a well-designed system.
+
+Here's the setup. When a database gets too big for one machine, you split it across many. This is called sharding. Each piece of data has a key, and the key decides which server holds it. If you have millions of keys, the traffic spreads out evenly, and every server carries a similar load.
+
+That's the assumption. And it works for ordinary users.
+
+But traffic doesn't follow the number of keys. It follows popularity. One account's profile, or one post, can get millions of requests, while the average one gets a handful. And because a key lives on exactly one server, all of those requests land on the same machine. That server melts down while the others sit idle.
+
+Adding more servers doesn't help. The hot key still lives on one of them.
+
+So engineers have a few ways out.
+
+One: cache the hot item in front of the database, in memory, so most requests never reach it.
+
+Two: copy it. Store the same item under several keys, like post-1, post-2 and post-3, on different servers, and have each reader pick one at random. One hot key becomes many warm ones.
+
+Three: coalesce. When a thousand people ask for the same thing at the same instant, make one request to the database and share the answer.
+
+And four: split the counters. A like count that millions of people update at once is a single row under heavy contention. Break it into many smaller counters, and add them up when someone looks.
+
+The lesson is that averages lie. A system can look perfectly balanced on a chart, and still fall over because of one name.
+
+Load follows fame. Design for the Biebers.

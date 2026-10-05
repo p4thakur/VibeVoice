@@ -1,0 +1,13 @@
+Netflix doesn't send your movie across the internet. By the time you press play, it's already sitting inside your internet provider.
+
+Here's the problem Netflix had. In the evening, a huge share of an internet provider's traffic is people streaming video, all at the same hours, all the same big files. Sending all of that from Netflix's data centers, across the open internet, through the provider's connections, is expensive and it clogs the pipes.
+
+So Netflix did something unusual. It built its own storage servers, called Open Connect appliances, and offered them to internet providers for free. The provider installs them inside its own network. So the video is only a short hop from your home.
+
+But how do those boxes know what to store? Netflix predicts it. It knows which shows are popular in which regions. And it fills the boxes during the quiet hours, in the middle of the night, when the network is empty. By the time evening comes and everyone hits play, the movie is already waiting nearby.
+
+Now look at what happens when you press play. Your app talks to Netflix's cloud servers first. They handle your login, your recommendations, your billing, and they decide which nearby box should serve you. But they don't send the video. They only point your device to the right box. The cloud makes the decisions. The box delivers the bytes.
+
+Everyone wins. The provider saves money, because the traffic never leaves its network. Netflix saves money, because it doesn't have to pay to haul the data across the internet. And you get fewer buffering wheels, because the distance between you and the video is tiny.
+
+Netflix started this program around 2012. The idea behind it is simple: don't bring people to the data. Bring the data to the people.

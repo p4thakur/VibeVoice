@@ -1,0 +1,17 @@
+Gangnam Style broke YouTube. Not as a joke. In December 2014, a video got so many views that YouTube's counter ran out of numbers, and engineers had to rebuild it.
+
+Here's how a counter can run out. Every number a computer stores lives in a fixed-size box. YouTube kept view counts in a 32-bit signed integer. That's 32 switches, each on or off, and one of them is reserved for the plus or minus sign. That leaves 31 switches for the number itself, so the biggest value it can hold is 2,147,483,647. About 2.1 billion.
+
+When that counter was designed, 2.1 billion views for a single video sounded impossible. Nobody was anywhere close.
+
+Then a South Korean pop song with a horse-riding dance became the first video ever to reach one billion views. And it kept climbing.
+
+On December 1, 2014, Gangnam Style passed 2,147,483,647. Here's what happens to a counter at that edge. Add one to the biggest signed number, and the sign switch flips. The value wraps around to the most negative number possible: minus 2,147,483,648. A video with negative two billion views.
+
+YouTube didn't let it get there. Its engineers upgraded the counter to a 64-bit integer, and announced it with a joke: they'd never imagined a video would be watched more times than a 32-bit number could hold, until they met Psy.
+
+The new ceiling is 9,223,372,036,854,775,807. That's about 9.2 quintillion. Even if all 8 billion people on Earth watched the same video a billion times each, it would still fit.
+
+And that's the lesson. Every number a program stores has a ceiling. The only question is when you'll hit it. So when you choose the size of the box, don't choose it for the world you have today. Choose it for the world you'll have in five years, when something goes viral and breaks your assumptions.
+
+One song. One counter. And a number nobody thought was reachable.

@@ -1,0 +1,19 @@
+Stack Overflow served over a billion page views a month from a handful of web servers. No fleet of hundreds. No microservices. Here's how.
+
+By around 2016, one of the most visited sites for programmers ran its main website on roughly nine web servers. They weren't busy either. At peak, those machines sat at a low CPU load, around ten to fifteen percent. The company was famous for having a lot of room to spare.
+
+How? They made a few unfashionable choices.
+
+First, they scaled up instead of out. Instead of spreading the load over hundreds of small machines, they used a few big ones. Their main database ran on powerful SQL Server machines with hundreds of gigabytes of memory. That's enough to keep the most frequently used data sitting in RAM, so most queries never touch a disk.
+
+Second, they cached aggressively. Pages, tags, and hot data were kept in memory, in Redis and inside the web servers themselves. A request that can be answered from memory never reaches the database.
+
+Third, they kept the application simple. The core of the site was one large application, not hundreds of small services. A request stayed inside one process instead of hopping across a network again and again, and every hop you remove is latency you never pay for.
+
+And fourth, they obsessed over performance. They measured everything, profiled their own pages, and treated slow code as a bug. Fast code means fewer servers.
+
+They also ran on their own hardware, which made the cost predictable.
+
+This isn't an argument against the cloud or against scaling out. Some systems really do need thousands of machines. But many don't. Before you add servers, ask whether you've used the ones you have.
+
+A well-tuned machine can do the work of ten that aren't.

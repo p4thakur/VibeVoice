@@ -1,0 +1,15 @@
+I can prove one transaction exists among a million using just 20 hashes. This is a Merkle tree, the structure Bitcoin, Git and Cassandra use to check huge amounts of data without reading all of it.
+
+Start with a million transactions. Hash each one into a short fingerprint. Now pair the fingerprints up, glue each pair together and hash that. You get half as many hashes. Repeat. Half again. Keep going until a single hash is left at the top. That's the Merkle root, and it's a fingerprint of all one million transactions at once.
+
+Change a single transaction anywhere, and its hash changes, so its parent changes, so every parent above it changes, all the way up. The root is different. Nothing can be quietly edited.
+
+Now the magic. Say I want to prove that transaction number 734,201 is in there. I don't send you the million transactions. I send you the transaction and one hash from each level of the tree: its sibling, the hash it was paired with. A million leaves means 20 levels, because 2 to the power of 20 is just over a million. So that's 20 hashes, about 640 bytes.
+
+You hash my transaction, combine it with the first sibling, hash again, and climb the tree one level at a time. After 20 steps you have a root. If it matches the root you already trust, the transaction is in the set. If even one bit was faked, it won't match.
+
+This is exactly how a phone wallet verifies a Bitcoin payment without downloading the whole blockchain. It only needs the block's root and a short proof.
+
+The same idea keeps replicas in sync. Dynamo-style databases like Cassandra build a Merkle tree over each replica's data and compare roots. Same root, the copies are identical, done. Different root, walk down only the branches that differ, and you find the mismatched rows without comparing everything.
+
+A million items. Twenty hashes. And a lie has nowhere to hide.

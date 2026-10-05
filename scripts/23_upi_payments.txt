@@ -1,0 +1,17 @@
+UPI now handles about 24 billion payments a month. That's roughly 9,000 every single second, all day, all month. And your payment still says success in a couple of seconds. How?
+
+Here's what happens when you scan a QR code and enter your PIN.
+
+Your app doesn't talk to the shop's bank. It sends a request to a central switch run by NPCI. The switch's job is to route. It passes the request to your bank and says: debit this account. Your bank checks your balance and your PIN, takes the money out, and replies yes.
+
+The switch then turns to the shop's bank and says: credit this account. That bank adds the money, and replies yes. The switch collects both answers and sends one result back to your app. Success.
+
+That's four or five small messages across fast links. No big files, no heavy computing. And the switch itself never holds anyone's money. It only routes messages. The balances live in the banks, and each bank looks after its own accounts. That's how the load spreads out.
+
+Here's the part most people don't know. The money doesn't actually travel between the banks at that moment. Your bank updates your balance. The shop's bank updates theirs. Later, the banks settle up with each other, in bulk, adding up everything owed in each direction and paying only the difference. It feels instant to you, because the settlement between banks happens afterwards.
+
+Now the hard question: what if something fails in the middle? Your bank debits you, but the shop's bank doesn't answer. The system can't guess. It waits for a time limit, and then checks. If the credit never happened, the debit is reversed automatically. That's why you sometimes see "pending", or "money deducted, it will be refunded". The system chooses to be careful when it's unsure.
+
+So the secret isn't a single super-fast machine. It's a fast front, where simple messages move quickly, and a careful back, where banks settle and fix mistakes afterwards.
+
+Instant for you. Reconciled for them.

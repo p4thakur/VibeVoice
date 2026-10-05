@@ -1,0 +1,15 @@
+One celebrity tweet can trigger millions of database writes. This is called the fan-out problem, and it shaped how every social feed in the world is built.
+
+Let's start with the feed itself. When you open your timeline, you want the latest posts from everyone you follow, in one list. There are two ways to build it.
+
+The first way: build it when you open the app. The system looks up everyone you follow, grabs their latest posts, and merges them. Writing a post is cheap, just one save. But reading is expensive. If you follow 500 people, that's 500 lookups, every time you refresh.
+
+The second way: build it when someone posts. The moment a post is created, the system pushes it into the timeline of every follower, stored and ready in a fast cache. Now opening the app is one lookup. A cheap read, an expensive write. That's called fan-out on write.
+
+Which is better? It depends on the ratio of reads to writes. In 2012 and 2013, Twitter was handling something like 300,000 timeline reads per second, but only a few thousand new tweets per second. Reads outnumbered writes by dozens to one. So it was worth doing the work once, at write time, so that every read afterwards was almost free.
+
+But then there's the celebrity. If someone has 30 million followers, a single tweet means 30 million writes. The queue backs up, and followers get the tweet minutes late.
+
+So Twitter used a hybrid. For ordinary users, the tweet is pushed into followers' timelines. For celebrities, it isn't pushed at all. When you open your app, the system takes your prepared timeline, then adds the latest tweets from the few celebrities you follow, and merges them on the spot.
+
+The lesson: every system has to decide where to pay, at write time or at read time. And whichever you pick, there'll be someone who breaks the rule.

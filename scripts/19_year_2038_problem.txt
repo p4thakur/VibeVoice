@@ -1,0 +1,17 @@
+On January 19, 2038, at 3:14 and 7 seconds in the morning, a lot of the world's software will think it's the year 1901.
+
+It comes down to how computers keep time. Most systems count the number of seconds since January 1, 1970. That starting point is called the Unix epoch. Right now, as you watch this, that count is well over a billion seconds, and it grows by one every second.
+
+For decades, that count was stored in a 32-bit signed integer. And the biggest number that fits in one is 2,147,483,647 seconds. That's about 68 years after 1970. Which lands on January 19, 2038.
+
+One second later, the counter has nowhere to go. It wraps around to the most negative number it can hold. And the date becomes December 13, 1901.
+
+Think about what breaks when a clock suddenly jumps back 136 years. Certificates look like they're from the future. Scheduled jobs never run, or run forever. Files appear to be from before they were created. Anything that measures a duration gets a negative number.
+
+Most modern computers are safe, because they now use 64 bits. A 64-bit time counter lasts about 292 billion years.
+
+The danger is in the quiet places. Embedded systems in factories, cars, medical devices and routers, built to run for 20 years or more. Old file formats. Databases with a 32-bit timestamp column. The devices being installed today will still be running in 2038.
+
+It has already caused trouble. In 2006, a web server called AOLserver crashed because it was using a timeout of a billion seconds, which pushed it past the limit years ahead of schedule. And Linux only added 64-bit time to 32-bit systems in 2020.
+
+Y2K got the world's attention. This one is quieter, and the deadline is fixed. The clock doesn't care how ready we are.

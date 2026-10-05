@@ -1,0 +1,25 @@
+Amazon once decided that showing you the wrong shopping cart is better than showing you an error.
+
+It's the 2004 holiday season, and traffic is at its yearly peak. The databases behind the site are buckling. Every time one chokes, someone clicks "Add to cart" and gets nothing back. That's a sale walking out the door, thousands of times a minute.
+
+The databases weren't broken, though. They were following a strict rule: if the copies of your data can't agree, refuse the write. That's perfect for a bank balance. But a shopping cart isn't a bank balance. When the network hiccuped, your cart was safe, and completely unreachable.
+
+So Amazon flipped the rule. They built a new system, Dynamo, around one sentence: the shopping cart must always accept writes. A disk dies, a network link drops, a whole data center disappears, and the answer to "Add to cart" is still yes.
+
+How do you promise that?
+
+Dynamo arranges servers in a ring. Your cart belongs to a few of them. If one is dead, the write slides to the next healthy server, which holds it with a note: "this belongs to someone else, hand it back when they return." The write is never refused. It just waits somewhere safe.
+
+That creates a new problem. Two servers, cut off from each other, can both accept writes for the same cart. One saw you add a book. The other saw you add headphones. Now two versions exist, and neither is wrong.
+
+Most databases would pick a winner and throw the other away. Dynamo refuses, because that means throwing away something the customer did. It tags each version with a vector clock, a record of which version came from which. When it later finds two versions that don't descend from each other, it keeps both and merges them: book plus headphones.
+
+So the system is always writable, and it fixes disagreements on read.
+
+The trade-off is real. Delete an item while a server is cut off, and the merge can bring it back, like a zombie. Amazon accepted that. A zombie item is a one-click annoyance. A lost sale is a customer who never checked out.
+
+That one choice, availability over consistency, went into the 2007 Dynamo paper. It became the blueprint for Cassandra, Riak, and Amazon's own DynamoDB.
+
+The lesson goes beyond databases: before you pick a design, ask what failure actually costs. For a bank, a wrong answer is a disaster. For a shopping cart, a wrong answer is a shrug, and no answer is the disaster.
+
+Amazon didn't build the most correct database. They built the one that never turned a customer away.

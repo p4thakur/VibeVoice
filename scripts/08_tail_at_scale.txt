@@ -1,0 +1,17 @@
+Every service is fast 99% of the time. Yet your page is slow 63% of the time. This is called the tail at scale, and it's why big systems feel slower than any single part of them.
+
+Picture a page that needs 100 different services to build. Each service is excellent. Ninety-nine times out of a hundred, it answers quickly. One time in a hundred, it's slow, because of a garbage collection pause, a busy disk, or a request stuck in a queue.
+
+So what's the chance the whole page is fast? Every single service has to be fast at once. That's 0.99 multiplied by itself 100 times, which comes out to about 37%. The other 63% of page loads hit at least one slow service, and the page has to wait for the slowest one.
+
+A 1% problem per service became a 63% problem per page.
+
+It gets worse as you fan out further. With 1,000 calls per page, the chance of all of them being fast is about 0.004%. Nearly every single page load gets caught by a slow one. That's what a search engine does when it queries thousands of servers for one result.
+
+This is why averages lie. Your dashboard can show a fantastic average latency while most of your users are having a bad day. The number that matters is the tail: the 99th and 99.9th percentile, the slowest 1% and 0.1% of requests.
+
+Google's Jeff Dean and Luiz Barroso described this in a 2013 paper called The Tail at Scale. Their conclusion was that you can't remove every source of slowness, so you have to build systems that stay fast even when some parts are slow.
+
+The next video shows one trick that does exactly that, by sending a little extra work on purpose.
+
+In a big system, rare is common.

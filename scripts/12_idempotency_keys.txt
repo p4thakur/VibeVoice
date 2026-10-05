@@ -1,0 +1,19 @@
+You clicked Pay once. The customer was charged twice. This is the double-charge bug, and the fix is a small idea called an idempotency key.
+
+Here's how it happens. A customer taps Pay. The app sends the request to the server. The server charges the card, successfully. But the response gets lost on the way back, because of a bad connection or a timeout.
+
+The app sees no answer. It has no idea whether the payment went through. So it does the sensible thing and tries again. The server receives a second request, and it has no way to know it's the same payment. It charges the card again.
+
+Nobody did anything wrong. The network is just unreliable, and from the outside, a failed request and a lost response look identical.
+
+The fix starts on the client. Before sending the payment, the app generates a unique key, something like a random UUID, and attaches it to the request. That key means this one specific payment attempt.
+
+Now the server has a rule. When a request arrives, it first checks: have I seen this key before? If not, it processes the payment, then saves the key together with the result. If the key is already saved, it skips the charge and returns the saved result.
+
+So the retry arrives with the same key, and the server simply replays the first answer. One customer, one click, one charge, no matter how many times the request is sent.
+
+Two details matter. The server must record the key atomically, using something like a unique database constraint, so two retries arriving at the same instant can't both slip through. And keys are usually kept for a limited time, such as 24 hours, then cleaned up.
+
+Stripe made this pattern famous with its Idempotency-Key header.
+
+You can't stop the network from lying. But you can make repeating a request harmless.

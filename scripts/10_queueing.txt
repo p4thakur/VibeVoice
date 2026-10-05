@@ -1,0 +1,25 @@
+Going from 80% busy to 95% busy doesn't make your server 15% slower. It makes the waiting about 5 times worse. This is queueing theory, and it explains why systems collapse right before they hit full capacity.
+
+Take a server handling random requests, like any real web server. Utilization is the share of time it's busy. At 50%, half of its time is idle, and a new request usually walks straight in.
+
+The average time a request waits in line, measured in units of how long one request takes to serve, follows a simple formula: utilization divided by one minus utilization.
+
+At 50% busy, that's 0.5 divided by 0.5, which is 1. You wait about one service time.
+
+At 80%, it's 0.8 divided by 0.2, which is 4.
+
+At 90%, 0.9 divided by 0.1, which is 9.
+
+At 95%, 0.95 divided by 0.05, which is 19.
+
+And at 99%, it's 99.
+
+So from 80% to 95%, the load went up by less than a fifth. The waiting went from 4 to 19. Nearly five times longer.
+
+The reason is that the server never gets a chance to catch up. Requests don't arrive in neat intervals. They arrive in bursts. When a burst lands on a server that's already almost full, the queue grows, and with so little idle time left, it takes a long time to drain. Meanwhile new bursts arrive on top of it.
+
+At 100%, the formula divides by zero. The queue grows without limit.
+
+This is why experienced engineers don't run servers hot. They plan for 60 to 70% utilization at peak, and they add capacity early. That headroom isn't waste. It's what keeps the response time flat.
+
+The last few percent of capacity cost the most.

@@ -1,0 +1,24 @@
+BLOOM FILTER: NEVER WRONG WHEN IT SAYS NO
+
+This data structure is never wrong when it says no. It's only sometimes wrong when it says yes. It's called a Bloom filter, and databases use it to avoid reading the disk.
+
+Here's the problem. A database gets a request for a key. Checking whether the key exists means reading from disk, and disk is slow. If most requests are for keys that don't exist, that's a lot of wasted reads.
+
+So put a tiny gatekeeper in front. A Bloom filter is just a row of bits, all starting at zero. When you add a key, you run it through a few different hash functions. Each one points to a position in the row, and you flip those bits to one.
+
+To check a key, run the same hashes and look at the same positions. If any of those bits is still zero, the key was never added. It's a definite no. That's guaranteed, because adding it would have flipped all of them.
+
+If all the bits are one, the answer is probably yes. Probably, because those bits might have been flipped by other keys that happen to overlap. That's a false positive. But a false positive just costs one unnecessary disk read, and you find out the truth there.
+
+What you can never get is a false negative. The filter will never tell you a real key is missing.
+
+The numbers are what make it brilliant. With about 10 bits per key and 7 hash functions, the false positive rate is around 1%. A billion keys fit in roughly 1.2 GB, and the filter can sit in memory. That means 99% of lookups for missing keys never touch the disk.
+
+This is why Cassandra, HBase and RocksDB all use Bloom filters. The trade-off is that you can't delete a key, and the answer is never certain, only certain when it's no.
+
+Sometimes the most useful answer is a fast, definite no.
+
+---
+CAPTION: Bloom filter: a definite no, or a probable yes. 1% wrong, 99% less disk.
+
+VERIFY BEFORE PUBLISHING: about 9.6 bits per key gives roughly 1% false positives with 7 hashes; 1 billion keys at 10 bits is about 1.25 GB. Confirm Cassandra, HBase and RocksDB usage.

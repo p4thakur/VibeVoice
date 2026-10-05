@@ -1,0 +1,15 @@
+Redis can count a billion unique visitors using just 12 KB of memory. That's smaller than a photo thumbnail. This is HyperLogLog, and it works by counting luck.
+
+First, the problem. To count unique visitors exactly, you must remember every visitor you've already seen, otherwise you'll count the same person twice. A billion 64-bit IDs is about 8 GB, for one number on one dashboard.
+
+Here's the trick. Imagine I flip a coin until I get tails, and tell you my longest run of heads was 10. How many times did I probably flip? Around a thousand. Rare streaks only happen when there are a lot of tries.
+
+HyperLogLog does this with hashes. Each visitor's ID is hashed into a random-looking string of bits. Count the leading zeros. A hash starting with 10 zeros happens about once in 1,024 visitors. So if the longest run of leading zeros you've ever seen is 10, you've probably seen about 1,024 different visitors.
+
+And duplicates cost nothing. The same visitor always hashes to the same bits, so seeing them again changes nothing. You never store the visitor. You only remember the longest streak.
+
+One streak is a wild guess, because one lucky visitor could fake a huge count. So HyperLogLog splits visitors into thousands of buckets, keeps the longest streak per bucket, and averages them. Redis uses 16,384 buckets of 6 bits each. That's 98,304 bits, which is exactly 12 KB, and the error stays around 0.8%.
+
+That's a billion visitors counted to within about 1%, in memory that wouldn't hold a single photo. In Redis it's three commands: PFADD to add, PFCOUNT to read, PFMERGE to combine counts from many servers.
+
+Sometimes the smartest way to count everything is to remember almost nothing.

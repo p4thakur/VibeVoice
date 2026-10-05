@@ -1,0 +1,21 @@
+Twitter's Snowflake can create 4,096 unique IDs every millisecond on every machine, and the machines never need to talk to each other. How do you guarantee nothing repeats?
+
+First, the problem. Every tweet needs a unique ID. In a small system, you let the database count: 1, 2, 3. But in a huge system, with thousands of servers creating tweets at once, one counter becomes a bottleneck. Everyone has to wait in line to ask for the next number.
+
+You could use random IDs, called UUIDs. They don't collide, but they're long, and they have no order, so they make databases slower.
+
+Twitter wanted IDs that were unique, roughly in time order, and made without asking anybody. So they built Snowflake. Each ID is a single 64-bit number, cut into three parts.
+
+The first 41 bits are the time, in milliseconds. That gives about 69 years of room, and because time is at the front, newer IDs are always bigger than older ones.
+
+The next 10 bits are the machine's ID. Every server is given its own number, and there's room for 1,024 of them.
+
+The last 12 bits are a counter. If one machine creates several IDs in the same millisecond, the counter ticks up: 0, 1, 2. Twelve bits means 4,096 values.
+
+Now think about why it can't collide. Two IDs can only match if they share the same millisecond, the same machine, and the same counter value. That can't happen, because a machine never reuses a counter within a millisecond. And no two machines share a number. So no coordination is needed. Each server only needs its clock and its own ID.
+
+That's 4,096 IDs per millisecond. About 4 million every second, per machine.
+
+There's one weak spot: the clock. If it jumps backwards, a machine could repeat a timestamp. So the generator refuses to issue IDs until the clock catches up.
+
+Uniqueness without conversation. Just a number made of time, place, and count.

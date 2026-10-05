@@ -1,0 +1,21 @@
+Dropbox can seem to upload a 2 GB file in about a second. That's because, most of the time, it never uploads the file at all.
+
+Here's what really happens when you drop a file in.
+
+Your computer doesn't treat the file as one big lump. It cuts it into blocks of about 4 megabytes. A 2 GB file becomes around 512 blocks.
+
+Then it computes a fingerprint for each block, using a hash function called SHA-256. A hash is a short code that is generated from the data itself. Same data, same hash. Change a single byte, and the hash is completely different.
+
+Now, instead of sending the blocks, your computer sends only the list of fingerprints. That's 512 hashes of 32 bytes each, about 16 kilobytes. Tiny.
+
+The server looks at the list and answers: I already have these blocks, but I'm missing those. And your computer uploads only the missing ones.
+
+If the file already exists, because you uploaded it before, or because somebody else uploaded the same file, the server has every block. Nothing needs to be sent. It just records that your file is made of these blocks. A 2 GB upload that finishes in a second.
+
+The same trick helps in other ways. Edit a few bytes in a huge file, and only the block that changed is uploaded. And because identical blocks are stored once, no matter how many users have them, the storage costs drop.
+
+Why can they trust a hash? Because with a 256-bit hash, an accidental collision is so unlikely that it doesn't happen. It's the same birthday math from before, just at a scale where it never bites.
+
+But there was a security twist. Early on, knowing a block's hash was enough to claim you had it. Researchers showed that someone who got hold of a hash could trick the server into handing over the data. The fix was to make clients prove they really have the content.
+
+Hashing turns a huge file into a tiny question: do you already have this?

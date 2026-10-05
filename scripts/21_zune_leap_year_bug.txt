@@ -1,0 +1,19 @@
+On December 31, 2008, thousands of Zune music players froze the moment they were switched on. And on January 1st, they fixed themselves. The cause was a single missing line about leap years.
+
+It hit the 30 GB Zune. Owners woke up on New Year's Eve, turned on their players, and got a frozen screen. Microsoft's advice was strange: wait until tomorrow. Let the battery drain, then turn it back on after midday on January 1st, and it will work.
+
+Why would a bug disappear on its own? Because of the date.
+
+When a Zune starts, it reads its clock chip. The chip stores the number of days since January 1, 1980. The software has to turn that into a year and a day. And the way it did that was with a loop.
+
+Roughly, it goes like this. Start with the total number of days. If it's more than 365, subtract a year's worth, and move on to the next year. If that year is a leap year, subtract 366 instead.
+
+Look at the last day of a leap year. 2008 was a leap year, and December 31st is day number 366. The code checks: more than 365 days left? Yes. Is it a leap year? Yes. Are there more than 366 days left? No, exactly 366. So the code does nothing, neither subtracting nor moving on. And then it loops back and checks again. Same answer. Forever.
+
+The player never finishes booting. It's stuck in a loop that never ends.
+
+The next day, the count was day one of a new year. The loop ran fine, and everything worked again.
+
+The nastiest part is when it happens. A bug like this sleeps for four years at a time. Every test on an ordinary date passes. It only wakes up on one specific day.
+
+When you write code about time, test the edges: the last day of the year, a leap day, midnight. That's where the loops get stuck.

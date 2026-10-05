@@ -1,0 +1,17 @@
+Pac-Man has a level that nobody can beat. The ghosts aren't too fast. The programmers simply ran out of numbers.
+
+Pac-Man came out in 1980, and you can play 255 levels. Then you reach level 256, and the screen tears in half. The left side is a normal maze. The right side is a jumble of random letters and symbols. Players call it the kill screen.
+
+The cause is a single byte. The game keeps its level number in 8 bits. Eight switches, on or off, give you 256 possible values, from 0 to 255. That was plenty. In 1980, memory was expensive, and nobody expected anyone to play through 255 mazes.
+
+But players did. And when the level counter goes past 255, it doesn't get bigger. It wraps back around to zero.
+
+That's where the damage starts. At the bottom of the screen, the game draws a row of fruit, one for each recent level. The code that draws it uses the level number to decide how many fruits to show. Normally that's a handful. But with the counter wrapped around, the calculation breaks, and the routine tries to draw about 255 fruits.
+
+There's room on screen for seven. The other fruits spill past the end of that part of memory and overwrite the right half of the maze with garbage.
+
+The result is a maze you can't finish. Part of the right side is corrupted, and there aren't enough dots left that you can reach to complete the level. The game is stuck. You can't win, and you can't move on. That's the end of Pac-Man.
+
+The game wasn't broken in any way that mattered for 44 years. It worked perfectly, right up to the edge of the number it was built on.
+
+Every counter has an edge. Pac-Man's edge is level 256.

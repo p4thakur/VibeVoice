@@ -1,0 +1,17 @@
+Boeing's 787 Dreamliner had a bug that could shut down all of its electrical power in flight. The official workaround: turn it off and on again.
+
+In 2015, the US aviation regulator, the FAA, issued a safety order. It said that if a 787's generators were kept powered on for 248 days straight, the plane could lose all of its AC electrical power.
+
+Where did 248 days come from? From a counter, and its limit.
+
+Each generator has a control unit, a small computer that keeps time. It counts in hundredths of a second, using a 32-bit signed integer. The biggest number that can hold is 2,147,483,647. Divide that by 100 to get seconds, then by 86,400 to get days, and you get about 248.55 days.
+
+After that, the counter overflows. The software gets confused, and the unit shuts itself down into a failsafe mode.
+
+Now the scary part. A 787 has several generators, each with its own control unit. They're a safety backup, so if one fails, another takes over. But if you power the whole aircraft on at the same moment and leave it running, all of the units start counting at the same moment. So they all overflow at the same moment.
+
+Four backups, one shared bug, and they all fail together. That's the flaw in redundancy: if every copy runs the same code, every copy has the same weakness.
+
+Boeing was reported to have found this in testing. No accident happened. The first fix was a procedure: airlines had to power-cycle the aircraft on a regular schedule, well before 248 days. Later, a software update fixed it properly.
+
+Backups protect you from broken parts. They don't protect you from a bug that's built into all of them.

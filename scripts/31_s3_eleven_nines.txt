@@ -1,0 +1,17 @@
+Amazon S3 promises eleven nines of durability. Store 10 million files, and you can expect to lose one every 10,000 years. How do you build a system like that?
+
+First, what the number means. Eleven nines is 99.999999999 percent. Flip it around, and that's a one in a hundred billion chance of losing any single file in a year. Now take 10 million files. Multiply 10 million by one in a hundred billion, and you get one in ten thousand per year. One lost file, every 10,000 years.
+
+Disks fail all the time. Every drive will die eventually. So S3 can't depend on any single one.
+
+The first layer is spreading. Your file isn't kept on one disk, or even in one building. It's stored across multiple facilities, called availability zones, so that a fire or a power cut in one place doesn't touch the others.
+
+The second layer is splitting. Instead of keeping three full copies, S3 uses a technique called erasure coding. Your file is cut into pieces, and extra recovery pieces are calculated. Lose a few pieces, and the original can still be rebuilt from the rest.
+
+But the layer that really matters is repair. Spreading and splitting only protect you if you notice a failure and fix it. S3 constantly checks the data against its checksums. When a piece is lost or corrupted, the system rebuilds it onto a healthy disk. Data is only lost when too many pieces fail before the repair finishes. So the faster it repairs, the smaller the window where bad luck can strike.
+
+Now the part that people get wrong. Durability isn't availability. Durability means your data isn't lost. Availability means you can reach it right now. S3 can have an outage, like the one in 2017, and your data is still safe.
+
+And durability doesn't protect you from yourself. If you delete a file, overwrite it, or run a bad script, S3 will faithfully and durably remember that you did it. That's why people turn on versioning.
+
+Eleven nines is a promise about hardware. Not about humans.
