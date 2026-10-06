@@ -1,0 +1,17 @@
+The same query can run a hundred times faster, on the same data, just by storing it differently. By column, instead of by row. Here's why analytics databases are built that way.
+
+Start with how a normal database stores a table. Row by row. All the values of the first customer, then all the values of the second, and so on. That's great when you want a whole record: show me everything about customer 42. The data is all in one place.
+
+But analytics asks different questions. What was the average order value last month? That needs just two columns out of, say, fifty: the date and the amount. In a row-oriented database, to read those two values, the disk has to read the whole row, all fifty columns, for every single row. You read 50 and use 2. Ninety-six percent of the work is wasted.
+
+A column store flips the layout. It keeps all the values of the first column together, then all the values of the second column, and so on. Now the query reads only the two columns it needs, and ignores the other 48. That alone cuts the data read by a factor of 25.
+
+And there's more. When values of the same type are stored together, they compress extremely well. A column of countries has only a few distinct values, repeated millions of times. It can be stored as a short dictionary plus tiny codes, or as runs, like: India, 5,000 times. Compression of five to ten times is common, which means even less to read.
+
+On top of that, the processor can work on a batch of values from one column at once, in a tight loop, using special instructions. That's much faster than hopping across mixed data.
+
+Stack these together, and you get speed-ups of ten to a hundred times. That's why tools like ClickHouse, BigQuery, Snowflake, and DuckDB, and file formats like Parquet, all use columns.
+
+The trade-off is that columns are poor at writing and reading single records. Rebuilding a full row means collecting pieces from many places.
+
+Same data, different shape. And the shape decides the speed.

@@ -1,0 +1,17 @@
+Every time you properly shuffle a deck of cards, you almost certainly create an order that has never existed before in the history of the world. And yet a computer can only make a tiny fraction of them. Here's why.
+
+A deck has 52 cards. How many ways can they be ordered? The first card can be any of 52. The second, any of the remaining 51. Then 50, then 49, and so on. Multiply them all together, and you get 52 factorial. It's about 8 followed by 67 zeros.
+
+That's difficult to feel, so compare it. The number of atoms on the whole Earth is roughly 10 to the power of 50. The number of ways to order a deck is hundreds of thousands of trillions of times bigger. So a well-shuffled deck is, in practice, unique. Nobody has held that order before, and nobody ever will again.
+
+Now think about a computer. To shuffle, it needs random numbers. It starts from a seed, a starting number, and everything after that follows from it. If the seed is a 32-bit number, there are only about 4.3 billion possible seeds. So only 4.3 billion different shuffles are possible. Out of 8 times 10 to the 67.
+
+To be able to produce every possible deck, you'd need a seed of at least 226 bits.
+
+And this has been used against real systems. In 1999, researchers showed that one online poker site shuffled its cards using a seed based on the server's clock, with only a few tens of millions of possibilities. By looking at a few cards, they could work out the exact seed, and so predict every other card in the deck.
+
+Even the old Microsoft FreeCell game gave you only 32,000 numbered deals.
+
+The fix is simple. Seed the shuffle from the operating system's secure random source, and use a proper shuffling method.
+
+The number of decks is huge. But the number of decks a computer can reach depends on how much randomness you gave it to start with.

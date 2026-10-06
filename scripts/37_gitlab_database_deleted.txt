@@ -1,0 +1,19 @@
+In 2017, a GitLab engineer typed a command to delete files, on the wrong server. And when the team went to restore from backup, they found that five different backup methods were not working. This is the GitLab outage.
+
+It's January 31, 2017, late in the evening. GitLab's team is dealing with a spike in load on their production database. One of their replica databases has fallen behind and stopped copying data.
+
+An engineer decides to fix the replica by wiping its data folder and starting the copy from scratch. It's a routine step. He runs the command to remove all the files.
+
+But he's connected to the wrong machine. Not the replica. The primary, the live one with all the real data. By the time he notices and stops the command, about 300 gigabytes of data have been reduced to around 4.5.
+
+Now the team reaches for the backups. And that's where the second disaster starts.
+
+The regular database backups, made by a tool called pg_dump, had been failing for a while. The failures were silent, because the warning emails never arrived. The disk snapshots weren't turned on for the database servers. The replication, the copy that should have been a spare, was the very thing that had broken. As the team wrote afterward, out of five backup and replication techniques, none were working reliably, or had been set up at all.
+
+What saved them was luck. One engineer had taken a manual snapshot about six hours earlier, for an unrelated reason. They restored from it. About six hours of data was lost, including thousands of projects, comments, and users.
+
+And GitLab did something very unusual. They live-streamed the recovery on YouTube, and published a full, honest report.
+
+The lesson fits in a single sentence. A backup that has never been restored isn't a backup. It's a hope.
+
+Test your recovery before you need it.

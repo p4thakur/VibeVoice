@@ -1,0 +1,15 @@
+In Postgres, when you update a row, it doesn't change the row. It creates a new one. And that's the reason readers never have to wait for writers. This idea is called MVCC.
+
+MVCC means multi-version concurrency control. Here's the problem it solves. A database has many users at once. If one person is updating a row, what should happen when someone else tries to read it? The simple answer is locking: the reader waits until the writer is done. But with thousands of users, all that waiting adds up.
+
+Postgres takes another approach. Every row has hidden information: which transaction created it, and which transaction ended it. When you run an UPDATE, Postgres doesn't overwrite the row. It marks the old version as ended by your transaction, and adds a brand new version of the row.
+
+Now, every query works with a snapshot, a view of the database as it was when the query began. Each query looks at the versions of each row, and picks the one that was current in its snapshot. So someone who started reading before your update still sees the old row. Someone who starts after your commit sees the new one. Nobody blocks anybody. Readers don't block writers. Writers don't block readers.
+
+That's the good news. The cost is clutter. The old versions don't vanish. They pile up, as dead rows, and take up space. A table that's updated a lot can fill up with dead rows and become bloated, and slower to scan.
+
+That's why Postgres has a cleaner process, called VACUUM. It looks for old versions that no running transaction can still see, and reclaims their space. Autovacuum does this in the background.
+
+Other databases do it differently. MySQL's InnoDB keeps old versions in a separate undo log, and edits the rows in place.
+
+Never overwrite. Write a new version, and let every reader see the one that was true for them.

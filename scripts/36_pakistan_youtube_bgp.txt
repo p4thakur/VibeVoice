@@ -1,0 +1,17 @@
+In 2008, Pakistan tried to block YouTube for its own citizens. Instead, it took YouTube offline for the entire world. Here's how one country's mistake reached everyone.
+
+The internet is held together by a system called BGP. It works like a giant announcement board. Every network tells its neighbors: these are the addresses I can reach. Neighbors pass the news along, and eventually every router in the world knows which way to send traffic.
+
+And here's the key rule. When two announcements overlap, the more specific one wins. Think of it like a postal service. A letter addressed to a specific house gets sent to that house, even though the whole street also has a general route.
+
+On February 24, 2008, Pakistan's government ordered its internet providers to block YouTube. Pakistan Telecom did it with a trick. It announced to its own network that it was the destination for a small slice of YouTube's address range, a more specific one, and then sent all that traffic nowhere. A black hole.
+
+That should have stayed inside Pakistan. But the announcement leaked. It was passed to an upstream provider, which accepted it and shared it with the rest of the world.
+
+BGP has no idea who to trust. It just sees an announcement that's more specific than YouTube's own. So routers around the world believed it. Within minutes, people in many countries who tried to reach YouTube were sent to Pakistan, and into the black hole.
+
+YouTube went dark globally for about two hours. Engineers at YouTube responded by announcing even more specific routes of their own, and the providers cut off the false one.
+
+The internet's routing was built on trust, from a time when only a few friendly networks existed. Newer systems, like RPKI, now let networks prove which addresses they actually own.
+
+A country tried to close one door. And accidentally told the whole world that the door was somewhere else.

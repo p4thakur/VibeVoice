@@ -1,0 +1,17 @@
+A server joins a cluster of 10,000 machines, and within about a dozen rounds, nearly everyone knows. Nobody told them all. This is the gossip protocol, and it spreads information the way a rumor does.
+
+Here's the problem. In a big cluster, every server needs to know who's alive, who's dead, and who just joined. A central server could keep track, but then it's a single point of failure. Having everyone tell everyone else creates a flood of messages that grows with the square of the cluster size.
+
+Gossip works differently. Every second or so, each server picks a few other servers at random, and tells them everything it knows. Those servers merge the news, and do the same in their next round.
+
+Watch what happens to one piece of news. In round one, a single server knows. It tells a few others. In round two, each of those tells a few more. The number of servers who know roughly doubles, or triples, every round. It's exponential growth, like a rumor at school.
+
+With 10,000 servers, doubling takes only about 13 rounds to cover the whole cluster. A few more rounds mop up the last stragglers. So a dozen or two rounds reach everyone. If each round takes a second, the whole cluster knows in under half a minute. And each server only ever talked to a handful of others.
+
+Cassandra works this way. Every second, each node gossips with up to three others, sharing who's up, who's down, and who owns which data. Tools like Consul use a similar protocol, called SWIM.
+
+Why is it so loved? It's robust. If a server dies, or a message is lost, it doesn't matter, because the news arrives by many routes. There's no center to attack. And the work for each server stays tiny, however big the cluster grows.
+
+The price is that nothing is instant. For a moment, some servers know and others don't.
+
+No broadcast. No boss. Just a rumor that nobody can stop.

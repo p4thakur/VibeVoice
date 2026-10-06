@@ -1,0 +1,17 @@
+With 100,000 disks, a few of them die every single day. Not as an emergency. As a routine. This is why big systems are built on the assumption that hardware is always failing.
+
+Start with the math. Hard disks last a long time, but not forever. In large fleets, the share of drives that fail in a given year is typically around one to two percent. Studies by Google, and by the backup company Backblaze, which publishes its numbers, show rates in that range, and higher as drives get older.
+
+One or two percent sounds small. But multiply it by the size of a data center. A fleet of 100,000 disks, at a 1.5 percent yearly failure rate, loses about 1,500 disks a year. Divide that by 365 days, and it's roughly four disks every single day.
+
+And that's just the disks. The same applies to power supplies, memory, network cards, and cables. At this scale, there's no day without a failure somewhere.
+
+That changes how you build things. If failure is rare, you treat it as an emergency. Somebody gets paged, and fixes it. But if it happens several times a day, that can't work. The system itself has to handle it, automatically, without waking anyone up.
+
+So engineers design for failure. Data isn't stored just once. It's replicated, or erasure coded, across many disks and machines, so that losing any one loses nothing. When a disk dies, the system notices on its own, and rebuilds the missing pieces onto healthy disks in the background. Technicians replace the dead drives in batches, whenever it's convenient, and nobody's data is at risk in the meantime.
+
+It changes the culture too. Netflix built Chaos Monkey to kill its own servers on purpose, so that engineers would make sure their systems survive it.
+
+And the key is the speed of repair. Data is only lost if more drives fail before the first is rebuilt. So the faster the repair, the safer the system.
+
+At scale, failure isn't an exception. It's the weather. Build for the storm.

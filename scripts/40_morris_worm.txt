@@ -1,0 +1,19 @@
+In 1988, a graduate student released a program onto the internet, and it crashed about ten percent of every computer connected to it. What went wrong is a lesson in being too clever.
+
+It's November 2, 1988. The internet is small, around 60,000 machines, mostly in universities and research labs. A Cornell student named Robert Morris writes a self-copying program, a worm, and releases it.
+
+The worm spread in a few ways. It used a hole in the email program, sendmail. It used a bug in a service called finger. And it guessed common passwords. Once it got into a machine, it copied itself to the next ones.
+
+Morris knew a risk. If the worm infected the same machine twice, it would slow it down, and give itself away. So the worm first checked whether a machine was already infected. If so, it left it alone.
+
+But then Morris worried about the opposite problem. What if an administrator fooled the worm into thinking the machine was already infected? The check would be an easy way to defend against it.
+
+So he added a rule: even if a machine says it's already infected, copy yourself onto it anyway, one time in seven.
+
+That tiny rule was the disaster. The internet was so small and so well connected that machines got reinfected again and again. Each one ended up running dozens of copies. They slowed to a crawl, and many simply crashed. About 6,000 machines went down, roughly 10 percent of the whole network.
+
+The cleanup took days. Morris was the first person convicted under the new US computer crime law. He got probation, community service, and a fine. He later became a professor at MIT.
+
+The worm's biggest effect was a lasting one. It led to the creation of the first emergency response team for internet security.
+
+A defense against being stopped. That became the reason it couldn't be ignored.

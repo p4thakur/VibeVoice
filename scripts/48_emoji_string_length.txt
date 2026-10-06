@@ -1,0 +1,17 @@
+Ask a computer how long the emoji of a family of four is, and depending on the language, it will say 1, 7, 11 or 25. They're all right. Here's why.
+
+That family emoji looks like a single character. But it's actually built from several. It's a man, a woman, a girl and a boy, four separate emoji, glued together by invisible characters in between them, called zero-width joiners. Four emoji, and three joiners.
+
+Each of those pieces is a code point in Unicode, the system that gives every character a number. So by code points, the family is 7. That's the answer Python gives you.
+
+But computers don't store code points directly. They store bytes. In the encoding that most of the web uses, UTF-8, each emoji takes four bytes, and each joiner takes three. Four times four, plus three times three, is 25 bytes. A database that counts bytes sees 25.
+
+JavaScript uses a different encoding, UTF-16, where each emoji takes two units, and each joiner one. Eight plus three is 11. So in JavaScript, the length is 11.
+
+And the human answer? It's 1. One picture, one family. Unicode has a name for what we see as one character: a grapheme cluster. Some languages, like Swift, count those by default.
+
+This causes real bugs. Reverse a string by code points, and the family breaks into four separate people, in the wrong order. Cut a text at 10 characters, and you might slice a family in half. A form says maximum 20 characters, and the database says no, because it counts bytes. And skin-tone modifiers, flags, and combined letters like e with an accent all work the same way.
+
+The lesson is that a character is not one thing. It could be a byte, a code point, a unit, or what a person sees.
+
+When someone asks how long a string is, the real question is: long in what?

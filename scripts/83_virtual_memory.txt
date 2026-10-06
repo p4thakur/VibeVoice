@@ -1,0 +1,19 @@
+Every program on your computer believes it owns all of the memory. And you can often ask for far more than the machine really has, and get a yes. This is virtual memory, and it's one of the most useful lies in computing.
+
+Here's the idea. A program never uses real memory addresses. It uses virtual ones. Between the two sits a translation table, managed by the operating system and the processor, called the page table. Memory is divided into small pages, usually 4 kilobytes, and each virtual page is mapped to a real page in RAM, or to nothing at all.
+
+That gives you three powers.
+
+The first is isolation. Every program has its own private set of addresses. Address 1000 in one program and address 1000 in another point to completely different places. Neither can see or damage the other. A bug in one program can't corrupt another.
+
+The second is laziness. When a program asks for a gigabyte of memory, the system doesn't actually find a gigabyte. It just promises it. Real memory is only handed out when the program first touches each page, an event called a page fault. Memory that's never touched costs nothing.
+
+The third is overcommit. Because most programs ask for more than they ever use, the system can promise more in total than it physically has, betting that not everyone will use everything at once. You can often allocate 100 gigabytes on a 16 gigabyte machine, and it works, until you actually try to use it all.
+
+And when the bet fails? When too many programs call in their promises at once, Linux has a last resort, the OOM killer. It chooses a process, and kills it, to free up memory.
+
+Virtual memory also makes tricks like fork and copy-on-write possible, which is how Redis takes its snapshots.
+
+A lie, told by hardware and software together. And the reason one crashing program doesn't take down the whole machine.
+
+Every program gets its own private universe. The system decides what's real.

@@ -1,0 +1,19 @@
+Postgres has a hidden clock, and if it runs too far, the database stops accepting writes. It's called transaction ID wraparound, and it has caused real outages.
+
+Here's how it works. Every transaction in Postgres gets a number, a transaction ID. The numbers go up one at a time, and they're stored in every row, to record which transaction created it. The counter is 32 bits wide. That gives about 4 billion values.
+
+But Postgres has a rule for comparing them. A transaction ID counts as being in the past if it's within about 2 billion behind the current one, and in the future if it's within 2 billion ahead. The numbers are treated like a circle.
+
+So here's the danger. If the counter goes around the full circle, an old row's ID that used to be in the past would suddenly appear to be in the future. And a row from the future is invisible. Old data would vanish from queries. That would be catastrophic.
+
+How fast can it happen? After about 2 billion transactions. At 1,000 transactions a second, that's about 25 days. At 10,000 a second, around two and a half days.
+
+To prevent it, Postgres runs a process called vacuum, which finds old rows and freezes them, marking them as visible to everyone, forever, so their numbers no longer matter. As long as vacuum keeps up, the clock can keep turning safely.
+
+But if vacuum falls behind, because of a long-running transaction, or a huge table, or bad settings, the database gets close to the limit. And at that point, as a last line of defense, Postgres stops accepting new writes. It refuses to assign new transaction IDs, to avoid data loss. Everything halts until someone runs a manual vacuum, which on a big database can take hours.
+
+This has hit real companies, including a well-known email service that was down for a long time.
+
+The fix is monitoring. Watch how old your oldest rows are, and never let vacuum fall behind.
+
+A 32-bit counter. A clock nobody watched. And a database that chose to stop rather than lie.

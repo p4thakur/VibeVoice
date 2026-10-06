@@ -1,0 +1,17 @@
+Almost every database writes your data twice, and the first write goes somewhere you never look. This is the write-ahead log, and it's the reason your data survives a power cut.
+
+Here's the problem. A database stores its data in big structures on disk: tables, indexes, pages. When you save a change, the database may have to modify several of those pages, scattered around the disk. Now imagine the power goes out halfway through. Some pages are updated and some aren't. The data is corrupted, and the database can't tell which parts are right.
+
+The fix is a simple rule: write ahead. Before you change anything in the real data, first write down what you're about to do, in a separate file called the log. The log is append-only. You only ever add to the end of it.
+
+Now a commit works like this. Your change is described in the log, and the log is forced onto disk. Only when that's done does the database tell you: committed. The actual data pages can be updated later, in memory first, and written to disk whenever it's convenient.
+
+Why is that safe? Because if the power fails, the log is already safe. When the database restarts, it reads the log, and replays any changes that hadn't reached the data pages. It also undoes anything that was in progress and never committed. The data returns to a clean state.
+
+And why is it fast? Because writing to the end of a file is sequential, the kind of disk write that's quickest, as we saw with Kafka. One quick append replaces many scattered writes.
+
+The log has other uses too. Replicas can read it, and apply the same changes. That's how Postgres streaming replication works. And you can replay it up to a chosen moment, to restore a database to exactly 3:15 yesterday afternoon.
+
+One rule holds all of this together: never change the data before the log says so.
+
+Write the plan first. Do the work second. That's how databases survive.

@@ -1,0 +1,21 @@
+If reading from your processor's fastest memory took one second, reading from a disk would take about eight months, and a message across the ocean would take nearly ten years. This is how slow the things in a computer really are, once you see them at human speed.
+
+Computers work at a scale that's hard to feel. A nanosecond is a billionth of a second. So let's stretch time. Let one read from the processor's fastest cache, the L1 cache, take one second.
+
+On that scale, the next level of cache takes about 14 seconds. Not too bad.
+
+Now the main memory, the RAM. In real life it takes around 100 nanoseconds. Scaled up, that's about three minutes. You've already gone from a second to a coffee break.
+
+Next, a modern solid-state drive. A random read takes about 150 microseconds. On our scale, that's about three and a half days.
+
+An old spinning hard disk, which has to physically move a metal arm, takes about 10 milliseconds for a single seek. On our scale, that's around eight months.
+
+And a network round trip, a message from California to Europe and back, takes about 150 milliseconds. At this scale, that's nearly ten years.
+
+Look at the pattern. Each step down is roughly a hundred to a thousand times slower than the one before.
+
+That's why computers have caches. That's why a program that keeps its data in memory beats one that goes to disk. It's why Redis is fast, why CDNs put copies close to users, and why one network call in a loop can ruin a system. Every call to a database or another service is a journey of days or years in the computer's time.
+
+These figures are approximate, and modern hardware keeps getting faster. But the shape of the gap stays the same.
+
+A computer doesn't experience time like we do. And everything in system design comes down to avoiding the long waits.

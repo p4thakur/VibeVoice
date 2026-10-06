@@ -1,0 +1,17 @@
+Every index you add makes your reads faster, and your writes slower. Index everything, and your database will crawl. Here's the trade-off every developer should understand.
+
+Start with why indexes exist. Imagine a table with 100 million rows, and you want to find the one with a particular email address. Without an index, the database has to scan every row, one by one. That can take many seconds. With an index on the email column, it uses a B-tree and finds the row in a handful of steps, in milliseconds. A speed-up of thousands of times.
+
+So why not index every column, just in case?
+
+Because an index is not free. It's a separate data structure, usually a B-tree, kept next to the table. It has its own sorted copy of the indexed values. And that means every time the table changes, every index has to change too.
+
+Insert a new row into a table with five indexes, and the database doesn't do one write. It does six: one for the table, and one for each index. Update an indexed column, and its index has to be edited, too. Delete a row, the same thing. Each of those changes also has to be logged, for safety, and may need to split a page and shuffle other data around.
+
+There's a cost in space as well. Indexes can take up as much room as the table itself, or more. And more indexes also give the database more choices to weigh when it plans a query.
+
+So what's the rule? Index for the queries you actually run. Look at the slowest, most frequent ones, and use the database's EXPLAIN command to see what it's doing. Remove indexes that nobody uses. For columns with very few distinct values, like yes or no, an index often helps very little. And when you need to load millions of rows in bulk, it's often faster to drop the indexes first, load the data, and rebuild them afterwards.
+
+An index is a promise of fast reading, paid for in slow writing.
+
+Every shortcut for the reader is extra homework for the writer.

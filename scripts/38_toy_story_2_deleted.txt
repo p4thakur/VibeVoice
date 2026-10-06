@@ -1,0 +1,19 @@
+While making Toy Story 2, Pixar accidentally deleted most of the movie with one command. The backups were broken. And the film was saved by an employee's home computer.
+
+It's 1998, and Pixar is deep into production. The film's characters, sets, and animation all live as files on the company's servers.
+
+One day, someone on the team runs a command to clear out some files. A single line. It's the kind of command that deletes everything inside a folder, including everything inside the folders inside it, and doesn't ask any questions.
+
+Within moments, things start to disappear. Animators watch characters vanish from their screens. Woody's hat goes. Then Woody himself. Then the other toys, then the sets. By the time somebody cuts the power to the server, the damage is done. Estimates say that about 90 percent of the film's data is gone, two years of work.
+
+No problem, they think. We have backups.
+
+But the backups didn't work. It turned out that for about a month, the backup system had been failing quietly. The disk it was writing to was full, and nobody noticed. The backups they had were useless, and the most recent one was far too old.
+
+Then someone remembered something. One of the technical directors, Galyn Susman, had recently had a baby, and had been working from home. To do that, she had been keeping a copy of the film on her home computer, and syncing it regularly.
+
+That copy was the only complete one left. She and a colleague wrapped the computer up and drove it to the studio, as carefully as you'd carry a newborn. The film was rebuilt from it.
+
+Pixar later made a rule to regularly test their backups. And the film itself went on to be one of the most loved sequels ever made.
+
+A tiny command. A month of silent failures. And a film saved by someone working from the sofa.

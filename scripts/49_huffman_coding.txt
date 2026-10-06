@@ -1,0 +1,17 @@
+In 1951, a graduate student at MIT had a choice. Take the final exam, or write a term paper on one hard problem. He picked the paper, nearly gave up, and then invented Huffman coding, which is still inside every ZIP file and JPEG today.
+
+The student was David Huffman. His professor, Robert Fano, had set the problem: find the most efficient way to write a message in ones and zeros. Fano and the famous Claude Shannon had both tried, and had come up with a method that was good but not perfect. Huffman didn't know that. He just knew it was hard.
+
+He worked for months. He was about to throw out his notes and start studying for the exam. And that's when the idea came.
+
+Here's the problem he solved. Computers store letters with the same number of bits each. But letters aren't equally common. In English, e appears all the time, and z almost never. So why give them the same length? Give frequent letters short codes, and rare letters long ones.
+
+Here's his method. List your symbols and count how often each appears. Then repeat one step: take the two rarest symbols, and join them into a pair, whose count is their sum. Keep going until only one group remains. You've built a tree, and the path from the top to each symbol, left for 0, right for 1, is its code.
+
+Try it with four symbols. A appears 5 times, B twice, C once, D once. Join C and D, making 2. Join B with that, making 4. Join A with that. The codes come out as A equals 0, B equals 10, C equals 110, D equals 111. Nine symbols take 15 bits, instead of 18.
+
+The secret was building from the bottom up. Fano and Shannon built from the top down, and that's why theirs wasn't perfect. Huffman's method is proven to be the best possible for this kind of code.
+
+You'll find it in ZIP, PNG, JPEG, and MP3.
+
+An exam he wanted to skip. A method nobody could beat.

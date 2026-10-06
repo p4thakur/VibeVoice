@@ -1,0 +1,23 @@
+A single failure can turn into 27 requests. Three layers, each retrying three times. This is how a small problem becomes a self-inflicted outage called a retry storm.
+
+Picture a typical system. A user's app calls a service. That service calls another service. And that one calls a database. Three layers.
+
+Each layer has been told to be resilient. If a call fails, try again, up to three times. Perfectly sensible. Now the database has a hiccup, and starts failing.
+
+The bottom service tries three times. The service above it sees that failure, and retries its whole call. And each of its calls makes three more attempts below. The top layer retries too. Three times three times three. A single user action now produces 27 calls to a database that was already struggling.
+
+And it's worse than that. An overloaded database needs less traffic to recover. Instead, it gets twenty-seven times more. So it fails harder. Which triggers even more retries. The system can't get back up, even after the original problem is long gone. Engineers call this a metastable failure: stuck in a bad state that the retries themselves keep alive.
+
+So how do you fix it?
+
+First, retry in only one place. Usually the layer closest to the user, not at every level.
+
+Second, use a retry budget. Allow retries to be only a small share of normal traffic, say 10 percent. If everything is failing, don't pile on.
+
+Third, back off, with jitter. Wait longer after each failure, with a bit of randomness, so retries don't arrive in synchronized waves.
+
+Fourth, use a circuit breaker. When a service is clearly down, stop calling it for a while.
+
+And finally, pass deadlines down the chain. If the user has already given up, there's no point doing the work.
+
+Retries are medicine. But the dose multiplies at every layer.

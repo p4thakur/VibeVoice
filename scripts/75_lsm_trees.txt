@@ -1,0 +1,19 @@
+Most databases edit data in place. LSM trees never do. They only add. And that's why they can swallow writes at astonishing speed.
+
+Let's start with why editing in place is slow. To update a row in a traditional database, you find its page on disk, change it, and write it back. That's a random write, somewhere in the middle of a big file. Disks hate that.
+
+An LSM tree, short for log-structured merge tree, does it differently. When a write comes in, it goes to two places: a quick note in a log on disk, for safety, and a sorted table in memory, called the memtable. That's all. It returns immediately.
+
+When the memtable is full, it's written to disk in one go, in order, as a new file. It's called an SSTable. Sorted, and never modified again. One big sequential write.
+
+So how does an update work? It doesn't. You just write a newer version of the key. And a delete? You write a special marker, called a tombstone. The old values are still sitting in the older files. The system simply knows that the newest entry wins.
+
+Reading is where the trade-off appears. To find a key, the database checks the memtable first, then the files from newest to oldest. That could mean looking in many files. To keep reads fast, it uses tricks like the Bloom filters we saw earlier, which can say definitely not here for most files.
+
+And in the background, a process called compaction merges small files into bigger ones, throws away old versions and tombstones, and keeps the number of files under control.
+
+The price is that the same data may be rewritten several times by compaction. Engineers call that write amplification. But because it's all sequential, it's still fast.
+
+This design began in a 1996 paper, and was made famous by Google's Bigtable. It's now inside Cassandra, RocksDB, LevelDB, HBase, and ScyllaDB.
+
+Don't edit the past. Write the newest version, and clean up later.

@@ -1,0 +1,17 @@
+When you watch a video from another continent, it doesn't travel through space. More than 95 percent of the world's international data crosses the ocean through cables on the seabed. Here's how that works, and why satellites can't replace them.
+
+There are hundreds of these cables, over 500 in service, adding up to well over a million kilometers. They link continents together. Each one holds thin strands of glass, optical fiber, carrying data as pulses of light.
+
+You might expect them to be armored like steel pipes. But in the deep ocean, where nobody's anchor can reach, they're only about as thick as a garden hose. They are armored only near the shore, where ships and fishing gear can hit them.
+
+On a cable that long, the light fades. So every 50 to 100 kilometers, there's a repeater, a device that amplifies the signal. Power for these comes through the cable itself, from stations on shore, at thousands of volts.
+
+Why not use satellites? Two reasons. First, capacity. A single modern cable can carry hundreds of terabits per second. No satellite network comes close. Second, delay. A traditional satellite sits about 36,000 kilometers up, and the round trip adds around half a second. Light in fiber crossing the Atlantic takes a small fraction of that.
+
+The cables do get damaged. There are roughly 150 to 200 faults every year. Most are caused by fishing nets and ship anchors. Special repair ships grab the broken cable from the seabed, bring it up, and splice it back together.
+
+And these cables are owned increasingly by tech giants like Google, Meta, Microsoft and Amazon, as well as by telecom companies.
+
+The cloud isn't in the sky. It's under the sea, in a line of glass as thin as your thumb.
+
+The internet is mostly a very long wire.

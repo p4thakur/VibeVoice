@@ -1,0 +1,19 @@
+Your phone's map only works because of Einstein. Without correcting for relativity, GPS would drift by about 10 kilometers every single day. Here's why.
+
+GPS works by timing. Each satellite carries an atomic clock, and constantly broadcasts the time. Your phone listens to several satellites, and compares how long each signal took to arrive. Since radio waves travel at the speed of light, those tiny time differences become distances. And from distances to four satellites, your phone can work out where it is.
+
+But the clocks have to be extremely precise. A timing error of just one nanosecond, one billionth of a second, is about 30 centimeters on the ground.
+
+Now, the problem. The satellites orbit about 20,000 kilometers up, moving at nearly four kilometers per second. And Einstein's two theories of relativity say that time doesn't tick at the same rate for everyone.
+
+First, special relativity. A moving clock runs slow. Because the satellites move so fast, their clocks lose about 7 microseconds every day.
+
+Second, general relativity. Gravity slows time too, and the satellites are further from Earth's gravity, so their clocks run faster. That effect is bigger. They gain about 45 microseconds a day.
+
+Add them up. The satellite clocks run fast by about 38 microseconds every day. That sounds tiny. But light travels about 300 meters in a single microsecond. So 38 microseconds adds up to an error of more than 11 kilometers of position, every day. In a few days, your phone would think you were in a different city.
+
+The engineers handled it before launch. They deliberately set the satellites' clocks to tick a tiny bit slower on the ground, so that in orbit, they'd run at the right rate.
+
+The engineers who built GPS had to trust the theory. And the system working every day is a quiet proof of Einstein's idea.
+
+Every time your map says turn left, it's using relativity.

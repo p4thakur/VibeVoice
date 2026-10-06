@@ -1,0 +1,15 @@
+The language that runs almost every website on Earth was first built in 10 days. Here's the story of JavaScript, and why its strangeness is still with us.
+
+It's the spring of 1995. The company Netscape makes the most popular web browser in the world. And it wants the web to be more alive. Not just pages to read, but pages that respond, with buttons and forms that do something. For that, the browser needs a programming language.
+
+The job went to Brendan Eich, an engineer at Netscape. He'd been hired with the hope of putting the elegant language Scheme into the browser. But management had other ideas. The company had just partnered with Sun, the makers of Java, and they wanted a language that looked like Java. And they wanted it fast. The browser's next version was coming out.
+
+So in about 10 days, in May 1995, Eich built a working prototype. It borrowed from three places. It took its functions from Scheme, so that functions could be passed around like any other value. It took its objects from a language called Self, where objects inherit directly from other objects. And it took its look from Java, with curly braces and familiar keywords.
+
+It was called Mocha at first. Then LiveScript. Then, as part of the Java deal, JavaScript. Which is why the name suggests a relationship with Java that was never there.
+
+There's a price for building at that speed. Some decisions couldn't be undone. Ask JavaScript for the type of null, and it says object. That's a mistake from the first version. And once millions of websites relied on it, it could never be fixed, because fixing it would break them.
+
+Since then, the language has grown and been improved, year after year. But it can never break its past.
+
+Ten days to build. Thirty years of living with the choices.

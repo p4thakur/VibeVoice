@@ -1,0 +1,19 @@
+Linux shows almost no free memory. And that's not a problem. It's the system working exactly as designed, because unused RAM is wasted RAM.
+
+Run the command free on a Linux server, and you may see something alarming: out of 32 gigabytes, only a few hundred megabytes free. It looks like the machine is about to run out. People panic, restart things, or buy more memory.
+
+But look at another column, called buff slash cache. It might say 25 gigabytes. That's not wasted. That's the page cache.
+
+Here's what the page cache is. Whenever a program reads a file from disk, Linux keeps a copy of it in memory, using any RAM that isn't otherwise in use. The next time any program wants that file, it comes straight from memory. A read that would have taken milliseconds from a disk takes microseconds from RAM. Writes are cached too, and flushed to disk later.
+
+So the kernel's reasoning is simple. If there's spare RAM, why leave it empty? Fill it with things that might be useful. It costs nothing, and it makes everything faster.
+
+And here's the crucial part. This memory is instantly available. If a program needs more RAM, the kernel just throws away some of the cached pages, which can always be read from disk again, and hands that memory over. The cache shrinks automatically. It never starves a program.
+
+So the number to look at isn't free. It's available, which counts the free memory, plus the memory that can be reclaimed on demand.
+
+This matters for how systems are built. Databases like Postgres lean on the operating system's cache. Kafka goes further, and deliberately leaves its caching to the page cache. A machine with a large page cache isn't struggling. It's fast.
+
+Free memory is idle memory. And idle memory earns nothing.
+
+A Linux machine that looks full isn't in trouble. It's remembering.

@@ -1,0 +1,17 @@
+Plain copies need three times the storage to survive two failures. Erasure coding can survive four lost disks using only 1.4 times the storage. It's how cloud storage manages to be both safe and cheap.
+
+The usual way to protect data is replication: keep three copies. Lose one, and you still have two. But it's wasteful. For every terabyte of data, you pay for three. That's 200 percent extra.
+
+Erasure coding is smarter. Start with a tiny example. You have two numbers, 5 and 7. Store a third value: their sum, 12. Now lose any one of the three, and you can rebuild it. If you lose 5, you work out 12 minus 7. Three pieces, any one can be lost, and only 50 percent extra.
+
+Real systems use a stronger version of the same idea, called Reed–Solomon codes. Split your data into, say, 10 pieces. Then calculate 4 extra pieces, called parity. You now have 14 pieces, stored on 14 different disks or servers. And the magic is that any 10 of the 14 are enough to rebuild everything. So you can lose any 4, and lose nothing.
+
+Now compare the cost. You store 14 pieces for every 10 pieces of data. That's 1.4 times. And it survives four failures. Replication would need five copies to survive four, a cost of five times.
+
+So why isn't everything erasure coded? Because there's a price. Rebuilding a lost piece means reading many other pieces across the network. Reads and writes need extra calculation. So it's best for large data that rarely changes, like the files in cloud storage, while hot, fast-changing data stays replicated.
+
+Amazon S3, Azure, and open systems like Ceph and HDFS use it.
+
+The idea is old, from the mathematics of fixing errors in discs and radio signals. But at cloud scale, it saves enormous amounts of hardware.
+
+Don't keep three copies. Keep the math.

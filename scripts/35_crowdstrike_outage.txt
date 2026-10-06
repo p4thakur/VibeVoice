@@ -1,0 +1,21 @@
+On July 19, 2024, one small update file crashed about 8.5 million Windows computers in a single morning. Airlines grounded planes. Hospitals cancelled surgeries. Here's what that file did.
+
+The company was CrowdStrike, a security firm. Its software, called Falcon, runs on millions of business computers to detect attacks. And it needs deep access, so it runs in the kernel, the innermost core of Windows.
+
+That matters. Normal programs that crash only close themselves. But a crash inside the kernel takes the whole computer down. It's the blue screen of death.
+
+Now the update. CrowdStrike regularly sends out small data files that teach its software to spot new threats. That day's file was meant to detect a certain kind of attack. And it contained a mismatch. The software was prepared to read a certain number of input values, 20 of them. But the new file asked for a 21st.
+
+There was no 21st. So the program reached into memory it didn't own, read garbage, and crashed. Inside the kernel.
+
+And the computer didn't just crash once. It rebooted, loaded the software, read the same file, and crashed again. A boot loop. It couldn't fix itself.
+
+Why did it spread so fast? Because the update went out to everyone, all at once. And because it was a data file, not a full software release, it skipped the slow, careful rollout that real updates go through.
+
+The fix was cruel in its simplicity. Someone had to physically boot each machine into a safe mode and delete one file. Computer by computer. Millions of them. Locked disks made it worse.
+
+The estimate of 8.5 million machines is under one percent of all Windows computers. And it was enough to stop airports, banks, and emergency services.
+
+CrowdStrike said it would roll updates out in stages from then on. First to a few customers, then more.
+
+One missing value. One kernel. And a reminder that the software protecting you can also be the thing that breaks you.

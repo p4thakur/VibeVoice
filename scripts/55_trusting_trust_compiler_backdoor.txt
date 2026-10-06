@@ -1,0 +1,19 @@
+In 1984, Ken Thompson, one of the creators of Unix, showed how you can hide a backdoor in a program so well that it appears nowhere in the source code, even if you read every line. It's called Trusting Trust.
+
+To understand it, you need to know about compilers. A compiler is a program that turns human-readable source code into the machine code that actually runs. And compilers are themselves written in code, then compiled by a previous compiler.
+
+Now Thompson's trick, in three steps.
+
+Step one. Change the compiler so that when it notices it's compiling the login program, it secretly adds an extra rule: accept a special secret password, as well as the real ones. Now anyone who knows that password can get into any system.
+
+Of course, someone could read the compiler's source code and find that change. So step two. Change the compiler again, so that when it notices it's compiling itself, it inserts both of those secret changes into the new compiler it creates.
+
+Step three. Compile this tampered compiler once. Then delete the secret changes from the source code.
+
+Now look at what's left. The compiler's source is perfectly clean. The login program's source is perfectly clean. But the compiler's binary, the one actually in use, contains the trick. And every time it rebuilds itself from the clean source, it puts the trick back. The backdoor lives on in the binary, and appears in no source code anywhere.
+
+Thompson's point was uncomfortable. You can't trust code you didn't create yourself. And that includes the tools that built your tools, and the tools that built them, all the way down.
+
+The defense isn't simple. One approach, called diverse double-compiling, builds the same compiler using two independent compilers, and compares the results. Another is reproducible builds, where anyone can rebuild the program and check that they get exactly the same bytes.
+
+The most dangerous bug is the one that isn't in the code you can read.

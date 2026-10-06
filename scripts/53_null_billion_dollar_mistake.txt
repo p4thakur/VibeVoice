@@ -1,0 +1,15 @@
+In 1965, a computer scientist added one tiny feature to a programming language, just because it was easy. Decades later, he called it his billion-dollar mistake. It's the null reference.
+
+The scientist is Tony Hoare. He was designing a type system for references in a language called ALGOL W. His goal was to make sure every reference in a program was used safely, and that the compiler would check it all automatically.
+
+And then he made one exception. He allowed a reference to point at nothing. A null. As he later said, he couldn't resist the temptation, simply because it was so easy to implement.
+
+Here's why that's a problem. A normal type says what something is. A string is a string. But with null, any string might also be nothing, and the type doesn't tell you. The compiler can't help, so the code looks fine until the moment someone uses the nothing as if it were a string. Then the program crashes.
+
+You've seen it. In Java, it's the NullPointerException. In JavaScript, it's: cannot read properties of undefined. In C, it's a segmentation fault. Different languages, same bug.
+
+In 2009, at a conference, Hoare stood up and apologized. He said null references had led to countless errors, vulnerabilities, and system crashes, which had probably caused a billion dollars of pain and damage in the last forty years.
+
+The fix is to make the absence of a value visible in the type. Languages like Rust, Swift, and Kotlin do this. A value that might be missing has a different type, often called an option or optional, and the compiler won't let you use it until you've handled the missing case. The bug moves from the moment the program is running, to the moment you write the code.
+
+One shortcut, taken in an afternoon, because it was easy. And a bill that all of us have been paying ever since.

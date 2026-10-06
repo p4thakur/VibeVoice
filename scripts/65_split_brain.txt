@@ -1,0 +1,17 @@
+Two servers can both believe they're the leader, and both accept writes. This is called split brain, and it's one of the most dangerous failures in distributed systems, because both sides are convinced they're right.
+
+Many systems use a single leader. One server accepts the writes, and the others copy them. That keeps everything consistent. But what if the leader and the followers lose contact?
+
+Say the network breaks between two data centers. The followers can't hear the leader, so they assume it's dead, and choose a new one. But the old leader isn't dead. It's just cut off, and still taking writes from clients on its own side. Now there are two leaders, accepting different changes. When the network heals, the two histories have diverged, and somebody's data has to be thrown away.
+
+This isn't just theory. In October 2018, GitHub lost connectivity between its US East Coast data center and the rest of its network for about 43 seconds. Its automated tools promoted a database in another region. But the East Coast database had accepted writes that hadn't been copied over. Two databases, two versions of the truth. It took about a day to sort out.
+
+How do you prevent it?
+
+The classic answer is a quorum. A leader needs the votes of a majority. In a cluster of five, that's three. If the network splits into a group of three and a group of two, only the group of three can elect a leader. The group of two can't, so it stops accepting writes. Two majorities can't exist at the same time.
+
+The second answer is fencing. Every leader gets a number, called a term or an epoch, that goes up every time a new leader is chosen. The storage layer remembers the highest number it's seen, and rejects anything older. So a stale leader that wakes up after a long pause can't do any damage.
+
+Split brain happens when nobody checks: am I still the leader?
+
+A majority, and a number that only goes up. That's how you stop two kings ruling one kingdom.

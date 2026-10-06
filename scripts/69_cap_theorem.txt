@@ -1,0 +1,19 @@
+When a network splits in two, a database has to make a choice that no clever engineering can avoid: give you a correct answer, or give you an answer at all. This is the CAP theorem.
+
+It names three properties. Consistency: every read sees the latest write. Availability: every request gets a response. And partition tolerance: the system keeps working even when the network breaks apart, and some servers can't talk to others.
+
+You may have heard it described as pick any two of three. That's misleading. In any real network, partitions will happen. Cables get cut, switches fail. You don't get to opt out. So the real question is: when a partition happens, what do you give up?
+
+Here's an example. A database has copies in two data centers, and the link between them goes down. A user changes their address in the first data center. A moment later, someone asks the second one for that address.
+
+The second data center has two choices. It can refuse to answer, or return an error, until the link is back. That keeps the data consistent, but it's unavailable. Or it can answer with the old address. That keeps it available, but it's not consistent.
+
+There's no third option. It can't know what's happened on the other side.
+
+Real systems land on both sides. A bank, or a system that tracks who owns a seat on a plane, will often choose consistency, and say: try again later. A shopping cart, a social feed, or a like counter will choose availability, because a slightly out-of-date answer is better than none. That's exactly the choice Amazon made with Dynamo.
+
+The idea was proposed by Eric Brewer in 2000, and proven a couple of years later. A later refinement added that even without a partition, you're trading consistency against speed.
+
+CAP isn't about which database to buy. It's about what your system should do on its worst day.
+
+Correct, or available. When the network breaks, you can't have both.

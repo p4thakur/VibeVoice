@@ -1,0 +1,17 @@
+Redis can handle over a hundred thousand operations per second, using a single thread. One thread. That sounds backwards, because we're told more threads means more speed. So how does it work?
+
+To see why, look at what a Redis command actually does. A typical one, like getting a value by its key, looks up an entry in a hash table in memory. That takes a tiny fraction of a microsecond. The real time is spent elsewhere: reading the request from the network, and writing the response back.
+
+That changes the question. When the work is that small, the cost of managing multiple threads begins to be larger than the work itself. Threads need locks, to avoid two of them changing the same data. Locks make threads wait. And switching between threads costs time too.
+
+Redis avoids all of it. One thread handles every command, one after another. There's nothing to lock, because nobody else is touching the data. There are no context switches. And as a bonus, every command is automatically atomic. Increase a counter, and no other command can sneak in the middle.
+
+But how does one thread handle thousands of clients at once? With an event loop. It uses the operating system to watch many connections at once, and only handles the ones that are ready. Most of the time, that's all it needs.
+
+Because the data lives in memory, in structures designed for speed, the bottleneck is usually the network, not the CPU. With a trick called pipelining, which sends many commands in one go, it can even pass a million operations a second.
+
+The trade-off is that one slow command blocks everyone. Ask for all the keys in a database with millions of entries, and every other client waits. That's why engineers use gentler commands that go through the data in small steps.
+
+Newer versions do use extra threads, but only for reading and writing network data. The commands themselves still run on one.
+
+Don't add threads because you can. Add them when the work is worth the cost.

@@ -1,0 +1,17 @@
+Pick two servers at random, send the job to the less busy one, and your system gets exponentially better than picking just one. One extra look changes everything. This is the power of two choices, and it's one of the strangest results in computer science.
+
+Start with the problem. You have a million servers and a million jobs. The simplest way to share the load is to send each job to a random server. On average, that's perfect: each server gets one job. But averages hide the unlucky ones. Some servers, just by chance, get five, seven, even nine jobs, while others sit empty. In a random assignment like this, the busiest server typically ends up with around nine.
+
+You could try the opposite. Ask every server how busy it is, and send each job to the emptiest one. That gives near-perfect balance, but it doesn't scale. Asking a million servers for every single job is far too slow. And it has a nasty side effect. If many load balancers all see the same emptiest server at the same moment, they all send their jobs there. It gets flooded. That's called herding.
+
+Now the trick. For each job, pick two servers at random. Ask just those two how busy they are. Send the job to the less busy one.
+
+That's it. Two questions per job. And the result is remarkable. The busiest server's load drops from about nine to about four. In the mathematics, it drops from growing like log n over log log n, to growing like log log n. An exponential improvement, from one extra random choice.
+
+Why does it work? Because for a server to end up with a very heavy load, it has to be the less busy of two, over and over again. The chance of that shrinks incredibly fast. Bad luck now has to strike twice.
+
+A third choice helps only a little more. The big jump is from one to two.
+
+This idea was published in the 1990s, and it's now inside real load balancers. NGINX has an option literally called random two. Envoy uses the same idea by default for its least-request balancing.
+
+One extra random look, and bad luck has to happen twice.

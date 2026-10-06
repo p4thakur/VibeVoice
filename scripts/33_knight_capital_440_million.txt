@@ -1,0 +1,19 @@
+In 45 minutes, a trading firm lost $440 million because one of its eight servers never got a software update. This is the story of Knight Capital.
+
+It's August 1, 2012. Knight Capital is one of the biggest traders on the US stock market. That morning, a new feature goes live on the exchange, and Knight has written new software to take part in it.
+
+The new code has to be installed on eight servers. A technician does it by hand. He copies it to seven of them. The eighth is missed.
+
+Here's where it gets dangerous. The new code reused an old switch, a flag in the software. On the seven updated servers, that flag meant: turn on the new feature. But on the eighth server, the same flag woke up something else entirely. Old code, called Power Peg, that hadn't been used for years. It had been sitting in the system, dead but never deleted.
+
+Power Peg was built for testing. It bought and sold in a loop. And the part of the code that told it an order had already been filled had been removed years earlier. So it never knew it was done. It just kept sending orders.
+
+The market opened at 9:30. Within minutes, Knight's screens were flooded. In 45 minutes, the old code made about 4 million trades across 154 stocks, buying high and selling low, over and over.
+
+Engineers scrambled. Then they made a fatal choice. They rolled back the new code on the other seven servers. That made it worse, because now all eight servers were running the old code with the flag switched on.
+
+By the time it was stopped, Knight had lost about $440 million. That was more than the company had. It needed an emergency rescue, and was sold within a year.
+
+The lessons are simple. Dead code isn't dead until you delete it. Never reuse an old flag for a new meaning. Deployments done by hand will eventually miss a server. And every automated system needs a kill switch.
+
+One forgotten server. Forty-five minutes. And a company that no longer exists.

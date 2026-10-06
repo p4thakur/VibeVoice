@@ -1,0 +1,17 @@
+How does a group of servers pick a leader, when there's no boss to choose one? Raft does it with random timers. It's a surprisingly simple idea, and it explains how a lot of the cloud stays in agreement.
+
+Raft was created at Stanford, and the title of its paper says what it was after: In Search of an Understandable Consensus Algorithm. An older algorithm, Paxos, was famously hard to grasp. Raft's authors set out to build something that people could actually learn.
+
+Here's how the election works. The cluster has one leader, which sends out a regular signal, a heartbeat, to say it's still alive. Every other server, a follower, keeps a timer. Each time it hears a heartbeat, it resets its timer.
+
+If the leader dies, the heartbeats stop. And the followers' timers start running out. But here's the trick: the timers aren't all the same. Each follower picks a random timeout, say anywhere between 150 and 300 milliseconds. So one of them will almost always run out first.
+
+That server becomes a candidate. It adds one to a counter called the term, votes for itself, and asks everyone else for their votes. A server votes only once per term. If the candidate gets votes from a majority, it becomes the new leader, and starts sending heartbeats. Every other timer resets.
+
+What if two followers time out at nearly the same moment? They might split the votes, so nobody wins a majority. That's fine. Nobody is elected, the timers run out again, and each server picks a fresh random delay. It's very unlikely to collide twice, so within a few rounds, there's a winner.
+
+Randomness solves what logic can't. Instead of a complicated way to agree on who should go first, the servers simply don't all go first.
+
+Raft powers etcd, which holds the state of Kubernetes, and tools like Consul.
+
+Nobody picks the leader. The clocks do.

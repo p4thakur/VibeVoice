@@ -1,0 +1,15 @@
+One thread can watch ten thousand network connections at once, and barely break a sweat. This is epoll, and it solved a famous problem called C10k.
+
+In the late 1990s, web servers hit a wall. A busy site might have ten thousand visitors connected at the same time, and the usual design, one thread for every connection, fell apart. Each thread uses memory, and the operating system has to keep switching between thousands of them. An engineer named Dan Kegel gave the challenge a name: the C10k problem. How do you handle ten thousand connections on a single machine?
+
+The insight is that most connections are idle. A connection spends nearly all of its time waiting for the next message. So why dedicate a whole thread to waiting?
+
+The better design is one thread, and a way to ask the operating system a question: which of my connections have something to read right now? Early versions of that question, called select and poll, had a flaw. Every time you asked, you handed over the full list of connections, and the kernel scanned through all of them, one by one. With ten thousand connections, each question cost ten thousand checks, even if only two had news.
+
+Linux's answer, from 2002, is epoll. You register your connections once. The kernel keeps track of them, and when data arrives, it adds that connection to a ready list. When your program asks, epoll hands over only the ones that are ready. The cost depends on how many are active, not on how many exist.
+
+Now one thread can run a simple loop. Ask epoll for the ready connections. Handle each one quickly. Go back and ask again. Ten thousand connections, mostly asleep, and only a few to deal with each time.
+
+This design is called an event loop, and it's inside NGINX, Node.js, and Redis. FreeBSD has a similar tool called kqueue, which WhatsApp relied on. Today, the goal has grown to ten million connections on one server.
+
+Don't dedicate a worker to waiting. Wait for the system to tell you who's ready.

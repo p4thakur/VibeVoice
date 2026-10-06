@@ -1,0 +1,17 @@
+One lost packet can stall every image, script and video on a web page. That's the problem that pushed HTTP/3 to leave TCP behind, and move to UDP.
+
+To see why, start with how a web page loads. A page needs dozens of files. In HTTP/2, they all travel at the same time over a single TCP connection, interleaved, in what are called streams. It was a big improvement over opening many separate connections.
+
+But TCP has a strict rule. It delivers data to the application in exact order. It doesn't know about your streams. It just sees one long line of bytes.
+
+Now, suppose one packet is lost somewhere along the way. Say it carried part of an image. TCP notices the gap, and asks for it to be sent again. And until that packet arrives, TCP holds back everything behind it. Even data for other streams, a script or a style sheet, that arrived perfectly well. They wait in line behind the missing piece. This is called head-of-line blocking. On a poor connection, like a phone on a train, it can hurt a lot.
+
+HTTP/3 fixes it by changing the foundation. Instead of TCP, it runs on a new protocol called QUIC, built on top of UDP. QUIC understands streams. Each stream has its own ordering. If a packet for one stream is lost, only that stream waits. The others carry on.
+
+And QUIC adds more. It has encryption built in. It sets up a connection in fewer round trips, and can even resume with none. And it identifies a connection by an ID, not by your address, so when your phone switches from Wi-Fi to mobile data, the connection survives.
+
+Why UDP, and not a brand new protocol? Because the internet's routers and firewalls reliably pass only TCP and UDP. A new transport would simply be blocked. So QUIC takes UDP, and rebuilds reliability on top of it, in software, where it can be updated quickly.
+
+QUIC started at Google, and became an internet standard in 2021, with HTTP/3 following in 2022.
+
+Order is a rule. But sometimes the rule is the delay.

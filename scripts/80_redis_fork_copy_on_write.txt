@@ -1,0 +1,17 @@
+Redis can take a snapshot of 10 gigabytes of memory without copying 10 gigabytes. It looks like magic. It's a trick the operating system gives you for free, called fork and copy-on-write.
+
+First, the problem. A database is changing all the time. To save a snapshot to disk, you need a consistent picture of all the data at one instant. But writing 10 gigabytes takes a while. And if the data changes while you're writing, the snapshot would be a mix of old and new, which is useless. You can't pause the database for that long. And you can't copy it all first, since that would need another 10 gigabytes of memory.
+
+Redis uses the operating system's fork. When Redis wants a snapshot, it forks. That creates a second process, a child, which appears to have an exact copy of all the memory. But nothing has been copied. Only the table that maps the process's memory to the real physical memory, called the page table, is duplicated. Both processes point to the very same physical pages.
+
+Now the child sees a frozen picture of the data as it was at the moment of the fork. It starts writing that picture to disk, calmly, for as long as it takes. Meanwhile, the parent keeps serving requests.
+
+What happens when the parent changes some data? That's the copy-on-write. The moment either process writes to a shared page, the operating system makes a private copy of just that one page for the writer. The child's view stays unchanged. The parent gets its own new page.
+
+So the extra memory used is only the pages that changed during the snapshot. For a mostly idle database, almost nothing. In the worst case, if every page changes, you'd need double.
+
+There are some catches. The fork itself can pause Redis briefly, since copying the page table for a large memory takes time, anywhere from milliseconds to more on big instances. And one setting, transparent huge pages, can make things much worse. If pages are 2 megabytes, then changing a single byte copies 2 megabytes. That's why Redis advises turning it off.
+
+A frozen picture, without a frozen database.
+
+Don't copy the data. Share it, and copy only what changes.

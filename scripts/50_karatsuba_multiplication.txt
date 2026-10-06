@@ -1,0 +1,19 @@
+In 1960, one of the greatest mathematicians in the world said that multiplying two big numbers could not be done faster than the way you learned in school. A 23-year-old student proved him wrong in a week.
+
+The mathematician was Andrey Kolmogorov, and he was leading a seminar in Moscow. His claim was that multiplying two numbers of n digits needs about n squared small steps. That's the school method. Every digit times every digit.
+
+In the audience was a student, Anatoly Karatsuba. He heard the claim, and went away to think about it. Within a week, he had a faster method. When he told Kolmogorov, the great mathematician was so surprised, he cancelled the seminar.
+
+Here's the trick. Multiply 12 by 34. Split each number into two parts: 1 and 2, and 3 and 4. The school method needs four small multiplications: 1 times 3, 1 times 4, 2 times 3, and 2 times 4.
+
+Karatsuba noticed you only need three. First, 1 times 3, which is 3. Second, 2 times 4, which is 8. Third, add the parts of each number, 1 plus 2 and 3 plus 4, and multiply: 3 times 7, which is 21. The middle part is 21 minus 3 minus 8, which is 10.
+
+Now put it together: 3 times 100, plus 10 times 10, plus 8. That's 408. And 12 times 34 is indeed 408.
+
+One multiplication saved. That doesn't sound like much. But the method works inside itself. Apply it again to each of the smaller multiplications, and the savings multiply. The total work drops from n squared to about n to the power of 1.58.
+
+For a number with a million digits, that's the difference between a trillion steps and about three billion.
+
+Karatsuba's method is still used today, in the libraries that handle huge numbers, including Python's. And in 2019, mathematicians finally proved that multiplication can be done in about n times log n steps.
+
+An expert's certainty. One student's afternoon. And an idea that made every big number faster.

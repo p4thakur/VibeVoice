@@ -1,0 +1,21 @@
+There's a question about computer programs that no computer can ever answer, however powerful it is, however long it runs. It's called the halting problem. And Alan Turing proved it in 1936, before there were any computers at all.
+
+The question is simple. Take any program, and any input. Will the program eventually finish, or will it run forever? Can you write a tool that always tells you which?
+
+It sounds like it should be possible. Just run the program and see. But that doesn't work. If the program never stops, you'd wait forever, and you'd never know whether it's about to finish, or never will.
+
+Turing showed that no such tool can exist. Here's the idea, in a few steps.
+
+Suppose it did exist. Call it halts. You give it a program and an input, and it always answers correctly: stops, or runs forever.
+
+Now build a new program, called trouble. Trouble takes a program as input, and asks halts what would happen if that program were fed itself. If halts says it stops, trouble goes into an infinite loop. If halts says it runs forever, trouble stops right away. Trouble always does the opposite of the prediction.
+
+Now ask the question that breaks everything. What happens when you give trouble to itself?
+
+If halts says trouble stops, then trouble loops forever. If halts says trouble loops forever, then trouble stops. Either way, halts is wrong. So the tool we assumed doesn't exist. It can't.
+
+That has real consequences. It means there can be no perfect bug detector, no perfect antivirus, and no tool that can decide, for every program, whether it does what you want. A whole family of questions about what programs do are impossible in general.
+
+Real tools get around it by being careful, or by sometimes answering: I don't know.
+
+Some questions have no answer. And a machine can prove it from the inside.

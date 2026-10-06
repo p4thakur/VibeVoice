@@ -1,0 +1,15 @@
+The same IP address exists in hundreds of cities at the same time. You type it, and you reach whichever copy is nearest to you. This is anycast, and it's behind much of the fast, safe internet.
+
+Normally, an IP address belongs to one place. A packet sent to it goes to that one machine. That's called unicast.
+
+Anycast breaks that rule on purpose. The same address is announced from many locations around the world. Remember BGP, the internet's announcement board, from the Pakistan and YouTube story? A company announces the same address from a data center in Mumbai, another in Frankfurt, another in Virginia, and so on. Each router on the internet hears several announcements for that one address, and does what routers do: it picks the shortest path. So your packets go to the nearest announcer. A person in Delhi and a person in Dallas, typing the exact same address, reach two different servers.
+
+You don't have to do anything. It just works.
+
+It's used for services that need to be close to everyone. The DNS root servers use it. That's how 13 addresses become over a thousand machines. Cloudflare's resolver at 1.1.1.1 does, and so does Google's at 8.8.8.8. And big CDNs use it to bring websites close to their visitors.
+
+It helps in another way too. In a denial of service attack, a flood of bad traffic is aimed at a single address. But with anycast, the flood gets split up. Each attacker's traffic goes to its own nearest location. So instead of one site taking the whole blow, the attack is spread across hundreds.
+
+There are catches. Nearest means fewest network hops, which isn't always the shortest distance. And if the best route changes in the middle of a long connection, the packets might suddenly arrive at a different server that knows nothing about it. So anycast works best for short exchanges, or for systems designed to handle it.
+
+One address. A hundred doors. And the internet quietly opens the closest one.

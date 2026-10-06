@@ -1,0 +1,19 @@
+There are about 8 billion people, and tens of billions of connected devices. But IPv4, the address system the internet was built on, has only about 4.3 billion addresses. So how is the internet still working? The answer is NAT.
+
+IPv4 addresses are 32 bits long. Two to the power of 32 is about 4.3 billion. In the 1980s, that seemed endless. By 2011, the central pool of unassigned addresses had run out.
+
+The fix that kept everything going is Network Address Translation. Here's how it works.
+
+Your home has a router. It has one public address, handed out by your internet provider. Everything inside your home, your phone, laptop, and TV, uses private addresses, like 192.168.1.5. These private addresses can't be reached from outside, and they're reused in millions of homes at once.
+
+When your phone sends a request to a website, the router rewrites the packet. It replaces your phone's private address with the router's public address, and notes the change in a table: this port belongs to this phone. The website sees the request coming from your router, and replies to it. The router looks up its table, rewrites the packet back, and delivers it to your phone.
+
+The port numbers are what make it work. There are around 65,000 of them, so one public address can juggle thousands of conversations at once, for many devices.
+
+And it goes further. Many mobile and home providers now use carrier-grade NAT. One public address is shared by many customers, sometimes hundreds. Your address isn't really yours at all.
+
+NAT has a cost. Outsiders can't easily start a connection to a device behind it. That's why hosting a game server at home needs port forwarding, and why video calls use clever tricks to punch through. It breaks the original idea of every device being reachable.
+
+The real long-term fix is IPv6, with 128-bit addresses, enough for an almost unlimited number of devices. But it's been rolling out for decades, and NAT has bought the world the time.
+
+A shortage of addresses. Solved by sharing one with everybody.

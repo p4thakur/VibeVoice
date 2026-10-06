@@ -1,0 +1,19 @@
+Here's a list with every number from 1 to a million, except one. Your job is to find the missing number, using one pass and almost no memory. The answer is a single operation called XOR.
+
+First, the obvious ways. You could sort the list and look for the gap. That's slow. You could store every number in a set and check which one is missing. That uses a lot of memory. You could add up all the numbers in the list, and subtract from the sum it should have, which is n times n plus 1, divided by 2. That works, but on fixed-size integers, big sums can overflow.
+
+XOR is better. XOR is a simple operation on bits. Two bits that are the same give 0. Two that are different give 1. And it has two beautiful properties. Anything XORed with itself is zero. And anything XORed with zero stays itself.
+
+Order doesn't matter either.
+
+So here's the trick. Take every number from 1 to n and XOR them all together. Then XOR in every number from your list. Now, every number that's in the list appears twice, once from each side. And they cancel out, to zero. The only number that appears just once is the missing one. It's the only thing left.
+
+Try a small example. The numbers 1 through 5, with the 4 missing. XOR of 1 to 5 is 1. XOR of the list 1, 2, 3, 5 is 5. Now XOR those two answers. 1 XOR 5 is 4. That's the missing number.
+
+In binary, 001 XOR 101 gives 100. That's 4.
+
+So it takes one pass through the data, one variable, and no overflow.
+
+The same idea works for another puzzle. If every number in a list appears twice, except one that appears once, XOR everything together, and the odd one out appears.
+
+Pairs destroy each other. What's left is the one that stands alone.

@@ -1,0 +1,17 @@
+Minutes before landing on the Moon in 1969, Apollo 11's computer started flashing an alarm that nobody on the crew had seen before. The mission was minutes from being aborted. What saved it was the way the software was designed to fail.
+
+The computer was the Apollo Guidance Computer. It had about 4 kilobytes of memory that could be changed, and around 72 kilobytes of fixed storage for the program. That's less than a single low-quality photo today.
+
+On July 20, 1969, as the lunar module descended, the alarm sounded: 1202. Then 1201. A message that the computer was overloaded, out of room to schedule its work. The astronauts reported it to Mission Control. And the countdown to the surface kept going.
+
+What was happening? A radar, used for meeting up with the command ship after the landing, had been left switched on. It wasn't needed for landing, but it was flooding the computer with useless signals, taking up a good share of its processing time.
+
+Here's the clever part. The software's designers, led by Margaret Hamilton at MIT, had expected that something might go wrong. So they had built in priorities. Every job in the computer was ranked by how important it was. When there was too much to do, the computer didn't freeze or crash. It dropped the low-priority work, restarted, and kept the critical jobs, steering and descent, running.
+
+In Houston, a young guidance officer, Steve Bales, had seconds to decide. A teammate had prepared a list of which alarms were safe. If the alarms didn't keep happening, it was okay. Bales called: go.
+
+Neil Armstrong then took manual control to avoid a field of boulders. And he landed with only about 25 seconds of fuel to spare.
+
+The computer was overloaded. But it was built to be overloaded, and to keep doing the one job that mattered.
+
+Don't design a system that never fails. Design one that fails in the right order.

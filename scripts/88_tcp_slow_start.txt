@@ -1,0 +1,17 @@
+TCP starts slow on purpose. Every new connection begins with a trickle, and doubles its speed until something breaks. It sounds like a flaw. It's actually what keeps the internet from collapsing.
+
+Here's the problem. When your computer starts sending data to a server, it has no idea how fast the network between them can go. Is it a fast fibre line, or a weak mobile link? If it sent at full speed from the very start, and the link was slow, packets would pile up and be dropped, and everyone sharing that link would suffer. In the 1980s, that really happened. The early internet suffered congestion collapse. Traffic got so jammed that almost nothing got through. A researcher named Van Jacobson fixed it with rules that are still used today.
+
+One of those rules is slow start. TCP keeps a number called the congestion window, which is how much data it's allowed to have in flight, not yet acknowledged. It starts small. Today, typically about 10 packets, around 14 kilobytes.
+
+Each time an acknowledgement comes back, the window grows. In effect, it doubles with every round trip. 10 packets, then 20, then 40, then 80, and so on. Exponential growth.
+
+This continues until a packet is lost, which TCP takes as a sign that the network is full. Then it backs off, cutting its rate roughly in half, and from then on grows gently, one step at a time. A cycle of cautious increase and sharp decrease.
+
+Now, the consequence. Reaching a window of about a megabyte takes around six round trips. If each round trip is 100 milliseconds, that's over half a second before you're running at speed. For a small web page, the whole transfer may be over before the connection ever gets fast.
+
+That's why latency matters more than bandwidth for many websites. It's why CDNs put servers close to users, since shorter round trips mean faster ramp-ups. It's why connections are reused rather than reopened. And it's why newer algorithms, like BBR from Google, try to estimate the capacity instead of waiting for losses.
+
+Start gently, grow fast, back off hard. Those are the manners that keep the internet running.
+
+Slow on purpose. And that's how the network stays fast for everyone.

@@ -1,0 +1,17 @@
+Two servers can disagree about the time by a few milliseconds. And that tiny difference can silently delete your data. Here's how last write wins quietly loses writes.
+
+When several copies of data exist, and two clients change the same value at nearly the same time, the database needs a rule to decide the winner. The simplest one: attach a timestamp to every write, and when versions conflict, keep the one with the latest timestamp. Last write wins. It's simple, it needs no coordination, and it's the default in databases like Cassandra.
+
+But think about whose clock the timestamp comes from. Every server has its own, and no two clocks agree perfectly. Even with time synchronization, a difference of a few milliseconds, or tens of milliseconds, is normal. Sometimes it's far more.
+
+Here's a scenario. A user changes their email address on server A, whose clock runs a little fast. A moment later, they spot a typo, and fix it on server B, whose clock runs a little slow. The second write really is the later one. But its timestamp is earlier than the first. When the servers compare notes, they believe the first write came last. The correction is thrown away. The typo wins.
+
+No error message. No warning. The database did exactly what it promised. The write simply disappears.
+
+So how do systems avoid it?
+
+One way is to stop trusting wall clocks. Systems like Dynamo use version vectors, which track which version came from which, and keep both when they can't tell. Another way is to let conflicts be merged, as with CRDTs. Another is to use a consensus protocol, so that all writes go into one agreed order. And Google's Spanner goes as far as atomic clocks and GPS receivers, to bound the clock error.
+
+If you use last write wins, you're betting on clocks. And clocks lose that bet in silence.
+
+A few milliseconds. No error. And the data you cared about is gone.

@@ -1,0 +1,19 @@
+In 2003, a candidate in a Belgian election received 4,096 extra votes that nobody had cast. The most plausible explanation is a single particle from space, flipping a single bit in a computer's memory.
+
+It's May 2003, in the town of Schaerbeek, near Brussels. Belgium is using electronic voting machines. When the votes are counted, officials spot a problem. One candidate has received more votes than were even possible.
+
+The votes are checked by hand, and the correct number turns out to be 4,096 lower. Not 4,000. Not 4,100. Exactly 4,096. And that number is no accident. It's 2 to the power of 12.
+
+Here's why that matters. Computers store numbers in binary. In binary, each bit is worth twice the one before it. A number becomes exactly 4,096 bigger if one particular bit, the one worth 4,096, flips from zero to one. A single bit. That's all it takes.
+
+So what flipped it? Investigators couldn't prove it, but the most plausible explanation was a cosmic ray: a high-energy particle from space that struck the memory chip, and changed one bit. Engineers call it a single-event upset. Cosmic rays pass through us all the time. Most do nothing. But now and then, one hits a transistor in just the wrong way.
+
+And it's not only a story from Belgium. Google's study of memory in its own data centers found that memory errors were far more common than people had assumed. Not all from cosmic rays, but all of them single bits going wrong.
+
+This is why servers use ECC memory. ECC stands for error-correcting code. For every 64 bits of data, an ECC memory module stores 8 extra bits, calculated with a Hamming code. If one bit flips, the extra bits reveal which one, and the memory fixes it on the spot. If two flip, it detects the problem and raises an alarm.
+
+Your laptop probably doesn't have it. A server that handles bank balances, or votes, does.
+
+Space is a noisy place. And sometimes it leaks into the ballot box.
+
+One flipped bit. 4,096 phantom votes. And the reason servers pay for memory that checks itself.

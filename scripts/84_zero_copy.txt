@@ -1,0 +1,17 @@
+There's a way to send a file over the network without the file ever entering your program. Not even once. This is zero-copy, and it's one of the biggest speed-ups hiding inside a server.
+
+Let's see what normally happens. A program wants to send a file to a client. It calls read, then write. Here's the journey of the data. First, the disk, or the operating system's cache, copies the file into the kernel's memory. Then the kernel copies it into your program's memory. Then your program writes it out, and the kernel copies it again into a network buffer. Finally, the network card copies it out onto the wire. Four copies. And four switches between the kernel and your program.
+
+And what did your program do with the data in the middle? Nothing. It just carried it from one place to another.
+
+Zero-copy removes the detour. On Linux, a call named sendfile tells the kernel: take this file, and send it down this connection, directly. The data never goes up into your program. It travels from the cache straight toward the network card, with the card pulling it from memory itself. No copies by the processor, and far fewer switches.
+
+The effect is large. Less CPU, less memory traffic, more throughput. For a server whose job is to push data out, like a file server, a video streamer, or a message broker, that's most of the work.
+
+You'll find it in NGINX, which serves static files this way. In Kafka, which hands messages from the page cache to the network without copying them through Java. And Netflix has described serving hundreds of gigabits per second from a single server, using this kind of approach, along with encryption done in the kernel.
+
+The catch? If you need to look at or change the data on its way, you can't skip your program. Zero-copy only works when the server is acting as a courier.
+
+The fastest way to move data is to not touch it.
+
+Don't carry the box. Just point to where it should go.

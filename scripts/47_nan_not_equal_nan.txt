@@ -1,0 +1,15 @@
+In almost every programming language, there's a value that isn't equal to itself. It's called NaN, short for Not a Number. Ask whether NaN equals NaN, and the answer is false.
+
+First, where NaN comes from. Try to divide zero by zero, or take the square root of minus one in floating-point math, and the computer has no number to give you. Instead of crashing, it returns NaN. A placeholder that says: there's no valid answer here.
+
+Now why isn't it equal to itself? This is by design. It comes from the standard for decimal numbers in computers, IEEE 754, from 1985. The rule is that any comparison involving NaN is false. Equal? False. Greater? False. Less? False. The only one that's true is not equal.
+
+The reasoning is this. Two NaNs could come from totally different failures. One from zero divided by zero. One from the root of a negative. Saying they're equal would be claiming two unknown things are the same.
+
+And this gave programmers an odd trick. Before there was a built-in check, the way to test for NaN was to ask whether x is not equal to x. It's only true for NaN.
+
+But the strangeness doesn't stop there. In Python, if you put a NaN into a list and ask whether it's in the list, the answer can be true, if it's the very same object, because Python checks identity first. But with a different NaN created separately, the answer is false. In JavaScript, an array can find NaN with includes, but not with indexOf. NaN also breaks sorting, because comparisons all fail, and it makes dictionary lookups unreliable.
+
+One more oddity. A double-precision number has room for about 9 quadrillion different NaN patterns. JavaScript engines use that spare space to hide other data inside the NaN itself.
+
+The one value you can't compare to anything, including itself, is the one that means: something went wrong.

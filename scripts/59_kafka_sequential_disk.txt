@@ -1,0 +1,17 @@
+Kafka writes everything to disk, and it's still one of the fastest messaging systems in the world. That's because writing to a disk in order can be faster than reading from memory at random. Here's the trick.
+
+Most people think of disks as slow and memory as fast. And that's true for random access. A spinning hard disk has to physically move a read head to the right spot for each piece of data. That takes around 10 milliseconds each time. But once the head is in place, and you just keep reading or writing in a straight line, a disk can stream hundreds of megabytes per second.
+
+So the speed of a disk isn't one number. It depends on how you use it.
+
+The Kafka documentation gives an example. On a set of ordinary spinning disks, writing in a straight line reached around 600 megabytes per second. Writing to random places on the same disks managed only about a hundred thousand small writes per second. A difference of several thousand times.
+
+Kafka is designed around the fast way. Its core is a log, a file that you only ever add to the end of. Producers append messages. Consumers read from a position, called an offset, moving steadily forward. Nothing is edited in the middle. Nothing is searched at random.
+
+And it takes a few more steps to stay fast. It leaves caching to the operating system's page cache, instead of building its own. When a consumer asks for data that was just written, it's often already sitting in memory. It sends data from disk to the network without copying it through the application, a technique called zero-copy. And it batches many small messages together, and compresses them.
+
+Old data isn't deleted message by message. Whole old segments of the log are removed at once.
+
+The lesson is about working with the hardware. Pick an access pattern that the machine loves.
+
+Disks aren't slow. Random access is slow. Kafka just never asks for it.

@@ -1,0 +1,19 @@
+In March 2016, one developer deleted 11 lines of code, and thousands of software builds around the world broke. This is the left-pad story.
+
+Let's start with the code. Left-pad did one tiny job. Give it a piece of text and a length, and it adds spaces or zeros to the left until the text is that long. Turn 5 into 005. That's it. About 11 lines.
+
+It was published on npm, the giant public library where JavaScript developers share packages. Anyone can use a package with a single line. And thousands of other packages did.
+
+Here's what set it off. A developer named Azer Koçulu had published a small package called kik. A company with the same name, the messaging app Kik, asked him to give up the name. He refused. The company complained to npm, and npm sided with the company and handed over the name.
+
+Azer was furious. So he did the one thing he could do. He deleted all 273 of his packages from npm, including left-pad.
+
+And that was when the internet found out how much depended on it. Left-pad was used by packages that were used by other packages, and so on, many layers down. Among them were major tools like Babel and React-related builds. Within minutes, projects around the world began failing. The code they needed was simply gone.
+
+npm took an unusual step. Within a few hours, it restored the package. Then it changed its rules, so a package that others rely on can't just be pulled.
+
+The deeper lesson is about trust. Modern software isn't built, it's assembled. A typical project depends on hundreds of other packages, written by people the developer never met, and one missing link can bring down the chain.
+
+Left-pad's job was so simple that JavaScript later added the feature itself. It's now built into the language as padStart.
+
+Eleven lines. And a lesson about everything built on top of them.

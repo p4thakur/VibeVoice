@@ -1,0 +1,17 @@
+You can find the value of pi by throwing darts at a wall, with your eyes closed. This is called the Monte Carlo method, and it's how scientists solve problems that have no formula.
+
+Here's the setup. Draw a square. Inside it, draw a quarter of a circle, with its center in one corner and its edge touching the opposite sides. If the square's sides are one unit long, the quarter circle has an area of pi divided by 4. That's about 0.785.
+
+Now throw darts at random onto the square. Some land inside the curve, some outside. Count them. The share that lands inside should be close to the share of the area it covers, pi over 4.
+
+So multiply that share by 4. And you have an estimate of pi.
+
+Try it with a thousand darts, and you'll get something like 3.1. With a million, you'll typically land around 3.14. It's not exact, but it gets closer the more you throw.
+
+But it gets closer slowly. The error shrinks with the square root of the number of darts. To make it ten times more accurate, you need a hundred times as many darts. That's not an efficient way to find pi.
+
+So why is the method so important? Because the dart-throwing approach works even when no formula exists. It works for shapes with thousands of dimensions. It works for a messy physics simulation, or for pricing a complicated financial product, or for a computer playing the board game Go. You don't solve the problem. You simulate it many times, and look at the average.
+
+The method has a famous origin. In 1946, mathematician Stanislaw Ulam was recovering from an illness, and was playing solitaire. He wondered what the chance of winning was. It was too hard to calculate. But he could just play a hundred games and count. He told John von Neumann, who was working on nuclear physics, and they used it for the Manhattan Project. The code name came from the Monte Carlo casino, where Ulam's uncle used to gamble.
+
+When you can't calculate the answer, try it many times, and let randomness do the work.

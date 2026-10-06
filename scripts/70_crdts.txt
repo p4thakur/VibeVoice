@@ -1,0 +1,13 @@
+Two people edit the same document offline, on opposite sides of the world. When they reconnect, their changes merge perfectly, with no conflicts and no referee. That's the idea behind CRDTs.
+
+CRDT stands for conflict-free replicated data type. And the problem it solves is a hard one. When many copies of data can be changed independently, they drift apart. Then you have to merge them, and the question is: who wins? Normally that needs a central server, or a rule that throws something away.
+
+A CRDT is designed so that there's no conflict to resolve in the first place. Its merge operation has three properties. It's commutative, so order doesn't matter. It's associative, so grouping doesn't matter. And it's idempotent, so merging the same thing twice does no harm. If those three hold, then however the copies exchange their updates, in whatever order, even with repeats, they all end up in exactly the same state.
+
+Take the simplest example, a counter. Imagine two phones both counting likes while offline. If each kept a single number, merging would be a mess. So instead, each phone keeps a count for every phone. Phone A says: A has 3, B has 0. Phone B says: A has 0, B has 5. To merge, take the highest number for each phone. The total is the sum: 3 plus 5, which is 8. Merge again, or in any order, and it's still 8. Nothing is counted twice.
+
+Text editing is harder, but the idea is the same. Each character gets a unique ID, and a position defined relative to its neighbors. Edits become additions of uniquely identified items, which merge cleanly. Libraries like Yjs and Automerge do this, and tools like Figma use ideas from CRDTs for multiplayer editing.
+
+There are costs. Remembering all the extra information, including deleted items, can make the data grow. And an automatic merge doesn't always produce what both people meant.
+
+No server needed to decide. The math decides, so everyone agrees.

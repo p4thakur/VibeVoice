@@ -1,0 +1,17 @@
+In 2016, an army of hacked security cameras and baby monitors knocked Twitter, Netflix and Reddit offline. It was called Mirai, and it broke in using about 60 passwords.
+
+Mirai was a simple program. It scanned the internet, all day, looking for connected devices: cameras, video recorders, routers. For each one, it tried to log in. It didn't use any clever hacking. It just tried a short list of factory-default usernames and passwords. Admin and admin. Root and 12345.
+
+And it worked, over and over. Because so many people had plugged in a device and never changed the password. Each device it got into joined the botnet, hundreds of thousands of them. Owners never noticed. The camera still worked. It just also took orders.
+
+Then, on October 21, 2016, the army was told to attack. The target was Dyn, a company that runs DNS for much of the internet. DNS is the phone book. It turns names like twitter.com into the numbers a computer needs.
+
+The botnet flooded Dyn with traffic, reportedly over a terabit per second. And without the phone book, the sites weren't down. They were just unreachable. Twitter, Netflix, Reddit, Spotify, GitHub. For hours, much of the US East Coast couldn't reach them.
+
+It wasn't one big weapon. It was a million tiny ones, each one too small to matter on its own.
+
+A few weeks earlier, Mirai's source code had been leaked online. So anyone could build their own. The people behind the original were later caught, and pleaded guilty.
+
+But the problem hasn't gone. Billions of cheap connected devices are sold with weak passwords and no update system. And most of them are never touched again.
+
+The internet isn't only as strong as its biggest servers. It's as weak as its forgotten cameras.

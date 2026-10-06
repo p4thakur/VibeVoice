@@ -1,0 +1,19 @@
+A B-tree can find one row among a billion in about four steps. Four. Here's how a database does it, and why the tree is built so wide.
+
+First, why not a normal binary tree? A binary tree has two branches at every step. To find one item among a billion, you'd go through about 30 levels. And each level might be a separate read from disk. Thirty disk reads, at several milliseconds each. Far too slow.
+
+The key insight is that disks don't read single items. They read whole blocks, called pages, usually 4 to 16 kilobytes at a time. So reading a tiny node is a waste. You might as well fill the entire page with useful information.
+
+That's what a B-tree does. Each node is one page, and it holds hundreds of keys, along with pointers to the children below. A node with 500 keys has 500 children. So at every step, instead of choosing between two branches, you choose between five hundred.
+
+Do the arithmetic. One level covers 500 entries. Two levels cover 250,000. Three levels cover 125 million. And four levels cover about 62 billion. So a billion rows fit in a tree that's only about four levels deep.
+
+To find a row, the database reads the root page, picks the right child, reads that, and carries on down to the leaf. Four reads. And the top levels are used by every search, so they stay in memory. In practice, it's often just one or two actual disk reads.
+
+It also stays tidy as it grows. When a page fills up, it splits in two, and pushes a key up to its parent. The tree grows from the top, so all the leaves stay at the same depth. The search time is always predictable.
+
+This is the default index in Postgres, MySQL, and most other databases.
+
+It's the same idea as binary search, but with the branching widened to match how a disk really works.
+
+A billion rows. Four steps. Because the tree is wide, not deep.

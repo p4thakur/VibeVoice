@@ -1,0 +1,17 @@
+You could generate a billion UUIDs every second for about 85 years before you'd have even a 50 percent chance of a single duplicate. Here's why that works, and why people trust it.
+
+A UUID is a long ID that programs create on their own, with no central counter. The common kind, version 4, is 128 bits. But six of those bits are fixed, to mark the version. That leaves 122 random bits. So the number of possible UUIDs is 2 to the power of 122. That's about 5 followed by 36 zeros.
+
+Now, the birthday paradox from the earlier video. A collision doesn't need you to fill the whole space. It shows up around the square root of the number of possibilities. For 122 bits, that's about 2 to the power of 61. Around 2.7 quintillion UUIDs, and then the odds of a duplicate reach 50 percent.
+
+Put that into everyday terms. At a billion UUIDs per second, 2.7 quintillion takes about 85 years.
+
+And at smaller scales, it's even safer. If you generate a billion UUIDs, the chance of any duplicate is roughly one in ten quintillion. You're more likely to lose data to a hardware error, or a cosmic ray flipping a bit in memory.
+
+So why do real systems still sometimes see duplicates? Almost never because of the math. It's because the randomness wasn't random. A weak random number generator, a virtual machine cloned with the same seed, or a bug in how the ID is made. The math assumes real randomness. When that breaks, the guarantee breaks too.
+
+There's also a cost to random IDs. They arrive in no order, so databases that store them in a sorted index have to insert them all over the place, and that slows things down. That's why a newer version, UUID version 7, starts with a timestamp, so new IDs are roughly in order.
+
+UUIDs don't promise to be unique. They promise that a duplicate is so unlikely, it isn't worth worrying about.
+
+Uniqueness by probability. And the math is on your side.

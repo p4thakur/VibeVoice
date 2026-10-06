@@ -1,0 +1,19 @@
+There's a file called 42.zip. It's only 42 kilobytes, smaller than a photo. But if you unpack it completely, it becomes 4.5 petabytes. That's millions of gigabytes. This is the zip bomb.
+
+How does something that small get that big? With two tricks working together.
+
+The first trick is compression. When a file is full of repeating patterns, a zip file can describe it very briefly. A file made of nothing but zeros, for example, shrinks dramatically. The compression method zip uses can squeeze such a file by a factor of around a thousand.
+
+The second trick is nesting. A zip file can contain other zip files. And those can contain more zip files.
+
+Here's what 42.zip does. At the top, there are 16 zip files. Each of those contains 16 more zip files. Each of those contains 16 more. And so on, for five levels. At the very bottom, each one holds a single file of about 4.3 gigabytes, made of nothing but zeros.
+
+Do the multiplication. 16 to the power of 5 is about a million bottom-level files, each 4.3 gigabytes. That's roughly 4.5 petabytes.
+
+And that's the purpose. Security software, like antivirus programs and email scanners, tries to open zip files to look for threats. If it blindly unpacks everything, it runs out of disk space or memory, and crashes. The bomb doesn't hack anything. It just makes the scanner choke on its own diligence.
+
+The defense is a set of limits. Software should stop after a certain depth of nesting, a certain total size, or a suspicious compression ratio.
+
+In 2019, a researcher went further. He built zip bombs that don't need nesting at all. They use overlapping entries that all share the same compressed data. One of them is only 10 megabytes, and expands to hundreds of terabytes.
+
+Forty-two kilobytes. Four and a half petabytes. Nothing in it is dangerous, except the size of what's hidden inside.

@@ -1,0 +1,17 @@
+Git, the tool that almost every programmer in the world uses, was started by Linus Torvalds in April 2005. Within about 10 days, it was already managing the Linux kernel. Here's why he built it, and what makes it clever.
+
+Back then, the Linux kernel's thousands of contributors used a proprietary tool called BitKeeper. It was free for them, but under a special license. In 2005, that arrangement fell apart, after a dispute with a developer who had tried to understand how BitKeeper talked to its servers. The license was withdrawn.
+
+Linus looked at the other tools. He didn't like any. They were too slow for a project of that size. So he decided to write his own. He started on April 3rd. Within days, Git was managing its own code. And by the middle of April, it was handling a kernel release.
+
+What made it different was a few big ideas.
+
+First, snapshots, not changes. Where older tools stored a list of differences between versions, Git stores a full picture of your project at each commit.
+
+Second, everything is named by its content. Every file and every commit gets an ID that is a hash of what's inside. Change one byte, and the ID changes. And since each commit contains the ID of the one before it, changing anything in the past would change every ID after it. That makes the history practically impossible to rewrite quietly. It's the same idea as the Merkle tree from before.
+
+Third, it's distributed. Everyone has a full copy of the history. Branching and merging are cheap, and most things happen instantly, with no server needed.
+
+And the name? Git is British slang for an unpleasant person. Linus joked that he names all his projects after himself.
+
+Ten days of work. And twenty years of every developer's day.

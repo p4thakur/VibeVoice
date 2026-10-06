@@ -1,0 +1,21 @@
+In 2016, Stack Overflow went down for 34 minutes because of one post full of blank spaces, and one regular expression that tried to clean them up. This is how a tiny pattern can freeze a whole website.
+
+On July 20, 2016, someone posted a question on Stack Overflow. It looked harmless. But it contained a strange thing: about 20,000 whitespace characters in a row, followed by a normal character.
+
+When that post appeared on the home page, the servers began to freeze. CPU usage shot to 100 percent. And the site went down.
+
+The cause was a regular expression, a pattern that matches text. Stack Overflow used one to trim whitespace from the start and end of posts. It looked simple, something like: whitespace at the beginning, or whitespace at the end.
+
+Here's the trouble. To check for whitespace at the end, the engine starts at the first space and tries to match as many spaces as possible. It reaches the end of the spaces, but the next character isn't the end of the text, so the match fails. So it backs up one space and tries again. Fails. Backs up again. Fails.
+
+And then it starts the whole thing over from the second space. Then the third.
+
+For a run of 20,000 spaces, that's around 200 million steps, just to process one post. And every time someone loaded the page, it happened again, on every server.
+
+This is called catastrophic backtracking. The same kind of bug brought down parts of Cloudflare in 2019.
+
+The fix was to remove the post, and to replace the pattern with a simple string trim that only looks at each character once.
+
+There are two lessons. First, a regular expression is a program, with its own speed, and its own way to blow up. And second, never run a pattern on text that strangers control, unless you know how long it can take.
+
+Twenty thousand spaces. Thirty-four minutes. And nothing in the logs but silence.
