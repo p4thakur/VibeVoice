@@ -1,0 +1,17 @@
+Postgres will shut your database down on purpose, to stop it from quietly losing your data. It happens when a 32-bit counter runs out of room. It's called transaction ID wraparound, and it has taken production systems offline, Mailchimp's Mandrill among them.
+
+Start with how Postgres decides who can see what. Every transaction gets an ID, a 32-bit number that only counts up. Every row version stores the ID of the transaction that created it, in a hidden column called xmin. When you run a query, Postgres asks of each row: was xmin committed before my transaction started? If yes, you see it. If no, you don't.
+
+Now the catch. 32 bits gives about 4.3 billion numbers, but Postgres can't treat them as a straight line, because the counter eventually runs out. So it treats them as a circle. For any transaction ID, the 2.1 billion IDs behind it count as the past, and the 2.1 billion ahead of it count as the future. That's the whole visibility window: 2 to the power of 31.
+
+So picture a row written at transaction 100, and never touched again. The counter climbs. At 5,000 transactions a second, that's about 430 million a day, so in five days it passes 2.1 billion. And at that moment, transaction 100 flips from the past to the future. The row is still on disk. Nothing deleted it. It's just invisible. Your oldest data disappears from every query.
+
+The fix is called freezing. Vacuum walks the table and stamps old row versions with a flag that means, visible to everyone, forever, ignore xmin. A frozen row is outside the circle. Autovacuum starts an aggressive freezing pass once a table's oldest unfrozen ID is 200 million transactions old. That's the default, and it leaves nearly 2 billion of safety margin.
+
+So how does it still go wrong? Freezing has to read every page that isn't already marked all-frozen. On a multi-terabyte table, that's hours of disk reads, competing with your live traffic. And vacuum can't freeze anything newer than the oldest open transaction. One forgotten transaction, one abandoned replication slot, one stuck prepared transaction, and the freeze point stops moving while the counter keeps running.
+
+Postgres defends itself in stages. When about 40 million transaction IDs remain, it starts warning in the logs. At about 3 million remaining, it refuses all new write transactions, with an error saying it's not accepting commands to avoid wraparound data loss. The only way out is running vacuum in single-user mode, with your application down, while it chews through the whole table.
+
+That shutdown is the right call. A database that's down is a bad day. A database that silently hides rows is a disaster you find out about later.
+
+The check takes ten seconds. Run age of datfrozenxid on your databases. The limit is 2.1 billion. If yours is past a billion, find out what's holding vacuum back, before the counter does it for you.

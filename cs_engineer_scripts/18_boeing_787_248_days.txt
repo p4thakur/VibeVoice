@@ -1,0 +1,11 @@
+In 2015, the FAA told every airline flying the Boeing 787 Dreamliner to do something absurd: turn the plane completely off and on again before it had been powered up for 248 days straight. Not for comfort. Because on day 249, the jet could lose all its electrical power in mid-air. And the reason it's exactly 248 days is a number you can work out on a napkin.
+
+Start with what's failing. The 787 has units called generator control units, GCUs, that manage the electrical power coming from the engines' generators. There are several, and together they keep the plane's AC electrical system alive. Inside each one, the software keeps a counter that ticks up as the unit runs, measuring how long it's been powered on.
+
+Now the arithmetic, and this is the whole story. That counter almost certainly counts in hundredths of a second, and stores the count in a signed 32-bit integer. We've met that type before: it maxes out at 2,147,483,647, about 2.1 billion. So ask how long it takes to count 2.1 billion hundredths of a second. Divide 2,147,483,647 by 100, and you get the number of seconds: about 21.5 million. Divide that by 86,400, the number of seconds in a day, and you get 248.55 days. There it is. 248 days isn't a safety margin someone chose. It's the exact moment that counter hits its ceiling.
+
+And when it overflows, the counter doesn't gently wrap. The number flips to a huge negative value, the software's sense of elapsed time becomes nonsense, and the GCU does the only safe thing it knows when its own state looks corrupt: it drops into failsafe mode and takes itself offline. The danger is that all the units power on together, when the plane is first energized, so they all count in lockstep, and they'd all hit 248 days at the same instant. Every generator control unit failsafes at once. The plane loses AC power. The FAA's own directive called the possible result loss of control of the airplane.
+
+The fix in 2015 was the one every programmer has typed in frustration: turn it off and on again. Power-cycling resets the counter to zero, and the clock starts its 248-day climb over. Boeing then issued a real software fix. But sit with the fact that a brand-new, fly-by-wire airliner shipped with a bug whose official workaround was rebooting it every few months.
+
+248 days. One 32-bit counter. And an airliner with a reboot schedule.

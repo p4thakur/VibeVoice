@@ -1,0 +1,19 @@
+Amazon built Dynamo around one rule: the shopping cart must always accept writes. Not "usually." Always. This is the story of what that rule cost them, and the mechanism they invented to pay for it.
+
+It started with holiday-season outages. A cart that fails to load or save is a lost sale, and every second of downtime has a direct dollar cost. The standard database setup at the time was a primary with strict consistency. When the network splits and the primary can't reach its replicas, a strict system refuses writes, because accepting them could create conflicting data. For a bank, that's right. For a shopping cart, it's the wrong tradeoff. A customer adding a book to a cart during a network hiccup would rather have the book in the cart twice than get an error page.
+
+So Dynamo flips it. It's built to accept writes no matter what, and to sort out conflicts later. Here's how.
+
+The data is spread across nodes with consistent hashing. Each key, like a cart ID, is hashed to a spot on a ring, and stored on the next three nodes clockwise. A write goes to those three replicas, and it counts as successful once two of them confirm. A read asks three and needs two answers. With 3 replicas, write quorum 2 and read quorum 2, any read overlaps with the last write on at least one node.
+
+But in a partition, even that can fail. So Dynamo uses a sloppy quorum: if one of the three replicas is unreachable, the write goes to the next healthy node on the ring instead, with a hint saying "this belongs to the other node, hand it back when it recovers." That's hinted handoff. The write still succeeds.
+
+Now the consequence. Two people on the same account, say a laptop and a phone, might write to the cart on two sides of a partition. Now there are two versions of the cart, and neither is the latest. How does Dynamo tell this from an ordinary update? Vector clocks.
+
+A vector clock is a list of pairs: node and counter. Say node X handles the first write, giving the cart clock X1. X handles another, X2. Now a partition. The laptop's update goes through node Y, which produces X2, Y1. The phone's update goes through Z, producing X2, Z1. Compare them. Neither has all the counters of the other, Y1 is missing from one, Z1 from the other, so neither descends from the other. They're concurrent. Dynamo can't pick a winner, so it keeps both.
+
+The next read returns both versions, and the application decides. For the cart, the logic is a merge: take the union of the items. The merged cart gets a clock of X2, Y1, Z1, and gets written back.
+
+The cost is real. Merging by union means a deleted item can come back. Remove something on one side, it's still in the other, and the union brings it back. Amazon accepted that. A reappearing book is better than a lost cart. In the paper, they report that 99.94 percent of reads saw a single version, so conflicts were rare in practice.
+
+One rule: always accept the write. Everything else, the ring, the sloppy quorum, hinted handoff, vector clocks, exists to make that rule work and to clean up afterward.

@@ -1,0 +1,17 @@
+I can find any person on Earth in just 33 guesses. This is binary search, and the reason it works is not a trick. It's a hard limit on how much a single question can tell you.
+
+Here's the setup. Line up all 8 billion people in some fixed order, say sorted by a unique ID number. I'm thinking of one of them. You ask yes or no questions. The best question is: is their number in the first half? Whatever the answer, you throw away 4 billion people. Ask again on the half that's left, and 2 billion are gone. Then 1 billion, 500 million, 250 million. After 33 questions, you're down to one person.
+
+The math is just halving. 2 to the power of 33 is 8.59 billion, which is more than the number of people alive. So 33 halvings is enough to get from everyone to one.
+
+Now, why can't you do better? Because one yes or no answer carries at most one bit of information. To single out one person from 8 billion, you need log base 2 of 8 billion bits, which is 32.9. Round up and that's 33. This is a lower bound, not a technique. No algorithm that asks yes or no questions can beat it. Binary search isn't clever. It's the best any algorithm can possibly do.
+
+In code, it's the same loop. You keep two pointers, low and high. Look at the middle element. If it's too small, move low above the middle. If it's too big, move high below it. Each step cuts the range in half. A sorted array of a million elements takes at most 20 steps. A billion takes 30. Linear search on a billion takes up to a billion.
+
+And the one requirement is that the data must be sorted. That's what lets one comparison eliminate half. Sort costs n log n once. If you search many times, you pay it back fast.
+
+Now the part engineers love. Binary search is famous for being almost impossible to write correctly. The classic line is middle equals low plus high, divided by two. It looks fine. But with 32-bit integers, if low and high are both above a billion, adding them overflows past 2.1 billion and goes negative. The array index becomes negative and the program crashes. This bug sat in textbooks for decades. It was in Java's standard library until 2006, when Google engineer Joshua Bloch found it. The fix: middle equals low plus half the gap between high and low. Same math, no overflow.
+
+Binary search is also hiding in places you wouldn't expect. git bisect uses it: 1,000 commits between a good version and a broken one means you test about 10 builds to find the bad commit. Database indexes use a version of it. A B-tree is binary search with hundreds of branches per node, because each step on disk is expensive, so you want to eliminate far more than half per read.
+
+33 guesses for 8 billion people. And 10 builds for 1,000 commits. Every question cuts the problem in half, and that's the most any question can do.

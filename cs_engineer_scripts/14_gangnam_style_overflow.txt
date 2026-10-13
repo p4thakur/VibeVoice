@@ -1,0 +1,15 @@
+In 2014, one music video broke YouTube's view counter. Not metaphorically. The number physically ran out of room. The video was Gangnam Style, and the reason it happened is sitting inside almost every program you've ever used.
+
+Here's the setup. When a program stores a whole number, it doesn't get infinite space. It reserves a fixed number of bits, and the most common choice for decades was 32 bits. Now, one of those 32 bits is spent on the sign, plus or minus, which leaves 31 bits for the actual size. The largest positive number 31 bits can hold is 2 to the power of 31, minus 1. Work that out and it's exactly 2,147,483,647. About 2.1 billion. That specific number, 2.1 billion, is a landmark every engineer should recognize on sight, because it's the ceiling of a signed 32-bit integer.
+
+YouTube's view count was stored that way. For years it was fine, because no video had been watched two billion times. Then Gangnam Style kept climbing, and in late 2014 it approached 2,147,483,647 views. One more view, and the counter had nowhere to go.
+
+So what actually happens when you add one to the maximum? The bits all roll over, like a car odometer flipping from 999999 to 000000, except because the top bit is the sign bit, the number doesn't wrap to zero. It wraps to the largest negative number, around minus 2.1 billion. This is called integer overflow, and it's not an error the program notices. The math just silently gives a wrong, often negative, answer. That's what makes it dangerous: nothing crashes, nothing warns you, the number simply becomes nonsense.
+
+YouTube handled it with humor, posting that the count had exceeded a 32-bit integer, and they upgraded the counter to 64 bits. And that upgrade is the real lesson in scale. Going from 32 to 64 bits doesn't double the ceiling, it squares it. A signed 64-bit integer holds up to about 9.2 quintillion, which is 9.2 followed by 18 zeros. If every human alive watched a video a billion times each, you still wouldn't get close. That's why 64-bit is now the default for anything that counts real-world things.
+
+This same overflow isn't a cute one-off. It's the mechanism behind some of the worst failures in computing: a rocket, a missile defense system, an airliner, all brought down by a number that got one tick too big. Gangnam Style is just the friendliest version, the one where nobody got hurt and the fix was a punchline.
+
+So when you pick the type for a counter, an ID, a balance, ask the question YouTube got to answer in public: what happens at 2.1 billion? Because that day arrives faster than you think.
+
+Two billion views. One tiny sign bit. And the number that was too big to count.

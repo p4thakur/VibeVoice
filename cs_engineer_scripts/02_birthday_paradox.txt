@@ -1,0 +1,19 @@
+Put 23 people in a room and there's a better than 50 percent chance two of them share a birthday. That's the birthday paradox, and it's the reason hash collisions arrive far sooner than anyone expects, and why attackers can break hashes that look unbreakable.
+
+Why does that feel wrong? Because we think about it from our own side: what's the chance someone shares my birthday? That one is small. But the room isn't asking about you. It's asking whether any pair matches. And the number of pairs grows much faster than the number of people.
+
+Count them. With 23 people, the number of pairs is 23 times 22, divided by 2, which is 253. Each pair has a 1 in 365 chance of matching. So the expected number of matches is 253 over 365, about 0.69. Turn that into a probability and you get roughly 50 percent. People grow linearly, pairs grow with the square.
+
+You can also do it exactly. The chance that nobody matches is 365 over 365, times 364 over 365, times 363 over 365, and so on for 23 terms. That multiplies out to about 0.49. So the chance of at least one match is 0.51.
+
+The general rule: if there are N possible values, you expect a collision after about 1.18 times the square root of N items. For birthdays, that's 1.18 times 19, about 23.
+
+Now swap birthdays for hash values. A 32-bit hash has 4.3 billion possible outputs. The square root of that is 65,536. So after about 77,000 items, there's a 50 percent chance two of them hash to the same value. Not 2 billion items. 77,000. If you use a 32-bit hash for a table of 100,000 keys, collisions are close to certain.
+
+Same pattern for bigger hashes. A 64-bit hash gives you collisions around 5 billion items. A 128-bit hash, about 2 to the 64. Always half the bits. A hash with n bits only gives you n over 2 bits of collision resistance.
+
+This is why attackers use it. They don't look for a file matching one specific hash, which would take 2 to the n tries. They create two documents, one harmless and one malicious, and make millions of tiny variants of each, searching for any pair with the same hash. That takes only 2 to the n over 2. You get someone to sign the harmless one, and the signature is also valid for the malicious one.
+
+This is exactly how SHA-1 fell. In 2017, Google and CWI Amsterdam produced two different PDFs with the same SHA-1 hash. Brute force would have taken 2 to the 80. They did it in about 2 to the 63, thanks to cryptanalysis, and it cost thousands of CPU years. That was cheap enough for a research team, and the industry moved on from SHA-1.
+
+23 people. 253 pairs. And a 128-bit hash really gives you 64 bits of safety. When you count pairs instead of people, the numbers stop feeling like a paradox.

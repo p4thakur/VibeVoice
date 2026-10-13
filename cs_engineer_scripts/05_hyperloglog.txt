@@ -1,0 +1,21 @@
+How many unique visitors did your site get today? Counting exactly takes gigabytes. HyperLogLog does it in 12 kilobytes, with an error under one percent. It works by watching coin flips, and the trick behind it is one of the best in computer science.
+
+First, why exact counting is expensive. To count unique users, you have to remember every ID you've seen, otherwise you can't tell whether a new one is a repeat. A billion unique 16-byte IDs means 16 GB of memory, just for one counter. Now do it per page, per day, per country. It doesn't scale.
+
+HyperLogLog starts from a different question. Forget the IDs. What if you only remember one thing: the rarest pattern you've seen?
+
+Here's the idea. Run each ID through a hash function so the output looks like random bits. Now look at the leading zeros. Half of all hashes start with a zero. A quarter start with two zeros. One in eight start with three. The chance of seeing k leading zeros is 1 over 2 to the k. It's just coin flips: the chance of k heads in a row.
+
+Run this backwards. If the longest run of leading zeros you've ever seen is 20, then you probably looked at about 2 to the 20, around a million, different items. Because a run that long only shows up once in a million tries. You don't need to store anything except that one number, 20. Which takes 5 bits.
+
+But there's a problem. One lucky hash, one 20-zero run in your first ten items, throws the estimate off by a factor of 100,000. A single measurement is too noisy.
+
+The fix is to average many measurements. Take the first 14 bits of the hash and use them to pick one of 16,384 buckets, called registers. The remaining bits are used to count leading zeros, and each register keeps only the maximum it's ever seen. So every item lands in exactly one register, and each register is its own small estimator.
+
+To combine them, you can't use a normal average, since a single huge value would dominate. HyperLogLog uses a harmonic mean, which gives outliers very little weight. The estimate comes from a formula over the registers. The accuracy follows a known rule: standard error is 1.04 divided by the square root of the number of registers. With 16,384 registers, that's 1.04 over 128, or about 0.81 percent.
+
+And the memory: 16,384 registers at 6 bits each is 12 KB. That's the same 12 KB whether you count a thousand or a billion items. This is what Redis uses for PFADD and PFCOUNT.
+
+Because each register just stores a maximum, merging two counters is trivial: take the larger value in each register. That gives you the count of the union, exactly as if you'd seen both streams together. So you can count per server, per hour, and combine later, with no double counting.
+
+You give up exactness, and about one percent of accuracy. In return, a billion unique items fits in 12 KB, can be merged for free, and never grows.

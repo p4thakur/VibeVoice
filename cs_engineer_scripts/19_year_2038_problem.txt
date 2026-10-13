@@ -1,0 +1,15 @@
+On January 19th, 2038, at 14 minutes and 7 seconds past 3 in the morning, a huge number of computers around the world will think it's suddenly 1901. It's called the Year 2038 problem, and it's the same bug that haunted Y2K, except this one is built into the very foundation of how most computers keep time.
+
+Here's how computers tell the time. They don't store "Tuesday, 3pm." They store a single number: the count of seconds that have passed since a fixed starting point, midnight on January 1st, 1970, called the Unix epoch. Every timestamp, every file date, every "token expires in one hour," is really just arithmetic on that one growing number of seconds.
+
+For decades, that number was stored in a signed 32-bit integer. And you now know that type's ceiling by heart: 2,147,483,647. So the clock can count seconds up to 2,147,483,647, and no further. Count that many seconds forward from the start of 1970, and you land on precisely January 19th, 2038, at 03:14:07 in the morning, UTC. That's not an estimate. It's the exact second the counter runs out of room.
+
+What happens next is the dangerous part, and it's why this matters more than a clock showing the wrong date. When you add one second to the maximum, the signed integer overflows and flips to its most negative value, about minus 2.1 billion. The computer now reads the time as 2.1 billion seconds before 1970, which is December 13th, 1901. In an instant, time doesn't just stop, it runs violently backwards by 137 years.
+
+And think about what software does with time. A certificate that's valid "until next year" is now valid until 1901, so it looks expired, or looks like it hasn't started yet. A system that schedules a task "one second from now" is told the deadline was over a century ago, so it either fires instantly, forever, or never fires at all. Backups, billing, anything that compares two timestamps and asks which came first, gets the wrong answer. It's not a cosmetic glitch. It's every time-based decision in the system, poisoned at once.
+
+The fix is to store time in a 64-bit integer instead of 32. And the headroom that buys is almost comic. A signed 64-bit second counter doesn't run out in 2038, or in 3000. It runs out about 292 billion years from now, which is roughly twenty times the current age of the universe. Modern 64-bit systems have largely moved over already. The real worry is the long tail: embedded chips in cars, routers, industrial controllers, medical devices, things with 20-year lifespans and 32-bit clocks, quietly running in places no one will think to update.
+
+This is why Y2K wasn't a hoax just because nothing dramatic happened. It was the practice run. Thousands of engineers found and fixed the date bugs before the deadline, so the day passed quietly, and people mistook the quiet for a problem that was never real. 2038 is the sequel, and the work to defuse it is happening now, in exactly the same quiet way.
+
+One number, counting seconds since 1970. 2.1 billion of them, and then time falls off a cliff.

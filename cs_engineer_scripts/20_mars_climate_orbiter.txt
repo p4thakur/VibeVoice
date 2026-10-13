@@ -1,0 +1,13 @@
+In 1999, NASA flew a spacecraft 200 million kilometers to Mars, and lost it at the final step, because two teams used two different units and never checked. One wrote numbers in pounds. The other read them as newtons. The gap between those two words was a 327 million dollar spacecraft. This is the Mars Climate Orbiter.
+
+Here's the mission. The orbiter is meant to slip into orbit around Mars and study its climate. To get there, the navigators on the ground constantly make tiny corrections, firing small thrusters to nudge the craft onto the right path. Over months, these little nudges add up to the difference between a clean arrival and a crash.
+
+Now the mechanism of the failure, which is almost painfully simple. The craft's thrusters were controlled by software written by Lockheed Martin. Each time a thruster fired, that software reported back how much push it had delivered, a quantity called impulse. Lockheed's software reported that number in pound-force seconds, an imperial unit. On the ground, NASA's navigation software took those numbers and fed them into its model of the spacecraft's motion. But NASA's software expected the numbers in newton-seconds, the metric unit.
+
+A pound-force is about 4.45 newtons. So every single thruster report was being read as if it were about four and a half times smaller than it really was. The navigation model thought the craft was being nudged gently, when in fact it was being pushed four and a half times harder. There was no overflow, no crash, no corrupted data. Every number was perfectly valid. It just meant something different to the program that wrote it than to the program that read it.
+
+Over the long cruise to Mars, that steady four-and-a-half-times error accumulated, bending the computed path away from the real one, a little more with every correction. By the time the orbiter reached Mars, the two were far apart. The plan was to pass about 226 kilometers above the surface. Instead, the craft came in at roughly 57 kilometers, deep into the Martian atmosphere, far lower than it was built to survive. It either burned up or was torn apart. Either way, it was never heard from again.
+
+This is why serious engineers put the unit in the variable name, like durationMillis or priceInCents, and why good APIs state their units in the contract and never leave them to be guessed. The computer will never catch this mistake for you, because to the computer, nothing is wrong. The number fit. The types matched. Only the meaning was lost.
+
+Two hundred million kilometers, flown perfectly. 57 kilometers, at the wrong altitude. And a spacecraft lost to the difference between a pound and a newton.

@@ -1,0 +1,13 @@
+Pac-Man has a secret ending. Not a boss, not a dragon. Reach level 256 and the right half of the screen dissolves into a wall of garbage, and the game becomes unplayable. It's called the kill screen, and it's a perfect, tiny lesson in how counting in a fixed number of bits goes wrong.
+
+Here's the background. The original 1980 Pac-Man was never meant to end. There's no level 256 anyone designed. The arcade machine just kept raising the difficulty forever, or so the programmers thought. But the game tracks which level you're on, and it stores that level number in a single byte.
+
+A byte is eight bits. Eight bits can hold the values 0 through 255. That's 256 different values, and not one more. It's the same ceiling as the YouTube counter, just much lower: 2 to the power of 8 instead of 2 to the 31.
+
+Now, the specific bug. At the bottom of the Pac-Man screen, the game draws little fruit icons to show your level, the cherry, the strawberry, and so on. To draw them, there's a routine that works out how many fruit to show based on the current level number. On normal levels it draws a small, sensible number. But on level 256, the level byte has rolled over, and the arithmetic in that drawing routine goes haywire. Instead of drawing a handful of fruit, it tries to draw 256 of them.
+
+And here's why that wrecks the screen. The game only has room for a few fruit. When the routine tries to write 256 of them, it runs off the end of the space reserved for the bottom bar and keeps writing into the next chunk of memory, which happens to be the data for the right half of the maze. The game faithfully draws whatever bytes are now sitting there, which is meaningless, so half the screen fills with random tiles and letters and numbers. The dots you need to finish the level are buried in the mess, so the board can never be cleared. The game is, truly, over.
+
+This is the same family of bug as an integer overflow, with an extra twist that makes it worse: a buffer overflow. The count overflowed, and then the program used that bad count to write past the end of a buffer, into memory that belonged to something else. That second part, writing outside the space you reserved, is the root of a huge fraction of real security vulnerabilities to this day. An attacker who can make a program write past a buffer can often take the whole machine.
+
+Level 255, a normal game. Level 256, the machine eats itself. One byte, and the end of a game that was supposed to last forever.

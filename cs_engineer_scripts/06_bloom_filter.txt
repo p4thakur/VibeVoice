@@ -1,0 +1,19 @@
+A data structure can tell you, in a few bits, whether it has definitely never seen something, using less than a byte per item, and it's the reason your browser can check a web address against a billion dangerous sites without storing a single one of them. It's called a Bloom filter, and the catch in that sentence, the word "definitely," is the whole trick.
+
+Here's the problem it solves. Say you have a billion items, URLs, usernames, cached keys, and for each new thing that comes in you need to ask, have I seen this before? The obvious answer is a hash set: store every item, look it up. But storing a billion URLs is tens of gigabytes. What if you only need to catch the common case fast, the case where the answer is no, I've never seen it?
+
+A Bloom filter is just a big array of bits, all starting at zero, say ten billion of them, which is only about 1.2 gigabytes. Plus a handful of hash functions, say seven of them, each of which turns an item into a position in that bit array.
+
+To add an item, you run it through all seven hash functions, get seven positions, and set those seven bits to one. That's it. You never store the item itself, just flip seven bits. Add another item, flip its seven bits, and some may overlap with the first. The array slowly fills with ones.
+
+To check if an item is present, you hash it the same way, get its seven positions, and look. If any one of those seven bits is still zero, then this item was definitely never added, because adding it would have set that bit. That's a guaranteed no. A true negative, every time, with certainty.
+
+But here's the catch that makes it magic and dangerous at once. If all seven bits are one, the filter says probably yes, and it might be wrong. Those seven bits could all have been set by other items that happened to overlap. That's a false positive: the filter says "maybe seen" for something it never saw. What it can never do is the opposite. It never says no to something that's actually there. So Bloom filters have false positives, but never false negatives.
+
+And that one-sided error is exactly why it's useful, because you can design systems where a false positive is cheap and a miss is expensive. Your browser's safe-browsing check is the classic case. The Bloom filter holds every known dangerous site. For the billions of safe URLs you visit, the filter instantly says no, not dangerous, go. Only on a probably-yes, which is rare, does the browser do the expensive thing: ask the server to confirm. The filter turns a billion expensive lookups into a handful.
+
+The math is tunable and worth knowing. The false-positive rate depends on three things: how big the bit array is, how many hash functions you use, and how many items you've added. More bits, fewer false positives. The sweet spot is about 10 bits per item for a 1 percent false-positive rate, and that cost does not depend on how big each item is, a 2,000-character URL still costs about 10 bits. That's the headline: constant space per item, no matter the item's size.
+
+The tradeoffs are real and they all come from the same design. You can't delete an item, because clearing its bits might clear a bit another item relies on. You can't list what's inside, because the items were never stored. And the filter only gets more crowded over time, so the false-positive rate climbs as you add more than you planned for. Databases like Cassandra put a Bloom filter in front of each data file on disk to answer "is this key definitely not in this file?" and skip a disk read for most files. Same idea, same payoff.
+
+Definitely no, or probably yes. Give up the ability to ever say a certain yes, and you can answer a billion questions in a gigabyte.

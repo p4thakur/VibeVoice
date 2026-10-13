@@ -1,0 +1,15 @@
+On February 25th, 1991, a Patriot missile battery in Dhahran, Saudi Arabia, failed to fire at an incoming Scud. The Scud hit an army barracks and killed 28 people. The battery wasn't broken. It had simply been switched on for too long, and a rounding error the size of a third of a second had drifted its clock out of reality.
+
+To see how, you need one fact about how computers store fractions. The Patriot tracked time by counting in tenths of a second: every tenth, a counter ticked up by one. To turn that count into seconds, it multiplied by one tenth. And here is the trap. One tenth, 0.1, looks clean to us in decimal. But computers work in binary, and in binary one tenth is a number that never ends. It's 0.0001100110011001100... repeating forever, the same way one third is 0.3333... forever in decimal.
+
+The Patriot stored that value in a 24-bit register. Twenty-four bits is all the room it had, so it had to chop the endless binary expansion off after 24 digits. That chopped-off remainder, the tiny piece it threw away, was about 0.0000000954 in decimal. Almost nothing. On a single tick, utterly harmless.
+
+But watch what "almost nothing" does when you multiply it by a big number. The battery in Dhahran had been running continuously for about 100 hours. That's 100 hours of ticks, each one carrying that microscopic error, and the errors add up. After 100 hours, the system's idea of the current time was off by about 0.34 seconds. A third of a second. Still sounds trivial, until you remember what the system does with time.
+
+A Patriot defends by predicting where the incoming missile will be next. It sees the Scud on radar, notes the time, and calculates a box of sky to look in a moment later. A Scud travels at about 1,676 meters per second. Multiply that speed by the 0.34-second time error, and the predicted position is wrong by about 570 meters. The system aimed its radar at a patch of sky more than half a kilometer away from where the Scud actually was, found nothing there, and concluded the radar blip wasn't a real threat. It never fired.
+
+The bitter detail is that the army already knew long uptimes caused drift, and the advice was to reboot the systems regularly. A software fix was also on its way. It arrived in Dhahran the day after the strike.
+
+And here is the thing to carry out of it: floating point and fixed point numbers are approximations, and small approximation errors accumulate. A value you can safely ignore once becomes a disaster when it's multiplied by a million iterations, or by 100 hours of runtime. This is exactly why you never compare two decimals for exact equality in code, and why money is counted in whole cents, not dollars-and-fractions. The error isn't in any one calculation. It's in the sum of a billion of them.
+
+A third of a second of drift. Half a kilometer of empty sky. And a rounding error that most of the time you'd never even notice.

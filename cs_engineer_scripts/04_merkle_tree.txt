@@ -1,0 +1,17 @@
+Two servers each hold a billion records. Somewhere, a few of them don't match. How do you find exactly which ones, without sending a billion records across the network? The answer is a Merkle tree, and it finds a single bad record in about 30 comparisons.
+
+The problem is real. In databases like Cassandra and Dynamo, every record is stored on several replicas. Over time, replicas drift apart. A node was down during a write. A message got lost. A disk was replaced. Anti-entropy repair is the job that finds and fixes these differences. The naive way is to send every key and value from one node to the other and compare. For a billion records, that's terabytes of traffic. Even sending just a hash of each record, that's 32 GB per comparison.
+
+A Merkle tree gets around this by hashing hierarchically. Take the records in key order. Hash each one. That's the bottom layer, the leaves. Now take two neighboring hashes, join them, and hash the result. That's one level up. Keep going: hash pairs of hashes, until there's one hash at the top, the root. The root is a fingerprint of everything underneath.
+
+Here's the property that makes it work. Change a single bit anywhere in the data, and the leaf hash changes. That changes its parent, and its grandparent, all the way up. So the root changes. If two roots are equal, the datasets are identical. One comparison of 32 bytes.
+
+If the roots differ, you compare the two children. One side will match, the other won't. Follow the one that doesn't. Compare its two children. And repeat. Each step eliminates half the data, the same logic as binary search.
+
+The depth for a billion leaves is about 30, since 2 to the 30 is a bit over a billion. So finding one differing record takes about 30 levels, with two hashes compared at each, around 60 hash comparisons instead of a billion record comparisons.
+
+In real systems there's a tradeoff. Cassandra builds its tree with a fixed maximum depth, 15 levels, giving about 32,000 leaves. Each leaf then covers a whole range of keys, maybe tens of thousands of rows. If any row in that range differs, the whole range gets streamed. It keeps the tree small enough to send over the network, at the cost of sometimes repairing more data than necessary. And building the tree isn't free: each node has to read all the data in the range to compute hashes, which is why repair is known for being heavy on disk.
+
+Git uses the same idea. A directory's hash comes from its files' hashes, so a commit hash identifies the whole project. Bitcoin uses it in each block: the block header holds the Merkle root of all transactions. To prove a transaction is in a block, you only need the hashes along the path, about 12 hashes, or 384 bytes, for a block with 4,000 transactions.
+
+A fingerprint of a fingerprint of a fingerprint. Compare one number at the top, and if it differs, walk down to the exact record that's wrong.
