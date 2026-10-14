@@ -1,0 +1,11 @@
+Payment timeout ho gaya. User ne retry kiya. Aur paisa 2 baar debit ho gaya. Interview mein poochte hain: yeh kaise rokoge? Zyadatar log bolte hain idempotency key. Lekin yeh sirf half answer hai.
+
+Pehle retry wala case. Client har payment ke liye ek UUID bhejta hai, yaani idempotency key. Ab is key ko Redis mein mat rakho. Redis restart hua ya key expire hui, toh duplicate andar aa jaata hai. Key ko PostgreSQL mein rakho, UNIQUE constraint ke saath, aur payment row ke saath ek hi transaction mein. Doosra request wahi key insert karega toh constraint fail, aur duplicate catch ho gaya.
+
+Ab asli problem. Payment Service ne gateway ko call kiya, gateway ne paisa debit kar diya, aur ussi waqt humara server crash ho gaya. Database mein status PROCESSING pada hai. Paisa gaya ya nahi, humein nahi pata. Isko unknown state kehte hain.
+
+Ab pause karo. Aap kya karoge? Fail mark karke retry doge, ya dobara charge karoge? Dono galat. Fail mark kiya aur paisa gaya tha, toh user ko pata nahi chalega. Dobara charge kiya, toh double debit.
+
+Sahi tareeka: payment ko state machine banao, aur UNKNOWN naam ki ek explicit state rakho. Gateway ko call karne se pehle payment row ko PROCESSING status ke saath database mein commit karo. Timeout aaye toh status UNKNOWN. Phir ek background worker gateway ka status check API call karta hai, aur SUCCESS ya FAILED mark karta hai. Aur retry karna ho toh wahi idempotency key gateway ko forward karo, taaki idempotency end to end rahe.
+
+Ek line mein: key ko database mein UNIQUE se lock karo, call se pehle record likho, aur unknown state ko ek naam do. Webhooks, reconciliation aur double entry ledger poore video mein hain. Comment mein PAYMENT likho, main notes bhej dunga.

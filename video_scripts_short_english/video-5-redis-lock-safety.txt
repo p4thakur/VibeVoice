@@ -1,0 +1,13 @@
+Is a Redis lock safe? This question shakes even very senior candidates in interviews. Let's understand it with a scenario.
+
+Client A takes a lock in Redis: SET the lock key to a unique value, with NX and PX 30000. A 30-second TTL. Then A hits a long GC pause. 30 seconds pass, and the lock expires. Client B takes the lock and writes to the database. Now A resumes, still believes it holds the lock, and writes too. Two clients modified the data together, and the data is corrupted.
+
+Now pause. What's the fix? Increase the TTL? No. A bigger TTL only postpones the problem, because a pause can be arbitrarily long.
+
+The right fix is a fencing token. The lock service hands out an increasing number with every lock. A got token 33, B got 34. The storage takes a token with every write, and rejects any write with a token smaller than the largest it has seen. So A's late write, with token 33, is rejected.
+
+Now, does Redis give a fencing token? No. But ZooKeeper and etcd do, because their version or revision numbers naturally keep increasing.
+
+And the real interview answer: for correctness, guard the resource itself. Write a conditional update in PostgreSQL with a version column: WHERE the id matches AND the version matches. The version works like a fencing token. A stale client's update affects zero rows and fails.
+
+In one line: a Redis lock is fine for efficiency, but for correctness you need a fencing token or a database version check. The Kleppmann versus Redlock debate is in the full video. Comment LOCK and I'll send you the notes.

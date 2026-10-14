@@ -1,0 +1,9 @@
+10,000 phones. 1,000,000 users. The sale opens at exactly 12:00:00. In an interview they ask: not a single phone can be oversold. So what is the system's real job, when 99 percent of users will never get a phone?
+
+Look at the numbers. If the 10,000 orders spread over a minute, that's only about 170 orders per second. A database handles that easily. The real problem is the 1,000,000 requests arriving in the first second. The system has to reject the 990,000 losers quickly and cheaply.
+
+The solution is a Redis gate. Preload the stock into Redis, and run a Lua script that does 3 things in one atomic step. One: is this user already a buyer? Two: is the stock above zero? Three: decrement the stock and add the user to the buyers set. Redis is single-threaded, so these steps can't be interrupted. The winners' orders go into a queue, and a conditional update in PostgreSQL is the final guard.
+
+Now the interviewer's follow-up. The stock lives in two places, Redis and the database. What if something crashes? Say Redis decremented, and the worker crashed before inserting the order. Redis says 9,999, the database says 10,000. That's called undersell, and it's far cheaper than oversell, because one phone simply didn't sell, and you can reconcile it later. The rule: keep Redis equal to or stricter than the database, never more generous.
+
+In one line: reject the losers at the edge, filter the winners with Redis, and keep the database as the final truth. There are 2 more approaches without Redis, SKIP LOCKED and a single-partition Kafka writer, in the full video. Comment FLASH and I'll send you the notes.

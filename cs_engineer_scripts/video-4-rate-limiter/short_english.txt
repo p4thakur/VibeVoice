@@ -1,0 +1,13 @@
+Design a rate limiter. It's one of the most common interview questions, and almost everyone makes the same mistake: they use a fixed window counter. Say the limit is 100 per minute. A user sends 100 requests at 12:00:59, and another 100 at 12:01:00. That's 200 requests in 2 seconds, and no window's rule was broken. At the boundary you get double the burst.
+
+Now pause. Which algorithm would you choose? Sliding window log, sliding window counter, or token bucket? Token bucket is the most popular, so let's see why.
+
+In a token bucket, every user has a bucket with a capacity of tokens, and tokens refill at a fixed rate. Every request consumes one token. If the bucket is empty, reject. Bursts are allowed up to the capacity, and the average rate stays smooth. Memory is just O(1) per user.
+
+In Redis, store it as a hash with two fields: tokens and last refill time. Then run a Lua script that reads the state, refills tokens based on elapsed time, deducts one token, and writes the new state back. Why Lua? Because GET and SET are separate commands, and if two requests arrive together, both can cross the limit. A Lua script is atomic, so there's no race condition.
+
+For a rejected request, return 429 Too Many Requests with a Retry-After header, and use exponential backoff with jitter on the client.
+
+And one more interview trap: what if Redis itself goes down? For a normal API, fail open, meaning allow the requests. For login, OTP and payment, fail closed, or apply a strict local limit. Say this decision out loud before they ask.
+
+In one line: shared counter in Redis, check and update in one Lua script, and decide in advance what happens when Redis is down. The full comparison of algorithms and the multi-region plan are in the long video. Comment LIMITER and I'll send you the notes.

@@ -1,0 +1,9 @@
+Find all restaurants within 10 kilometers. Almost everyone writes a query with the Haversine distance formula in the WHERE clause. Now think. The database can't use an index on a computed distance, so it calculates it for every row. With 5 million restaurants, that's a full scan on every search.
+
+The fix is to turn two dimensions into one. Divide the map into cells, and give every location a cell ID. This is geohash. It encodes a location as a short string, and nearby places share a prefix. A longer prefix means a smaller cell. Now a location search is just a prefix search, which a normal index handles fast.
+
+But here's the trap. A restaurant 200 meters away can sit in the neighboring cell, with a totally different prefix. So always search the user's cell plus its 8 neighbors. Then compute the exact distance for those candidates, drop anything beyond 10 kilometers, and sort. The grid finds candidates, and the exact distance gives the answer.
+
+Which tool? For static places like restaurants, use PostGIS in PostgreSQL, or Elasticsearch if you also need filters like cuisine. For moving things like delivery partners, use Redis GEO, with GEOADD and GEOSEARCH, and a TTL so offline drivers disappear. Don't write every GPS ping to your main database.
+
+In one line: cell IDs, search the cell and its neighbors, then filter by exact distance. Quadtrees, H3 and sharding by geography are in the full video. Comment NEARBY and I'll send you the notes.

@@ -1,0 +1,9 @@
+Notification system design karo. Zyada tar candidates ek hi box banate hain: service FCM ko call karti hai aur bhej deti hai. Ab socho. Aaj FCM slow hai, 5 second le raha hai. Aapki orders service wait mein stuck hai, aur ek notification problem orders problem ban gayi. Notification kabhi apne caller ko block nahi karni chahiye.
+
+Toh beech mein Kafka rakho. Request accept karo, topic mein likho, aur turant return karo. Workers consume karte hain aur providers se baat karte hain. Push, SMS aur email ke alag topics rakho, aur OTP jaisa critical traffic marketing se alag lane mein rakho. Warna 2 crore users ka campaign aapke login OTP ko wait karwa deta hai.
+
+Ab trap. Provider timeout ho gaya. Bheja gaya ya nahi? Aapko pata nahi. Toh exponential backoff aur jitter ke saath retry karo, aur ise idempotent banao. Har notification ki ek ID hoti hai, aur worker bhejne se pehle Redis mein us pe SET NX karta hai, taaki retry doosri copy na bhej sake. Kuch failed attempts ke baad usse dead letter queue mein daalo, chupchaap drop mat karo.
+
+Aur offline phone? Push sirf ek nudge hai. Har notification ko database mein per-user inbox mein store karo, taaki app khulne pe use pull kare. Inbox truth hai.
+
+Ek line mein: jaldi accept karo, channel aur priority se queue karo, idempotency ke saath retry karo, aur inbox rakho. Rate limiting, user preferences aur stale device tokens full video mein hain. Comment mein NOTIFY likho, main notes bhej dunga.

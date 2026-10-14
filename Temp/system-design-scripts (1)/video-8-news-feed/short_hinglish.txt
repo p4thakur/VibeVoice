@@ -1,0 +1,11 @@
+News feed design karo. Yeh interviews ke sabse repeat hone wale questions mein se ek hai, aur zyada tar candidates bolte hain: har app open pe follows table ko posts table se join karo. Ab socho. 200 follows matlab ek open pe 200 lookups, aur woh bhi million users se multiply. Reads common case hain, aur aapne unhe expensive case bana diya.
+
+Toh kaam post time pe le jao. Yeh fan-out on write hai. Jab koi post karta hai, post ID ko har follower ke precomputed feed mein Redis mein push karo. Feed kholna ek cheap Redis read ban jaata hai. Aur push request ke andar nahi hota: post Kafka mein jaati hai, aur fan-out workers background mein writes karte hain.
+
+Ab trap, celebrity problem. 5 crore followers wala user post karta hai, aur ek post ke liye 5 crore Redis writes chahiye. Pipeline flood ho jaati hai.
+
+Fix hai hybrid. Normal users ke liye fan-out on write. Celebrities ke liye fan-out mat karo. Read time pe precomputed feed ko un kuch celebrities ki latest posts ke saath merge karo jinhe woh user follow karta hai. Woh extra read chhota hai, aur woh posts achhe se cache hoti hain.
+
+Media S3 mein CDN ke peeche jaata hai, database mein kabhi nahi. Viral post ke likes Kafka aur Redis INCR se jaate hain, aur batches mein database mein flush hote hain, taaki ek row hot spot na bane.
+
+Ek line mein: normal users ke liye precompute, celebrities ke liye pull, aur merge. Cursor pagination aur inactive users full video mein hain. Comment mein FEED likho, main notes bhej dunga.

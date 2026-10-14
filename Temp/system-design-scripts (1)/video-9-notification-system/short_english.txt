@@ -1,0 +1,9 @@
+Design a notification system. Most candidates draw one box: the service calls FCM and sends. Now think. FCM is slow today, taking 5 seconds. Your orders service is stuck waiting, and a notification problem becomes an orders problem. A notification must never block its caller.
+
+So put Kafka in the middle. Accept the request, write it to a topic, and return immediately. Workers consume and talk to providers. Keep separate topics for push, SMS and email, and keep critical traffic like OTPs on a different lane from marketing. Otherwise a 20 million user campaign makes your login OTP wait.
+
+Now the trap. A provider times out. Was it sent or not? You don't know. So retry with exponential backoff and jitter, and make it idempotent. Every notification gets an ID, and the worker does SET NX on it in Redis before sending, so a retry can't send a second copy. After a few failed attempts, move it to a dead letter queue, never drop it silently.
+
+And the offline phone? Push is only a nudge. Store every notification in a per-user inbox in your database, so the app pulls it when it opens. The inbox is the truth.
+
+In one line: accept fast, queue by channel and priority, retry with idempotency, and keep an inbox. Rate limiting, user preferences and stale device tokens are in the full video. Comment NOTIFY and I'll send you the notes.

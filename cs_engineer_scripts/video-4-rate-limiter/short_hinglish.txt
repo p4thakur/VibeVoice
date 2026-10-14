@@ -1,0 +1,13 @@
+Rate limiter design karo. Interview mein yeh sabse common questions mein se ek hai. Aur ek galti jo almost sab karte hain: fixed window counter lagate hain. Limit 100 per minute. User 12:00:59 pe 100 requests bhejta hai, aur 12:01:00 pe phir 100. 2 second mein 200 requests, aur kisi window ka rule break nahi hua. Boundary pe double burst.
+
+Ab pause karo. Aap kaunsa algorithm choose karoge? Sliding window log, sliding window counter, ya token bucket? Token bucket sabse popular hai, aur yahan dekhte hain kyun.
+
+Token bucket mein har user ka ek bucket hota hai jisme capacity tokens hain, aur tokens ek fixed rate se refill hote hain. Har request ek token consume karti hai. Bucket empty hai toh reject. Burst capacity tak allowed hai, aur average rate smooth rehta hai. Memory sirf O(1) per user.
+
+Redis mein isko ek hash ki tarah store karo: tokens aur last refill time. Aur ek Lua script chalao jo state padhti hai, time ke hisaab se tokens refill karti hai, ek token deduct karti hai, aur naya state wapas likhti hai. Lua isliye, kyunki GET aur SET alag commands hain, aur do requests ek saath aayein toh dono limit cross kar sakti hain. Lua script atomic hai, toh race condition nahi.
+
+Reject hone par 429 Too Many Requests return karo, saath mein Retry After header. Aur client pe exponential backoff with jitter.
+
+Aur ek interview trap: Redis hi down ho gaya toh? Normal API ke liye fail open, yaani requests allow karo. Login, OTP aur payment ke liye fail closed ya strict local limit. Yeh decision pehle se bolna chahiye.
+
+Ek line mein: shared counter Redis mein, check aur update ek Lua script mein, aur Redis down hone par kya hoga woh pehle se decide karo. Poore algorithms ka comparison aur multi region plan full video mein hai. Comment mein LIMITER likho, main notes bhej dunga.

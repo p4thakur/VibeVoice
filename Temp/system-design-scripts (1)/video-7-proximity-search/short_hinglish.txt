@@ -1,0 +1,9 @@
+10 kilometer ke andar ke saare restaurants dhundho. Lagbhag sab WHERE clause mein Haversine distance formula wali query likhte hain. Ab socho. Database computed distance pe index use nahi kar sakta, toh woh har row ke liye calculate karta hai. 50 lakh restaurants hain toh har search pe full scan.
+
+Fix hai do dimensions ko ek mein badalna. Map ko cells mein baanto, aur har location ko ek cell ID do. Isse geohash kehte hain. Yeh location ko ek chhoti string mein encode karta hai, aur paas ki jagahon ka prefix same hota hai. Prefix lamba toh cell chhota. Ab location search sirf ek prefix search hai, jo normal index fast handle karta hai.
+
+Lekin yahan trap hai. 200 meter door ka restaurant neighboring cell mein ho sakta hai, jiska prefix bilkul alag hai. Toh hamesha user ka cell plus uske 8 neighbors search karo. Phir un candidates ka exact distance nikalo, 10 kilometer se door wale hatao, aur sort karo. Grid candidates dhundhta hai, exact distance answer deta hai.
+
+Tool kaunsa? Restaurants jaisi static places ke liye PostgreSQL mein PostGIS, ya cuisine jaise filters chahiye toh Elasticsearch. Delivery partners jaisi moving cheezon ke liye Redis GEO, GEOADD aur GEOSEARCH ke saath, aur TTL lagao taaki offline drivers hat jaayein. Har GPS ping ko main database mein mat likho.
+
+Ek line mein: cell IDs, cell aur uske neighbors search karo, phir exact distance se filter karo. Quadtree, H3 aur geography se sharding full video mein hai. Comment mein NEARBY likho, main notes bhej dunga.

@@ -1,0 +1,13 @@
+Redis lock safe hai ya nahi? Interview mein yeh sawaal bahut senior candidates ko bhi confuse kar deta hai. Chalo ek scenario se samjhte hain.
+
+Client A ne Redis se lock liya: SET lock key, unique value, NX, PX 30000. 30 second ka TTL. Phir A ko ek long GC pause aaya. 30 second pass ho gaye, lock expire ho gaya. Client B ne lock le liya aur database mein write kar diya. Ab A resume hota hai, usse lagta hai lock abhi bhi uska hai, aur woh bhi write kar deta hai. Do clients ne ek saath data modify kiya, aur data corrupt.
+
+Ab pause karo. Fix kya hoga? TTL bada karoge? Nahi. TTL bada karne se problem sirf postpone hoti hai, kyunki pause kitna bhi long ho sakta hai.
+
+Sahi fix hai fencing token. Lock service har lock ke saath ek increasing number deta hai. A ko token 33 mila, B ko 34. Storage har write ke saath token leta hai, aur jo token sabse bada dekha hai, usse chhote token wali write reject kar deta hai. Toh A ki late write, token 33, reject ho jaati hai.
+
+Ab sawaal: Redis fencing token deta hai? Nahi. Lekin ZooKeeper aur etcd dete hain, kyunki unka version ya revision number naturally badhta rehta hai.
+
+Aur interview ka real answer: correctness ke liye resource ko khud guard karo. PostgreSQL mein conditional update likho, jisme version column ho: WHERE id match kare AND version match kare. Version ek fencing token ki tarah kaam karta hai. Stale client ka update zero rows pe fail hota hai.
+
+Ek line mein: lock efficiency ke liye Redis se theek hai, lekin correctness ke liye fencing token ya database ka version check chahiye. Redlock ka Kleppmann debate full video mein hai. Comment mein LOCK likho, main notes bhej dunga.

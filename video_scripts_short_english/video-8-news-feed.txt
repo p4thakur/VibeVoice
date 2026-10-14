@@ -1,0 +1,11 @@
+Design a news feed. It's one of the most repeated questions in interviews, and most candidates answer: join the follows table with the posts table on every app open. Now think. 200 follows, so 200 lookups per open, multiplied by millions of users. Reads are the common case, and you made them the expensive case.
+
+So move the work to post time. This is fan-out on write. When someone posts, push the post ID into every follower's precomputed feed in Redis. Opening the feed becomes one cheap Redis read. And the push doesn't happen in the request: the post goes to Kafka, and fan-out workers do the writes in the background.
+
+Now the trap, the celebrity problem. A user with 50 million followers posts, and you need 50 million Redis writes for one post. The pipeline floods.
+
+The fix is a hybrid. Fan out on write for normal users. For celebrities, don't fan out. At read time, merge the precomputed feed with the latest posts from the few celebrities that user follows. That extra read is small, and those posts cache well.
+
+Media goes to S3 behind a CDN, never into the database. Likes on a viral post go through Kafka and Redis INCR, flushed to the database in batches, so one row doesn't become a hot spot.
+
+In one line: precompute for normal users, pull for celebrities, and merge. Cursor pagination and inactive users are in the full video. Comment FEED and I'll send you the notes.

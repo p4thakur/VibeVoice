@@ -1,0 +1,11 @@
+Uber asked this: show a restaurant its top 5 food items and total sales for the last hour, day and week, in real time. Almost everyone answers: GROUP BY on the orders table. Now think. Thousands of owners refresh every few seconds, and each refresh scans lakhs of rows. Your PostgreSQL melts.
+
+The rule is: don't compute on read, compute on write. So use time buckets. For every restaurant and every minute, keep that minute's totals in Redis: a sorted set for item counts, with ZINCRBY, and a counter for order value. The last hour is just the sum of the latest 60 buckets. The window slides by itself, and you never subtract anything.
+
+For a week, don't keep 10,000 minute buckets. Use multi-resolution: minute buckets for the hour, hour buckets for the day, day buckets for the week. Merge them with ZUNIONSTORE and read the top 5.
+
+Orders flow through Kafka, partitioned by restaurant ID. Kafka is at-least-once, so an event can replay and count an order twice. Fix it with a dedupe key on order ID, using SET NX. And bucket by event time, not arrival time, so late orders land in the right minute.
+
+Finally, Redis is for freshness, not truth. Keep every event in ClickHouse, so you can rebuild the buckets any time.
+
+In one line: time buckets in Redis, a Kafka stream feeding them, and the events kept as truth. The global top-K trick and Count-Min Sketch are in the full video. Comment METRICS and I'll send you the notes.

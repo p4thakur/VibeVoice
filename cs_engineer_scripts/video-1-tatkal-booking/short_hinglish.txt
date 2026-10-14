@@ -1,0 +1,11 @@
+10 baje Tatkal khulta hai. 3 lakh log ek saath click karte hain, aur seats hain sirf 100. Ab database kaise handle karega? Interview mein yahi poochha jaata hai, aur zyadatar log yahan fail ho jaate hain.
+
+Simple design lete hain. Ek inventory table, ek row, jisme likha hai kitni seats bachi hain. Har booking ek hi SQL statement hai: seats minus 2, WHERE seats 2 ya usse zyada hain. Yeh atomic hai, overbooking possible hi nahi. Lekin 3 lakh requests aur ek hi row. PostgreSQL ek row ke updates ek ke baad ek process karta hai, toh saari transactions row lock ke wait mein pad jaati hain, aur system hang ho jaata hai.
+
+Ab pause karo. Sharding, read replica ya bigger machine? Teeno galat hain. Ek row ek hi shard pe rehti hai, replica sirf reads ke liye hai, aur bigger machine row lock ko remove nahi kar sakti.
+
+Real answer: 100 seats ke liye 3 lakh mein se lagbhag saari requests ko database tak jaane hi mat do. Redis ko gate banao. Counter ki ek copy Redis mein rakho, aur ek Lua script chalao: agar counter 2 ya zyada hai toh decrement karo, warna fail. Lua isliye, kyunki check aur decrement ek hi atomic step mein hona chahiye. Ek Redis instance 1 lakh ke aas paas operations per second handle karta hai, toh yeh gate 3 lakh requests ko kuch seconds mein filter kar deta hai. Sirf winners PostgreSQL tak jaate hain.
+
+Interviewer poochega: Redis crash ho gaya toh? Answer: Redis source of truth nahi hai, PostgreSQL hai. Database ka conditional update final guard hai, isliye Redis galat bhi ho jaaye toh overbooking nahi hoti.
+
+Ek line mein: database ko sirf winners tak pahunchne do. Payment hold, SQS delay queue aur bots ka fix poore video mein hai. Comment mein TATKAL likho, main notes bhej dunga.

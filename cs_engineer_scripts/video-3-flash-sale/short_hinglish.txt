@@ -1,0 +1,9 @@
+10,000 phones, 10 lakh users, aur sale exactly 12 baje start. Interview mein poochte hain: ek bhi phone oversell nahi hona chahiye. 99 percent users ko phone milega hi nahi. Toh system ka asli kaam kya hai?
+
+Numbers dekho. 10,000 orders ek minute mein spread hon, toh sirf 170 orders per second. Database easily handle kar leta hai. Asli problem hai pehle second mein aane wali 10 lakh requests. Unmein se 9 lakh 90 hazaar losers ko jaldi aur cheaply reject karna hai.
+
+Solution: Redis gate. Sale se pehle stock Redis mein preload karo, aur ek Lua script chalao jo 3 kaam ek atomic step mein karti hai. Pehla: kya yeh user pehle se buyer hai? Doosra: kya stock zero se zyada hai? Teesra: stock decrement karo aur user ko buyers set mein add karo. Redis single threaded hai, toh yeh steps beech mein interrupt nahi ho sakte. Jo pass hue, unke orders queue mein jaate hain, aur PostgreSQL mein ek conditional update final guard hai.
+
+Ab interviewer ka follow-up: Redis aur database, 2 jagah stock hai. Crash ho gaya toh? Maan lo Redis ne decrement kiya, aur order insert hone se pehle worker crash ho gaya. Ab Redis kehta hai 9,999, database kehta hai 10,000. Isko undersell kehte hain, aur yeh oversell se kaafi cheap hai, kyunki ek phone sell nahi hua, jise baad mein reconcile kar sakte ho. Rule: Redis ko database ke barabar ya strict rakho, kabhi zyada generous nahi.
+
+Ek line mein: losers ko edge pe reject karo, winners ko Redis se filter karo, aur database ko final truth rakho. Redis ke bina bhi 2 tareeke hain, SKIP LOCKED aur single partition Kafka writer, jo poore video mein hain. Comment mein FLASH likho, main notes bhej dunga.

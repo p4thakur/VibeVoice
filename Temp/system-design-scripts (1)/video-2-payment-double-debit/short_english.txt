@@ -1,0 +1,11 @@
+A payment times out. The user retries. And the money gets debited twice. In an interview they ask: how do you stop that? Most people say "use an idempotency key." But that's only half the answer.
+
+First, the retry case. The client sends a UUID with every payment, the idempotency key. Now, don't store that key in Redis. If Redis restarts or the key expires, a duplicate walks right in. Store the key in PostgreSQL with a UNIQUE constraint, in the same transaction as the payment row. A second request with the same key violates the constraint, and the duplicate is caught.
+
+Now the real problem. The Payment Service calls the gateway, the gateway debits the money, and at that exact moment our server crashes. The database says PROCESSING. Did the money move? We don't know. This is called the unknown state.
+
+Pause. What would you do? Mark it failed and let the user retry, or charge again? Both are wrong. If you mark it failed and the money moved, the user never finds out. If you charge again, that's a double debit.
+
+The right way: model the payment as a state machine, with an explicit state called UNKNOWN. Before you call the gateway, commit the payment row with status PROCESSING. On a timeout, set the status to UNKNOWN. Then a background worker calls the gateway's status check API and marks SUCCESS or FAILED. And if you retry, forward the same idempotency key to the gateway, so idempotency is end to end.
+
+In one line: lock the key with a UNIQUE constraint, write the record before the call, and give the unknown state a name. Webhooks, reconciliation and the double-entry ledger are in the full video. Comment PAYMENT and I'll send you the notes.

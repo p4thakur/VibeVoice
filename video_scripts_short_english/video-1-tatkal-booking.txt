@@ -1,0 +1,11 @@
+Tatkal opens at 10 AM. 300,000 people click at the same moment, and there are only 100 seats. How does the database handle that? This is a real interview question, and most candidates get it wrong.
+
+Let's start with the simple design. One inventory table, one row, which says how many seats are left. Every booking is a single SQL statement: seats minus 2, WHERE seats are 2 or more. It's atomic, so overbooking is impossible. But now you have 300,000 requests and one row. PostgreSQL processes updates to one row one after another, so every transaction waits on the row lock, and the system hangs.
+
+Now pause. Sharding, a read replica, or a bigger machine? All three are wrong. One row lives on one shard, a replica only helps reads, and a bigger machine can't remove a row lock.
+
+The real answer: for 100 seats, almost all of those 300,000 requests should never reach the database. Make Redis the gate. Keep a copy of the counter in Redis and run a Lua script: if the counter is 2 or more, decrement it, otherwise fail. Why Lua? Because the check and the decrement must happen in one atomic step. One Redis instance handles around 100,000 operations per second, so this gate filters 300,000 requests in a few seconds. Only the winners reach PostgreSQL.
+
+The interviewer will ask: what if Redis crashes? The answer: Redis is not the source of truth, PostgreSQL is. The conditional update in the database is the final guard, so even if Redis is wrong, there's no overbooking.
+
+In one line: let only the winners reach the database. The payment hold, the SQS delay queue and the bot fix are in the full video. Comment TATKAL and I'll send you the notes.

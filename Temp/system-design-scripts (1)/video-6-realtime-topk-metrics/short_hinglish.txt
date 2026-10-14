@@ -1,0 +1,11 @@
+Uber ne yeh poocha: restaurant ko real time mein last hour, day aur week ke top 5 food items aur total sales dikhao. Lagbhag sab bolte hain: orders table pe GROUP BY. Ab socho. Hazaaron owners har kuch seconds mein refresh karte hain, aur har refresh lakhon rows scan karta hai. Aapka PostgreSQL melt ho jaata hai.
+
+Rule hai: read pe compute mat karo, write pe compute karo. Toh time buckets use karo. Har restaurant aur har minute ke liye us minute ke totals Redis mein rakho: item counts ke liye sorted set, ZINCRBY ke saath, aur order value ke liye counter. Last hour matlab latest 60 buckets ka sum. Window apne aap slide hota hai, aur kuch subtract nahi karna padta.
+
+Week ke liye 10,000 minute buckets mat rakho. Multi-resolution use karo: hour ke liye minute buckets, day ke liye hour buckets, week ke liye day buckets. ZUNIONSTORE se merge karo aur top 5 padh lo.
+
+Orders Kafka se aate hain, restaurant ID se partition. Kafka at-least-once hai, toh event replay ho sakta hai aur order do baar count ho sakta hai. Fix: order ID pe dedupe key, SET NX ke saath. Aur arrival time nahi, event time se bucket karo, taaki late orders sahi minute mein girein.
+
+Last mein, Redis freshness ke liye hai, truth ke liye nahi. Har event ClickHouse mein rakho, taaki buckets kabhi bhi rebuild ho sakein.
+
+Ek line mein: Redis mein time buckets, Kafka stream se feed, aur events truth ki tarah. Global top-K ka trick aur Count-Min Sketch full video mein hai. Comment mein METRICS likho, main notes bhej dunga.
