@@ -1,0 +1,37 @@
+Today, LeetCode problem four. Median of Two Sorted Arrays.
+
+Here is the plan. The median splits all the numbers into a left half and a right half of equal size, where everything on the left is at most everything on the right. We do not need to merge the arrays to find that split. We only need to decide how many numbers the left half takes from the first array. The rest come from the second. A binary search finds that number.
+
+The first array is two, seven, eleven, fourteen. The second is one, four, five, ten. Both are sorted. Together they hold eight numbers. We return their median. With eight numbers, that is the average of the fourth and the fifth.
+
+The direct way merges the two arrays into one sorted list, and picks the middle. That takes O of m plus n, because every number is looked at. The bottleneck is that we sort out all eight numbers, when we only need the two in the middle. The problem asks for something much faster, O of log of the smaller array.
+
+So think about the split. The left half holds four numbers. Say it takes i from the first array. Then it must take four minus i from the second. There are only a few possible values of i, zero to four, and we can binary search among them.
+
+How do we know if a split is right? Look at the four numbers on the borders. A left is the last number the first array gives to the left half. A right is the first number it keeps for the right half. The second array has the same pair. Each array is sorted, so its own left is at most its own right. The split is right when each left is at most the other array's right. If the first array's left is bigger than the second's right, the first array gave too many, so move i down. If the second array's left is bigger than the first's right, the first gave too few, so move i up.
+
+When an array gives nothing, its left is minus infinity. When it gives everything, its right is plus infinity.
+
+Now the code. It has three parts.
+
+First, make sure a is the shorter array, by swapping if not. Then m and n are the lengths. Half is the size of the left half: m plus n plus one, divided by two. When the total is odd, the left half gets the extra number.
+
+Second, the search. Lo is zero, and hi is m. While lo is not past hi, i is the middle. J is half minus i. Then the four borders, using infinity when an array is empty on that side.
+
+Third, the three cases. If a left is bigger than b right, hi moves to i minus one. Else if b left is bigger than a right, lo moves to i plus one. Otherwise the split is right. Low is the larger of the two lefts. If the total is odd, return low. If even, high is the smaller of the two rights, and we return their average.
+
+Now run it. Lo is zero, hi is four. I is two, and j is two. The first array gives two and seven, and keeps eleven and fourteen. The second gives one and four, and keeps five and ten. Seven, the first left, is bigger than five, the second right. Too many from the first array. Hi moves to one.
+
+Lo is zero, hi is one. I is zero, and j is four. The first array gives nothing, so its left is minus infinity, and its right is two. The second gives all four, so its left is ten, and its right is plus infinity. Ten is bigger than two. Too few from the first array. Lo moves to one.
+
+Lo is one, hi is one. I is one, and j is three. The first array gives two, and keeps seven. The second gives one, four, and five, and keeps ten. Two is at most ten. Five is at most seven. The split is right.
+
+The left half is one, two, four, and five. Low is five. The total is even, so high is the smaller of seven and ten, which is seven. We return five plus seven, divided by two. Six.
+
+To check it: merged, the numbers are one, two, four, five, seven, ten, eleven, fourteen. The middle two are five and seven. Their average is six.
+
+Each step halves the range of the shorter array: O of log of the smaller length. A few variables: O of one space. Merging was O of m plus n.
+
+So that is Median of Two Sorted Arrays. Do not merge. Search for the split that puts the right numbers on each side.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

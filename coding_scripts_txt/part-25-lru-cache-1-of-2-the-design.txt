@@ -1,0 +1,35 @@
+Today, LeetCode problem one hundred forty six. LRU Cache. This problem gets two videos. This one is the design, and the next one builds it by hand.
+
+Here is the plan. A cache with limited room must find any key instantly, and also know which key was used least recently. No single structure does both. A hash map finds keys. A linked list keeps the order of use. Python's OrderedDict is exactly those two joined together, so the whole cache takes a few lines.
+
+The cache has room for two items. We put key one, then key two. We get key one. We put key three. Then we get key two. Least recently used means: when the cache is full, the item untouched for the longest time is removed. Both get and put must be O of one.
+
+The direct way keeps a list of keys in order of use. Every get or put has to find the key in that list, and move it to the end. Finding it is a scan: O of n per operation. That scan is the bottleneck.
+
+The fix is to let a hash map find the key, and to keep the order in a linked list, where a found item can be unlinked and moved to the end in constant time. An OrderedDict is a hash map whose keys are kept in a doubly linked list, so it gives us both.
+
+Now the code. It has three parts.
+
+First, the constructor stores the capacity, and an empty OrderedDict.
+
+Second, get. If the key is missing, return minus one. Otherwise, move the key to the end, because it was just used, and return its value.
+
+Third, put. If the key already exists, move it to the end. Store the value. If the cache is now over capacity, pop the item at the front, which is the least recently used.
+
+Now run it. Put one. The order is one. Put two. The order is one, two.
+
+Get one. It exists, so it moves to the end. The order is two, one. We return one.
+
+Put three. The order is two, one, three. That is three items, one too many. The front item, two, is removed. The order is one, three.
+
+Get two. It was evicted. We return minus one.
+
+To check it: when three arrived, two was the item untouched for the longest time, so it was the one to go.
+
+Get and put each do a constant number of map and list operations: O of one time. The cache holds at most its capacity: O of capacity space. The direct list was O of n per operation.
+
+In an interview, you may be asked to build this without OrderedDict. That is the next video.
+
+So that is the design of an LRU cache. A hash map to find, a linked list to order, and both updated together.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

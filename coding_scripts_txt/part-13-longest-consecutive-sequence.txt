@@ -1,0 +1,37 @@
+Today, LeetCode problem one hundred twenty eight. Longest Consecutive Sequence.
+
+Here is the plan. Put every number in a set. A run of consecutive numbers can only be counted from its first number, the one with nothing just below it. So we count runs only from those starting numbers, and every number is counted once.
+
+The numbers are one hundred, four, two hundred, one, three, two. We want the length of the longest run of consecutive values, in any order. The problem asks for O of n time.
+
+Sorting would line the runs up, but sorting is O of n log n.
+
+The direct way starts from every number, and counts upward while the next value exists. Starting from one, it counts one, two, three, four. Starting from two, it counts two, three, four again. The bottleneck is recounting the same run from its middle. With one long run of n numbers, that is O of n squared.
+
+So the question is: which number should start the count? Only the one whose value minus one is not present. That number is the start of its run. Every other number is in the middle of someone else's run, and gets skipped.
+
+Now the code. It has two parts.
+
+First, the setup. A set of the numbers, for instant lookups, and best at zero.
+
+Second, the loop over the set. If x minus one is not in the set, x starts a run. We count upward while x plus length is in the set, and best keeps the longest length. If x minus one is present, we do nothing.
+
+Now run it. The set gives us one, two, three, one hundred, four, two hundred, in that order.
+
+One. Zero is not in the set, so one starts a run. Two is there, three is there, four is there, and five is not. Length four. Best is four.
+
+Two. One is in the set, so two is in the middle of a run. Skipped. Three is skipped the same way.
+
+One hundred. Ninety nine is not there, so it starts a run. But one hundred one is missing. Length one.
+
+Four is skipped, because three is there. Two hundred starts a run of length one.
+
+We return four.
+
+To check it: one, two, three, four are all present, and neither zero nor five is.
+
+Each number starts at most one count, and is counted only inside the run it belongs to. O of n time. The set holds every number: O of n space. The direct way was O of n squared.
+
+So that is Longest Consecutive Sequence. Only count from the start of a run, and every run is counted exactly once.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

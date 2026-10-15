@@ -1,0 +1,39 @@
+Today, LeetCode problem three hundred sixty two. Design Hit Counter.
+
+Here is the plan. Keep the timestamps of hits in a queue, oldest first. When someone asks how many hits happened recently, remove the old ones from the front, and the length of the queue is the answer.
+
+We build a counter with two operations. Hit records a hit at a timestamp, in seconds. Get hits takes a timestamp, and returns how many hits happened in the last three hundred seconds. Timestamps never go backwards.
+
+Our example. Hits arrive at times one, two, and three. We ask at time four. Then a hit arrives at time three hundred. We ask at time three hundred, and then at time three hundred one.
+
+The direct way stores every hit forever, in a list. To answer, it counts the hits that are inside the window. With a million hits stored, every question reads a million entries, and the list never stops growing. The bottleneck is that time only moves forward. A hit that has fallen out of the window will never count again, yet we keep storing it, and keep checking it.
+
+So throw the old hits away. They are also the oldest, so they sit at the front of a queue. We only ever need to look at the front.
+
+Now the code. It has three parts.
+
+First, the constructor. Hits is an empty queue.
+
+Second, hit. Append the timestamp to the back. Timestamps never go down, so the queue stays in order.
+
+Third, get hits. While the queue is not empty, and the oldest timestamp is at or before the asked time minus three hundred, remove it from the front. Then return the length of the queue.
+
+The test says at or before for a reason. The window is the last three hundred seconds, so at time three hundred one it covers time two up to three hundred one. A hit at time one is outside.
+
+Now run it. Three hits go in: one, two, and three.
+
+Get hits at time four. Four minus three hundred is far below zero. The oldest hit, time one, is not older than that. Nothing leaves. The length is three.
+
+A hit arrives at time three hundred. The queue holds one, two, three, and three hundred.
+
+Get hits at time three hundred. Three hundred minus three hundred is zero. The oldest hit, time one, is not at or before zero. Nothing leaves. The length is four.
+
+Get hits at time three hundred one. Three hundred one minus three hundred is one. The oldest hit, time one, is at or before one. It leaves. The next oldest, time two, is after one. We stop. The length is three.
+
+To check it: at time three hundred one, the window covers two to three hundred one. The hits at two, three, and three hundred are inside. That is three.
+
+A hit is an append: O of one. Every timestamp is removed at most once, so across all calls a get is O of one on average. The queue holds the hits inside the window: O of n space, where n is the number of hits in the last three hundred seconds. The direct way was O of n per question, with memory that grew forever.
+
+So that is Design Hit Counter. Time only moves forward, so throw old events away from the front, and never look at them again.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

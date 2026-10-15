@@ -1,0 +1,33 @@
+Today, LeetCode problem three hundred forty seven. Top K Frequent Elements.
+
+Here is the plan. Count how often each number appears. A count can never be bigger than the length of the array, so we make one bucket for every possible count, and drop each number into the bucket for its count. Then we walk the buckets from the highest count down, and stop once we have k numbers.
+
+The numbers are one, one, one, two, two, three, and k is two. We want the two numbers that appear most often.
+
+The direct way counts each number, then sorts the numbers by their counts, and takes the first k. Sorting is O of n log n. The bottleneck is that sorting puts every number in full order, when we only need the top k, and the counts are small whole numbers.
+
+When the keys are small whole numbers, we do not need to compare them. We can use each count directly as a position. That is called bucket sort.
+
+Now the code. It has three parts.
+
+First, a counter that maps each number to how often it appears.
+
+Second, a list of buckets, one for each count, from zero up to the array's length. Each number is appended to the bucket of its count.
+
+Third, a loop over the counts, from the highest down to one. Each number found is added to the result, and as soon as the result holds k numbers, we return it.
+
+Now run it. One appears three times, two appears twice, and three appears once. There are six numbers, so the buckets go from zero to six.
+
+One goes into bucket three. Two goes into bucket two. Three goes into bucket one.
+
+Walk down from six. Buckets six, five, and four are empty. Bucket three gives one. Bucket two gives two. That is k numbers. We return one and two.
+
+To check it: one appears three times, and two appears twice. No other number appears more than once.
+
+Counting is O of n. There are n plus one buckets, and every number lands in exactly one of them, so the walk is O of n too. O of n time, and O of n space. The direct way was O of n log n.
+
+If an interviewer prefers, a heap of size k gives O of n log k. Buckets beat it, because the counts can never exceed n.
+
+So that is Top K Frequent Elements. Counts are small whole numbers, so use them as positions instead of sorting.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

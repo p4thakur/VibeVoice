@@ -1,0 +1,39 @@
+Today, LeetCode problem two hundred fifty three. Meeting Rooms Two.
+
+Here is the plan. Sort the meetings by start time. Keep the end times of the meetings that are using a room. When a new meeting starts, look at the room that frees up first. If it is already free, reuse it. If not, open a new room. At the end, the number of rooms in use is the answer.
+
+There are four meetings, given as a start and an end. Zero to thirty. Five to ten. Fifteen to twenty. Eighteen to twenty five. We want the fewest rooms that fit all of them with no overlap.
+
+The direct way takes every meeting, and counts how many other meetings are running at its start time. The largest count is the answer. With n meetings, that is O of n squared. The bottleneck is that for every meeting we look through all the others, when only one thing matters: which room becomes free first.
+
+That one thing is the smallest end time among the busy rooms. If any room is free for the new meeting, the room that finishes earliest surely is. So a min heap of end times is all we need.
+
+Now the code. It has three parts.
+
+First, sort the meetings. Since each meeting is a start and an end, sorting puts them by start time.
+
+Second, the heap, called ends. It holds the end time of the last meeting in each room.
+
+Third, the loop. For each meeting, if the heap is not empty, and its smallest end time is at or before this meeting's start, that room is free, so we pop its end time. Then, whether we reused a room or not, we push this meeting's end time. The heap now has one entry per room. At the end, we return its size.
+
+Now run it. The sorted meetings are the same four.
+
+Zero to thirty. The heap is empty, so a new room is opened. The heap holds thirty.
+
+Five to ten. The smallest end is thirty, which is after five. That room is busy. A second room opens. The heap holds ten and thirty.
+
+Fifteen to twenty. The smallest end is ten, which is before fifteen. That room is free. We take it over. Ten leaves, and twenty goes in. The heap holds twenty and thirty. Still two rooms.
+
+Eighteen to twenty five. The smallest end is twenty, which is after eighteen. Busy. A third room opens. The heap holds twenty, twenty five, and thirty.
+
+We return three.
+
+To check it: at time eighteen, the meetings zero to thirty, fifteen to twenty, and eighteen to twenty five are all running at once. Three at the same time needs three rooms.
+
+If one meeting ends at the exact moment another starts, they can share a room. That is why the test says at or before.
+
+Sorting costs O of n log n, and each meeting does one push and at most one pop, also about log n. Time is O of n log n. The heap holds up to n end times: O of n space. The direct way was O of n squared.
+
+So that is Meeting Rooms Two. The next free room is always the one that ends first, and a heap finds it instantly.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

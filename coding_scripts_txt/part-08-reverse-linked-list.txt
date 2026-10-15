@@ -1,0 +1,33 @@
+Today, LeetCode problem two hundred six. Reverse Linked List.
+
+Here is the plan. Walk down the list once, and turn each arrow around, so it points backwards. Before turning an arrow, save where it pointed, or the rest of the list is lost. When the walk ends, the last node is the new head.
+
+The list is one, then two, then three, then four. Each node holds a value, and an arrow to the next node. We want four, three, two, one, and we return the new head.
+
+The direct way copies the four values into an array, then walks the list again and writes them back in reverse. It works, and it is O of n time. The cost is memory: an extra array as long as the list. Interviewers want it done in place.
+
+Doing it in place has one danger. A node's arrow is the only way to reach the rest of the list. Turn it around first, and everything after it is gone. So we always save the next node before changing the arrow.
+
+That needs three pointers. Prev is the part already reversed. Curr is the node we are turning. And next is the saved rest of the list.
+
+Now the code. It has two parts.
+
+First, the setup. Prev starts as none, because the old head will become the tail, pointing to nothing. Curr starts at the head.
+
+Second, the loop, which runs while curr exists. Four steps, always in this order. Save curr's next, in a variable called nxt. Point curr's arrow back at prev. Move prev forward to curr. Move curr forward to the saved next. When curr runs off the end, prev is the new head, and we return it.
+
+Now run it. Curr is one. Save two. One now points to none. Prev moves to one, and curr to two.
+
+Curr is two. Save three. Two now points back to one. Prev is two, and curr is three.
+
+Three and four go the same way. Three points to two. Four points to three.
+
+Curr becomes none, and the loop ends. Prev is four. We return four.
+
+To check it: from four, the arrows go to three, two, one, and then none. Every node was visited once, and no node was lost.
+
+Each node is visited once: O of n time. Only three pointers are stored: O of one extra space. The direct way also took O of n time, but O of n extra memory.
+
+So that is reversing a list in place. Save the next node, turn the arrow, then step forward.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

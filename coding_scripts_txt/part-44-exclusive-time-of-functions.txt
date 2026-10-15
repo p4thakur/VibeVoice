@@ -1,0 +1,41 @@
+Today, LeetCode problem six hundred thirty six. Exclusive Time of Functions.
+
+Here is the plan. Functions call other functions, so at any moment a stack of functions is running, and the one on top is the one doing the work. Each log line says when something started or ended. The time since the previous log line belongs to whichever function was on top. Add it to that function, and move on.
+
+There are two functions, zero and one. The log has four lines. Function zero starts at time zero. Function one starts at time two. Function one ends at time five. Function zero ends at time six. We return how much time each function ran, not counting time spent in the functions it called. That is its exclusive time.
+
+What makes this hard is that a function's time comes in pieces. Function zero ran before it called function one, and again after. Taking its end time minus its start time, plus one, would count the whole call to function one as well. That gives seven, but function zero's true time is three.
+
+There is one more trap. An end log at time five means the function ran through the whole of time unit five. So the end is inclusive.
+
+The direct way steps through every single time unit, and gives it to whichever function is running. If a log ran for a billion time units, that is a billion steps for a handful of log lines. The bottleneck is stepping through time, when only the log lines matter.
+
+Now the code. It has three parts.
+
+First, the setup. Result is a list of zeros, one per function. Stack holds the running functions. Prev is the time of the last event, and starts at zero.
+
+Second, the loop over the logs. Each log is split at the colons into an id, a kind, and a time. The id and time become numbers.
+
+Third, the two kinds. For a start: if something is already running, it ran from prev up to now, so add the time minus prev to the function on top. Then push the new function, and set prev to now.
+
+For an end: the function on top ran from prev through now, inclusive. So pop it, and add time minus prev, plus one. Then prev becomes time plus one, because the next time unit starts after this one.
+
+We return the result.
+
+Now run it. The first log. Function zero starts at time zero. Nothing is running yet, so nothing is added. Zero goes on the stack. Prev is zero.
+
+Function one starts at time two. Function zero was on top, and ran from zero to two. Two units go to function zero. One goes on the stack. Prev is two.
+
+Function one ends at time five. It ran from two through five inclusive: five minus two, plus one, is four. Pop it. Function one has four. Prev becomes six.
+
+Function zero ends at time six. It ran from six through six: six minus six, plus one, is one. Function zero now has two plus one, which is three.
+
+We return three and four.
+
+To check it: the timeline has seven time units, zero to six. Three plus four is seven, and every unit belongs to exactly one function.
+
+One pass over the logs: O of m time, for m log lines. The stack holds at most one entry per nested call, so O of n space for n functions. The direct way depended on how many time units there were.
+
+So that is Exclusive Time of Functions. Cut the timeline at each event, and give every slice to the function on top of the stack.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

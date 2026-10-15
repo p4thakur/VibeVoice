@@ -1,0 +1,41 @@
+Using the biggest coin first feels like the fastest way to make change. With coins one, three, and four, it fails. Today, LeetCode problem three hundred twenty two. Coin Change.
+
+Here is the plan. Work out the fewest coins for every amount, from one up to the target. For each amount, try every coin as the last coin used: that coin, plus the best answer for what is left, which we already know. Keep the smallest.
+
+The coins are one, three, and four, and we can use each as often as we like. The amount is six. We want the fewest coins that make it, or minus one if it cannot be made.
+
+Greedy takes four first, leaving two, then one, and one. Three coins. But three plus three is also six, with only two coins. Taking the biggest coin first is not always best.
+
+The direct way tries every combination of coins that adds up to six. For larger amounts, the combinations explode. The bottleneck is that many combinations share the same remainder, and the best answer for that remainder is worked out again every time.
+
+Any best answer for six ends with some coin. If that last coin is three, the rest must be the best answer for three. So the answer for six is built from answers for smaller amounts. Storing those answers in a table is dynamic programming.
+
+Now the code. It has three parts.
+
+First, a table called dp, with one entry per amount. Dp of zero is zero coins. Every other entry starts at infinity, meaning not reachable yet.
+
+Second, two loops. For every amount from one up to the target, and for every coin no bigger than that amount, dp of the amount becomes the smaller of its current value, and dp of the amount minus the coin, plus one.
+
+Third, if the target's entry is still infinity, we return minus one. Otherwise, we return it.
+
+Now fill the table. Amount one: only the coin one fits. One coin.
+
+Amount two: one, plus the answer for one. Two coins.
+
+Amount three: the coin three alone. One coin.
+
+Amount four: the coin four alone. One coin.
+
+Amount five: four plus one. Two coins.
+
+Amount six. Using coin one leaves five, which needs two: three in total. Using coin three leaves three, which needs one: two in total. Using coin four leaves two, which needs two: three in total. The smallest is two.
+
+We return two.
+
+To check it: three plus three is six, with two coins, and no single coin is six.
+
+There is one step per amount, per coin: O of amount times coins time. The table has one entry per amount: O of amount space. The direct search grows exponentially.
+
+So that is Coin Change. The best way to make an amount is one coin, plus the best way to make the rest, and the table remembers every rest.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

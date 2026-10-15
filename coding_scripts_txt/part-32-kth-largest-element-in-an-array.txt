@@ -1,0 +1,41 @@
+Today, LeetCode problem two hundred fifteen. Kth Largest Element in an Array.
+
+Here is the plan. We only care about the biggest k numbers. So keep a small collection that holds just those, and always lets us throw out its smallest member. Once we have seen every number, the smallest member of the collection is the answer.
+
+The numbers are three, two, one, five, six, four. K is two. We want the second largest number, counting duplicates as separate numbers.
+
+The direct way sorts the whole array from big to small, and picks the number at position k. That is O of n log n. The bottleneck is that sorting puts every number in order, but we only wanted the top two. Almost all of that ordering work is thrown away.
+
+So we need a collection that is good at one thing: telling us its smallest member, and removing it, quickly. That is a min heap. Looking at the smallest takes one step. Adding or removing takes about log of its size.
+
+Why the smallest? Because the collection holds the k biggest so far. When a new number arrives and the collection is too big, the one that must leave is the smallest of them. It can never be the kth largest of the top group.
+
+Now the code. It has two parts.
+
+First, an empty list called heap. Python's heapq module turns a plain list into a min heap.
+
+Second, a loop over the numbers. Push the number into the heap. If the heap now holds more than k numbers, pop the smallest one out. After the loop, the smallest number in the heap, heap of zero, is the kth largest. We return it.
+
+Now run it. K is two.
+
+Three goes in. The heap holds three.
+
+Two goes in. The heap holds two and three. That is two numbers, so nothing leaves.
+
+One goes in. Now there are three numbers, one too many. The smallest, one, leaves. The heap holds two and three.
+
+Five goes in. The smallest, two, leaves. The heap holds three and five.
+
+Six goes in. The smallest, three, leaves. The heap holds five and six.
+
+Four goes in. It is the smallest, so it leaves straight away. The heap still holds five and six.
+
+The smallest in the heap is five. We return five.
+
+To check it: sorted from big to small, the numbers are six, five, four, three, two, one. The second one is five.
+
+Every number costs one push and at most one pop, each about log of k: O of n log k time. The heap never holds more than k plus one numbers: O of k space. When k is small, that beats sorting everything.
+
+So that is Kth Largest Element. To find the top k, keep a small heap of the best so far, and let the smallest of them be the doorkeeper.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

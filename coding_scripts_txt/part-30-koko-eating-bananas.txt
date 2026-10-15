@@ -1,0 +1,35 @@
+Today, LeetCode problem eight hundred seventy five. Koko Eating Bananas.
+
+Here is the plan. Do not search the piles. Search the speed. For any speed, counting the hours it needs is easy. And a faster speed never needs more hours. So the speeds split into too slow, then fast enough. We binary search for the first fast enough one.
+
+There are four piles of bananas: three, six, seven, and eleven. Koko eats at a speed of k bananas an hour. Each hour she picks one pile, and eats up to k from it. If the pile has fewer, she finishes it and waits out the hour. She has eight hours. We want the smallest speed that finishes in time.
+
+The direct way tries speed one, then two, then three, and counts the hours for each. Speed one takes twenty seven hours. Speed two takes fifteen. Speed three takes ten. Speed four takes eight, and that works. For huge piles, that is a huge number of speeds to try. The bottleneck is that we test every speed, even though hours only ever go down as the speed goes up.
+
+So the speeds look like this: too slow, too slow, too slow, fine, fine, fine. One cut point. Finding a cut point in a sorted list of answers is exactly what binary search is for.
+
+Now the code. It has three parts.
+
+First, the range. Lo is one, the slowest speed that makes sense. Hi is the biggest pile, because at that speed every pile takes one hour, and no speed above it can be better.
+
+Second, the loop, while lo is below hi. Mid is a speed to test. To count its hours, go through the piles, and add each pile plus mid minus one, divided by mid, rounded down. That is a way of dividing and rounding up. A pile of seven at speed three needs three hours, not two and a bit.
+
+Third, the decision. If the hours are at most h, this speed works, but a slower one might too, so hi moves to mid. Otherwise this speed is too slow, so lo moves to mid plus one. When they meet, we return lo.
+
+Now run it. Lo is one, hi is eleven. Mid is six. The piles take one, one, two, and two hours. Six hours is within eight, so hi moves to six.
+
+Lo is one, hi is six. Mid is three. One, two, three, four. Ten hours is too many, so lo moves to four.
+
+Lo is four, hi is six. Mid is five. One, two, two, three. Eight hours works, so hi moves to five.
+
+Lo is four, hi is five. Mid is four. One, two, two, three. Eight hours works, so hi moves to four.
+
+Lo and hi are both four. We return four.
+
+To check it: speed three needs ten hours, which is too many. Speed four needs exactly eight.
+
+The search takes about log of the biggest pile steps. Each step goes through all n piles. So the time is O of n times log of the biggest pile. Only a few variables: O of one space. Trying every speed would cost n times the biggest pile.
+
+So that is Koko Eating Bananas. When the answer is a number, and larger numbers only get easier, binary search the answer.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

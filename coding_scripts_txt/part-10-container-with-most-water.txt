@@ -1,0 +1,35 @@
+Today, LeetCode problem eleven. Container With Most Water.
+
+Here is the plan. Start with the widest container, a wall at each end. Then move the shorter wall inward, one step at a time, and keep the best area seen. Moving the shorter wall is safe, because that wall has already had its best container.
+
+There are six walls, with heights four, six, eight, three, seven, one. Any two walls, with the floor between them, hold water. The amount is the distance between them, times the shorter wall. We want the most water.
+
+The direct way tries every pair of walls. Six walls give fifteen pairs: O of n squared. The bottleneck is that it never learns anything from a pair. A short wall it has already measured is measured again with every other partner.
+
+Now look at one container. Its water is capped by the shorter wall. Keep that short wall, and move the other wall inward. The container gets narrower, and it is still capped by the same short wall, or by something lower. It can never hold more. So once a short wall has been paired with the farthest wall on the other side, it is finished. We can drop it.
+
+Now the code. It has two parts.
+
+First, the setup. Left at the first wall, right at the last, and best at zero.
+
+Second, the loop, while left is before right. H is the shorter of the two walls. The area is h times the distance between them, and best keeps the larger. Then whichever wall is shorter moves inward. If they are equal, we move the right one.
+
+Now run it. Left is four, right is one. The distance is five, and the shorter wall is one. Area five. The right wall is shorter, so it moves in.
+
+Left is four, right is seven, distance four. Area sixteen. Now the left wall is shorter. It moves in.
+
+Six and seven, distance three. Area eighteen. Best is eighteen. The left is shorter again, so it moves to eight.
+
+Eight and seven, distance two. Area fourteen. Now the right is shorter. It moves to three.
+
+Eight and three, distance one. Area three. The right moves again, and the pointers meet.
+
+We return eighteen.
+
+To check it: the walls six and seven stand three apart. Three times six is eighteen, and none of the fifteen pairs does better.
+
+Each step drops one wall: O of n time. Only two pointers and the best area: O of one space. The direct way was O of n squared.
+
+So that is Container With Most Water. The shorter wall caps every container it is in, so once it has had its widest chance, it can go.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

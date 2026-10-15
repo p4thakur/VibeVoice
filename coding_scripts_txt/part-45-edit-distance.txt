@@ -1,0 +1,37 @@
+Today, LeetCode problem seventy two. Edit Distance.
+
+Here is the plan. Fill in a table. The cell at row i and column j holds the fewest edits to turn the first i letters of the first word into the first j letters of the second word. Each cell is worked out from three neighbours that are already filled in. The bottom right cell is the answer.
+
+The first word is horse. The second word is ros. In one edit we may insert a letter, delete a letter, or replace a letter. We return the fewest edits that turn horse into ros.
+
+The direct way tries every edit at every step. Look at the ends of the words. If the last letters match, drop them both. If not, try a delete, an insert, and a replace, and keep the cheapest. Each choice leads to more choices, and the work grows exponentially. On this tiny pair, that is already seventy seven calls. The bottleneck is that the same pair of word beginnings is solved over and over, from different routes. The table has only twenty four cells, and each one needs solving once.
+
+Now look at one cell. We compare the last letter of the first i letters, with the last letter of the first j letters. If they match, no edit is needed for them, so the cell equals the cell diagonally up and left. If they differ, we pay one edit, plus the cheapest of three neighbours. The cell above means we deleted a letter from the first word. The cell to the left means we inserted a letter. The cell diagonally up and left means we replaced a letter.
+
+The edges are easy. Turning i letters into nothing costs i deletions. Turning nothing into j letters costs j insertions.
+
+Now the code. It has three parts.
+
+First, the table d, with one more row and one more column than the lengths, because of the empty prefix.
+
+Second, the edges. The first column holds zero, one, two, and so on. The first row does too.
+
+Third, two loops over the other cells. If the letters match, copy the diagonal. Otherwise, take up, left, and diagonal, and put one plus the smallest. At the end, we return the bottom right cell.
+
+Now run it. The first row is zero, one, two, three. The first column is zero to five.
+
+Row h. Turning h into r, o, or s costs one, two, three. All of them are mismatches.
+
+Row o. The o matches the o of ros, so that cell copies its diagonal, which is one. Turning ho into ro costs one edit: replace h with r.
+
+Skip ahead to the last cell. Row e, column s. The letters e and s differ. Up is two. Left is four. Diagonal is three. The smallest is two. Add one: three.
+
+We return three.
+
+To check it: horse becomes rorse by replacing h with r. Rorse becomes rose by deleting an r. Rose becomes ros by deleting the e. Three edits.
+
+The table has m times n cells, and each costs a few steps: O of m times n time, and O of m times n space. The direct way was exponential.
+
+So that is Edit Distance. A big question about two words becomes a table of small questions about their beginnings, and each answer comes from three neighbours.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

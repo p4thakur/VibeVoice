@@ -1,0 +1,39 @@
+Today, LeetCode problem one thousand two hundred forty nine. Minimum Remove to Make Valid Parentheses.
+
+Here is the plan. Walk through the string once, with a stack that holds the positions of open brackets still waiting for a partner. A closing bracket with nothing waiting can never be matched, so mark it for removal. When the walk ends, any open bracket still waiting never got a partner, so mark those too. Everything left is a valid string.
+
+The string is a, close bracket, b, open bracket, c, close bracket, d, open bracket. Brackets here means round parentheses. We remove as few brackets as possible, so that the brackets are valid. Letters are never removed.
+
+The direct way tries removing every possible set of characters, and keeps the smallest removal that leaves a valid string. Eight characters have two hundred fifty six sets, and the count doubles with every extra character. The bottleneck is that we guess which brackets to remove, when the string itself can tell us.
+
+And it can. A closing bracket is hopeless if no open bracket is waiting before it. An open bracket is hopeless if nothing closed it by the end. Those are the only two ways a bracket can fail.
+
+Now the code. It has three parts.
+
+First, turn the string into a list of characters, because strings cannot be changed in place. We will blank out the bad ones. Then make an empty stack.
+
+Second, the loop over each position. If the character is an open bracket, push its position on the stack. If it is a closing bracket, then, if the stack has an open bracket waiting, pop it, because they are partners. If the stack is empty, there is nothing to match, so blank this character.
+
+Third, after the loop, every position still on the stack is an open bracket that never found a partner. Blank them all. Then join the list back into a string.
+
+Now run it. Position zero is a letter. Nothing happens.
+
+Position one is a closing bracket. The stack is empty. Blank it.
+
+Position two is a letter. Position three is an open bracket. The stack holds three.
+
+Position four is a letter. Position five is a closing bracket. The stack has three, so they are partners. Pop it.
+
+Position six is a letter. Position seven is an open bracket. The stack holds seven.
+
+The loop ends. Seven is still on the stack. It never closed. Blank it.
+
+Joining what is left gives a, b, open bracket, c, close bracket, d.
+
+To check it: the one bracket pair is matched. We removed exactly two brackets, and trying all two hundred fifty six sets confirms that no valid string needs fewer removals.
+
+One pass, one stack, one list: O of n time, and O of n space. The direct way was exponential.
+
+So that is Minimum Remove to Make Valid Parentheses. Do not guess what to remove. A stack tells you which brackets never found a partner.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

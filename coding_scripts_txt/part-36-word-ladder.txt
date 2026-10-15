@@ -1,0 +1,41 @@
+Today, LeetCode problem one hundred twenty seven. Word Ladder.
+
+Here is the plan. Think of every word as a point, with a line to every word that differs by one letter. The fewest steps from the start word to the end word is a shortest path. A search that spreads out one step at a time, called breadth first search, finds it. To find a word's neighbours, do not compare it with the whole list. Change each letter to each of the twenty six letters, and check if the result is a real word.
+
+The start word is hit. The end word is cog. The word list is hot, dot, dog, lot, log, cog. Each step changes one letter, and every word along the way must be in the list. We return how many words are in the shortest chain, counting hit and cog. If there is no chain, we return zero.
+
+The direct way compares every pair of words, to build the lines. Hit and the six words make seven, which is twenty one pairs. For ten thousand words, that is about fifty million pairs. The bottleneck is that we ask every word about every other word, when each word really has only a handful of neighbours.
+
+So flip it. A word of length L has L positions, and twenty six letters to try in each. Those are all the neighbours it could possibly have. We make each candidate, and look it up in a set, which takes one step.
+
+And why breadth first? It visits words in rings. First everything one step away, then everything two steps away. So the first time we reach a word is by the shortest route.
+
+Now the code. It has three parts.
+
+First, put the words in a set for fast lookup. If the end word is not in the set, no chain can finish, so we return zero. The queue starts with the start word, and a count of one, since the chain already holds one word.
+
+Second, the loop. Take a word and its count from the queue. If it is the end word, return the count.
+
+Third, the neighbours. For every position in the word, and every letter, build a candidate with that one letter swapped. If the candidate is in the set, remove it from the set, and queue it with the count plus one. Removing it means we can never queue it twice. If the queue runs dry, we return zero.
+
+Now run it. Hit, with a count of one. Changing its first letter finds nothing. Changing its middle letter to o gives hot. It is in the set, so it is queued with two.
+
+Take hot. Changing its first letter finds dot, and lot. Both are queued with three.
+
+Take dot. Changing its last letter finds dog. Queued with four.
+
+Take lot. Changing its last letter finds log. Queued with four.
+
+Take dog. Changing its first letter to c gives cog. Queued with five.
+
+Take log. Its neighbours have already been used. Nothing new.
+
+Take cog. It is the end word. We return five.
+
+To check it: hit, hot, dot, dog, cog. Each word differs from the one before by exactly one letter. That is five words. And if cog were not in the list, we would return zero straight away.
+
+Each word enters the queue at most once. For each, we try length times twenty six candidates, and each candidate costs a string of length L to build. Time is O of n times L squared, with the twenty six as a constant. The set and the queue take O of n times L space. The direct way was O of n squared times L.
+
+So that is Word Ladder. Do not compare words with each other. Generate the neighbours, and let a breadth first search count the steps.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

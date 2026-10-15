@@ -1,0 +1,37 @@
+Today, LeetCode problem two hundred seven. Course Schedule.
+
+Here is the plan. For every course, count how many prerequisites it still needs. Take any course that needs none. Taking it lowers the count of every course that was waiting on it. If we manage to take every course this way, the schedule works. If we get stuck, there is a cycle.
+
+There are four courses, zero to three. Course one needs course zero. Course two needs course zero. Course three needs both one and two. We want to know whether all four courses can be finished.
+
+The direct way repeatedly scans every course, looking for one whose prerequisites are all taken, and takes it. Each scan checks every course and its prerequisites, and there can be as many scans as there are courses. The bottleneck is rescanning courses whose situation has not changed.
+
+But a course only becomes available at one moment: when its last prerequisite is taken. So instead of rescanning, keep a count of missing prerequisites for each course, and a queue of the courses whose count is zero. This ordering is called a topological sort.
+
+Now the code. It has three parts.
+
+First, build the graph. After maps each course to the courses that depend on it. Needs counts each course's missing prerequisites.
+
+Second, every course whose count is zero goes into the queue.
+
+Third, the loop. Take a course from the queue, and count it as taken. For each course that depends on it, lower its count by one. If the count reaches zero, that course joins the queue. At the end, the answer is whether we took all the courses.
+
+Now run it. The counts are zero, one, one, and two. Only course zero is ready.
+
+Take zero. Courses one and two each lose a requirement. Both reach zero, and join the queue.
+
+Take one. Course three goes from two to one. Not ready yet.
+
+Take two. Course three reaches zero, and joins the queue.
+
+Take three. Four courses taken, out of four. We return true.
+
+To check it: zero, one, two, three is an order where every course comes after its prerequisites.
+
+Now the failing case. If course zero needed course one, and course one needed course zero, neither count could ever reach zero. The queue starts empty, nothing is taken, and we return false. That is a cycle.
+
+Every course and every prerequisite is handled once: O of courses plus prerequisites, in time and in space. The direct way could rescan the whole graph once for every course.
+
+So that is Course Schedule. Take what is ready, let each course unlock what depends on it, and a cycle is whatever never unlocks.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

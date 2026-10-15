@@ -1,0 +1,33 @@
+Today, LeetCode problem one hundred two. Binary Tree Level Order Traversal.
+
+Here is the plan. Visit the tree level by level, with a queue. The trick is knowing where one level ends. Before we start a level, the queue holds exactly that level's nodes, so we count them, and take exactly that many.
+
+The tree has root one. One's children are two and three. Two has a left child, four. Three has two children, five and six. We want the values grouped by level: one, then two and three, then four, five, six.
+
+A queue visits nodes in the right order, top to bottom and left to right. What makes this hard is the grouping. A plain queue is one long line. By the time we take three, two's child four is already queued behind it, and nothing marks where level two stops.
+
+The fix is a snapshot. When a new level starts, the queue holds that level, and nothing else. Its length is the level's size. We remove exactly that many nodes, and the children they add wait for the next round. Visiting a tree this way is called breadth first search.
+
+Now the code. It has three parts.
+
+First, an empty tree returns an empty list. Otherwise, the queue starts with the root.
+
+Second, the outer loop runs while the queue has nodes. Each round starts an empty level list, and reads the queue's length once.
+
+Third, the inner loop runs exactly that many times. It removes a node from the front, adds its value to the level, and adds its left and right children to the back. When the inner loop ends, the level goes into the result.
+
+Now run it. The queue holds one. Length one. We take one, and add two and three. The first level is done: one.
+
+The queue holds two and three. Length two. We take two, and add four. We take three, and add five and six. The queue now has three nodes, but we took only two. The second level: two, three.
+
+The queue holds four, five, six. Length three. None of them has children. The third level: four, five, six.
+
+The queue is empty. We return the three levels.
+
+To check it: one is at the top, two and three are its children, and four, five, six are the children of the second level.
+
+Each node enters and leaves the queue once: O of n time. The queue holds at most one level, which can be about half the nodes: O of n space.
+
+So that is Level Order Traversal. Before each level, the queue's length tells you exactly how many nodes belong to it.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

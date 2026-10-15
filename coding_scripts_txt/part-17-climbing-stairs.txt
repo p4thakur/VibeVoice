@@ -1,0 +1,29 @@
+Today, LeetCode problem seventy. Climbing Stairs.
+
+Here is the plan. To stand on any step, your last move was either one step or two. So the ways to reach a step are the ways to reach the step below, plus the ways to reach the one below that. We build that up from the bottom, keeping just two numbers.
+
+There are five steps. Each move climbs one step, or two. We want the number of different ways to reach the top.
+
+The direct way is a recursive function: ways of n is ways of n minus one, plus ways of n minus two. It is correct, and painfully slow. For five steps, it makes fifteen calls. For thirty steps, it makes about two point seven million. The bottleneck is repetition. Inside ways of five, ways of three is computed twice, and the smaller steps even more often. The calls grow exponentially.
+
+But each step's answer never changes. So compute it once, from the bottom up, and reuse it. Saving the answers to smaller subproblems is called dynamic programming. And since each step only needs the two answers below it, we keep only two numbers.
+
+Now the code. It has two parts.
+
+First, two variables, prev and curr. They both start at one. There is one way to stand at the ground, and one way to reach step one.
+
+Second, a loop from step two up to n. Each round, the new curr is prev plus curr, and prev takes the old curr. After the loop, curr is the answer for step n.
+
+Now run it. Step two: one plus one, two ways. Step three: one plus two, three ways. Step four: two plus three, five. Step five: three plus five, eight.
+
+We return eight.
+
+To check it, list the ways to reach step three. One, one, one. One, two. And two, one. Three ways, as the loop said.
+
+One loop up to n: O of n time. Two variables: O of one space. The direct recursion was exponential.
+
+These numbers are the Fibonacci sequence, shifted by one.
+
+So that is Climbing Stairs. Every answer is built from the two answers just below it, and each one is computed only once.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

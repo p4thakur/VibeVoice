@@ -1,0 +1,39 @@
+Today, LeetCode problem fifty six. Merge Intervals.
+
+Here is the plan. Sort the intervals by where they start. Then one walk does the job. Each interval either overlaps the last merged interval and stretches it, or starts a new one.
+
+The intervals are eight to ten, one to three, two to six, fifteen to eighteen, and five to seven. Two intervals overlap when one starts before the other ends. We want every overlapping group merged into one interval.
+
+The direct way compares every pair, merges any two that overlap, and repeats until nothing changes. Five intervals already give ten pairs per round. The bottleneck is that, unsorted, any interval could overlap any other, so every pair must be checked, again and again.
+
+Sorting changes that. Once the intervals are in order of their start, a new interval can only overlap the last merged interval. Every earlier merged interval ends before that one starts. So each interval needs exactly one comparison.
+
+Sorted, they are one to three, two to six, five to seven, eight to ten, and fifteen to eighteen.
+
+Now the code. It has two parts.
+
+First, sort by start, and put the first interval into the merged list.
+
+Second, the loop over the rest. Last is the final merged interval. If the new interval starts at or before last's end, they overlap, and last's end becomes the larger of the two ends. Otherwise, the new interval is added as a fresh one.
+
+Now run it. Merged starts with one to three.
+
+Two to six starts at two, before three. Overlap. The end becomes six: one to six.
+
+Five to seven starts at five, before six. Overlap again. The end becomes seven: one to seven.
+
+Eight to ten starts after seven. No overlap. It is added.
+
+Fifteen to eighteen starts after ten. Added.
+
+We return one to seven, eight to ten, and fifteen to eighteen.
+
+To check it: one to three, two to six, and five to seven form one chain. Eight and fifteen both start after the group before them ends.
+
+Notice the end is the larger of the two, not just the new one. If one to ten were followed by two to three, taking the new end would wrongly shrink it to three.
+
+Sorting is O of n log n, and the walk is O of n, so O of n log n time. The merged list can hold n intervals: O of n space. The direct way was O of n squared, or worse.
+
+So that is Merge Intervals. After sorting, a new interval can only touch the last one, so one comparison is enough.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

@@ -1,0 +1,39 @@
+Today, LeetCode problem one hundred twenty one. Best Time to Buy and Sell Stock.
+
+Here is the plan. Walk through the days once. Remember the cheapest price seen so far. On each day, ask what we would earn if we sold today, having bought at that cheapest price. The best of those answers is the result.
+
+The prices over six days are seven, two, five, one, six, four. We may buy once and sell once, and the sale must come after the purchase. We want the biggest profit, or zero if there is none.
+
+The obvious shortcut fails. The highest price is seven and the lowest is one, a difference of six. But seven comes before one, so we cannot buy at one and sell at seven. Order matters.
+
+The direct way tries every pair of buy day and sell day. Six days give fifteen pairs. For each sell day, it searches all the earlier days for the cheapest one. That search is the bottleneck: it repeats work the previous day already did. O of n squared.
+
+Notice that the cheapest earlier price can be carried forward. When we move to the next day, the cheapest price so far is either the old cheapest, or today's price. One comparison updates it. That carried value is called a running minimum.
+
+Now the code. It has two parts.
+
+First, the setup. Lowest starts at the first price, and best starts at zero.
+
+Second, the loop over every price. Lowest becomes the smaller of lowest and today's price. Then best becomes the larger of best, and today's price minus lowest. That difference is today's profit, if we sell.
+
+Now run it. Day one, price seven. Lowest is seven. Profit zero.
+
+Day two, price two. Lowest drops to two. Profit zero.
+
+Day three, price five. Five minus two is three. Best is three.
+
+Day four, price one. Lowest drops to one. Profit zero. Best stays three.
+
+Day five, price six. Six minus one is five. Best becomes five.
+
+Day six, price four. Four minus one is three. Best stays five.
+
+We return five.
+
+To check it: buy on day four at one, and sell on day five at six. Six minus one is five, and the purchase comes first.
+
+One pass over the prices: O of n time. Only two numbers are stored: O of one space. The direct way was O of n squared.
+
+So that is the running minimum. Carry the cheapest price forward, and every day becomes a single subtraction.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

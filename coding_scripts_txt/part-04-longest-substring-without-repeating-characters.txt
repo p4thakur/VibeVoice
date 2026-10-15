@@ -1,0 +1,37 @@
+Today, LeetCode problem three. Longest Substring Without Repeating Characters.
+
+Here is the plan. Keep a window of characters with no repeats. Grow it on the right, one character at a time. When a repeat walks in, shrink it from the left until the repeat is gone. The longest window we ever hold is the answer.
+
+The string is a, b, c, b, a, d. Six characters. We want the length of the longest stretch where no character appears twice.
+
+The direct way tries every starting point, and from each one extends to the right until a character repeats. On this string, that is seventeen character checks. The waste is in the restart. After a repeat, it starts again from the next position, and checks characters it already knows are unique. For a long string, that is O of n squared.
+
+Now notice what a repeat really tells us. If the window is a, b, c, and another b arrives, the only problem is the old b. Everything after it is still fine. So we do not restart. We move the left edge just past the old b, and keep the rest.
+
+That moving range is called a sliding window. To know instantly whether a character is inside it, we keep its characters in a set.
+
+Now the code. It has three parts.
+
+First, the setup. An empty set called seen, a left edge at zero, and the best length so far, zero.
+
+Second, the main loop. The right edge walks over every character. While the new character is already in the set, we remove the character at the left edge, and move left forward by one.
+
+Third, once the repeat is gone, we add the new character to the set, and update best with the window's length: right minus left, plus one.
+
+Now run it. A goes in. The window is a, length one. B goes in. Length two. C goes in. Length three. Best is three.
+
+Then b arrives, and b is already in the set. We remove a, the leftmost character. B is still in the set, so we remove b too. Now the window is just c, and the new b can join. The window is c, b. Length two.
+
+Next, a. It left the set earlier, so it joins freely. C, b, a. Length three.
+
+Then d. C, b, a, d. Length four. Best becomes four.
+
+The loop ends. We return four.
+
+To check it: c, b, a, d has no repeats. Adding the b before it would repeat b, and nothing comes after it. Four.
+
+Each character enters the set once, and leaves it at most once. So the time is O of n. The set never holds more than the window, so the extra space is O of n at most. The direct way was O of n squared.
+
+So that is the sliding window. Grow on the right, shrink on the left only as far as the repeat forces you, and never restart.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

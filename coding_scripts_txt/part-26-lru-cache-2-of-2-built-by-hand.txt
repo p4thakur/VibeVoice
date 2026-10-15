@@ -1,0 +1,33 @@
+Today, LeetCode problem one hundred forty six again. LRU Cache, built by hand, without OrderedDict.
+
+Here is the plan. Store each item in a node of a doubly linked list, with the newest at the front and the oldest at the back. A hash map points from each key to its node. To use an item, unlink its node and put it at the front. To evict, remove the node at the back. Every step is a few pointer changes.
+
+The cache has room for two items. We put key one, put key two, get key one, put key three, and get key two. The same operations as last time, so the answers should be the same: one, then minus one.
+
+Building it has one awkward part. Adding or removing at the very front or back usually needs special cases, for an empty list or a single node. We avoid them with two dummy nodes, a head and a tail, that are never removed. Every real node always sits between two other nodes. These dummies are called sentinel nodes.
+
+Now the code. It has four parts.
+
+First, the node. It holds a key, a value, and two arrows: prev and next. It keeps its key, so that when it is evicted, we know which map entry to delete.
+
+Second, the constructor. It stores the capacity and an empty map, creates the head and the tail, and links them to each other.
+
+Third, two helpers. Remove links a node's two neighbours to each other, which cuts the node out. Add front puts a node right after the head, with four arrow changes.
+
+Fourth, get and put. Get returns minus one for a missing key. Otherwise, it removes the node, adds it at the front, and returns its value. Put removes any old node for that key, creates a new node, maps the key to it, and adds it at the front. If the map is now over capacity, the node just before the tail is the least recently used. It is removed from the list, and from the map.
+
+Now run it. Put one. Head, one, tail. Put two. Two goes to the front: head, two, one, tail.
+
+Get one. Its node is cut out, and added at the front: head, one, two, tail. We return one.
+
+Put three. Head, three, one, two, tail. The map now holds three keys, more than two. The node before the tail is two. It is cut out, and key two is deleted from the map.
+
+Get two. It is not in the map. We return minus one.
+
+To check it: the answers match the OrderedDict version. One, then minus one.
+
+Every operation is one map lookup and a few arrow changes: O of one time. The map and the list hold at most capacity items: O of capacity space.
+
+So that is an LRU cache built by hand. Sentinels remove the edge cases, the map finds the node, and the list keeps the order.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

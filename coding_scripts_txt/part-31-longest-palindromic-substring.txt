@@ -1,0 +1,37 @@
+Today, LeetCode problem five. Longest Palindromic Substring.
+
+Here is the plan. Every palindrome has a centre, and reads the same outwards in both directions. So pick a centre, and grow outwards while the two sides match. Try every centre, and keep the longest result.
+
+The string is a, b, b, c, b. We want the longest stretch that reads the same forwards and backwards.
+
+The direct way checks every substring to see if it is a palindrome. Five letters have fifteen substrings, and each check reads its letters again. For n letters, that is O of n cubed. The bottleneck is that a long palindrome contains shorter palindromes, and each check starts from nothing and proves it all over again.
+
+Now notice how a palindrome is built. If the centre is a palindrome, and the letters just outside it match, then the bigger one is a palindrome too. So we never need to start from the outside. We start from the middle, and grow.
+
+A centre comes in two kinds. A palindrome with an odd length is centred on one letter, like b, c, b. A palindrome with an even length is centred between two letters, like b, b. For five letters, that is five letter centres, and four between-letter centres. Nine in total.
+
+Now the code. It has two parts.
+
+First, a helper called expand. It takes a left and a right position. While both are inside the string, and the two letters match, left steps one left, and right steps one right. When it stops, those positions have gone one step too far on each side, so the palindrome is the text from left plus one up to right. If that is longer than best, it replaces best.
+
+Second, the loop. For every position i, call expand from i and i, for odd palindromes. Then call expand from i and i plus one, for even ones. At the end, we return best.
+
+Now run it. Position zero. The letter a alone is a palindrome of length one. Best is a. Between a and b, the letters differ, so nothing grows.
+
+Position one. The letter b alone is length one, not longer. Between the two b's, the letters match. Then a against c differs. We found b, b. Length two. Best is b, b.
+
+Position two. The b alone is length one. Between b and c, nothing.
+
+Position three. The c matches itself. Its neighbours are both b, so they match. Next, the left side is a, and the right side is past the end, so it stops. We found b, c, b. Length three. Best is b, c, b.
+
+Position four. The b alone is length one. Nothing else.
+
+We return b, c, b.
+
+To check it: b, c, b reads the same backwards. And trying all fifteen substrings finds nothing longer.
+
+There are n centres, and each grows at most n steps: O of n squared time. Only a few variables: O of one extra space. The direct way was O of n cubed.
+
+So that is Longest Palindromic Substring. Do not test substrings. Grow palindromes from their centres.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

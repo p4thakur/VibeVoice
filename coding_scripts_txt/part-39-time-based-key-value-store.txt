@@ -1,0 +1,37 @@
+Today, LeetCode problem nine hundred eighty one. Time Based Key-Value Store.
+
+Here is the plan. For each key, keep a list of its values, each with the time it was set. The times only ever go up, so each list is already sorted. To get a value at a time, find the last entry whose time is not after the asked time. That is a binary search.
+
+We build a store with two operations. Set takes a key, a value, and a timestamp. Get takes a key and a timestamp, and returns the value that was set at the latest timestamp that is not after the one asked. If there is none, it returns an empty string.
+
+Our example uses one key, love. At time one, the value is high. At time four, it is low. At time nine, it is peak. Then we ask for the value at time four, at time seven, at time zero, and at time ten.
+
+The direct way keeps the entries for a key in order, and scans them from the start for the last one not after the asked time. With a thousand updates to one key, a single get may touch a thousand entries. That is O of n per get. The bottleneck is that the list is sorted by time, and the scan ignores that.
+
+So use the order. The entries before some point all have times not after the asked time, and the entries after it all have times that are later. Finding that point is a binary search.
+
+Now the code. It has three parts.
+
+First, the constructor. The store is a dictionary, mapping each key to its list of entries.
+
+Second, set. If the key has no list yet, make an empty one. Then append the pair of timestamp and value. The problem promises timestamps for a key only go up, so appending keeps the list sorted.
+
+Third, get. Take the key's list, or an empty list if the key is unknown. Then binary search for the first entry whose timestamp is later than the one asked. Lo starts at zero, and hi at the length. While lo is below hi, find mid. If the entry at mid is not later, the answer lies to the right, so lo moves to mid plus one. Otherwise hi moves to mid. When the search ends, lo is the position of the first later entry. So the entry just before it, at lo minus one, is the answer. If lo is zero, nothing is early enough, and we return an empty string.
+
+Now run it. The list holds time one with high, time four with low, and time nine with peak.
+
+Get at time four. The first later entry is time nine, at position two. So we take position one. Low.
+
+Get at time seven. Mid is one, and its time, four, is not later, so lo moves to two. Mid is two, and its time, nine, is later, so hi moves to two. Lo is two. We take position one. Low again, because nothing was set between four and seven.
+
+Get at time zero. Every entry is later, so lo stays at zero. We return an empty string.
+
+Get at time ten. No entry is later, so lo goes all the way to three. We take position two. Peak.
+
+To check it: at time seven, the latest update at or before it was time four, and that one set low.
+
+Set adds to the end of a list: O of one. Get is one binary search: O of log n for the list of that key. The store holds every value ever set: O of n space. The direct scan was O of n per get.
+
+So that is Time Based Key-Value Store. When data arrives in time order, it is already sorted, and a binary search can look up any moment in the past.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

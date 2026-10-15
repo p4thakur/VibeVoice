@@ -1,0 +1,31 @@
+Today, LeetCode problem thirty four. Find First and Last Position of Element in Sorted Array.
+
+Here is the plan. Write one small binary search that finds the first position where a number is not smaller than x. Use it twice. The first position of the target is the answer for the target. The last position of the target is one before the answer for the next number up.
+
+The array is five, seven, seven, eight, eight, eight, ten. The target is eight. We return the first and last index where eight sits, or minus one and minus one if it is not there.
+
+The direct way scans from the left until it hits eight, then scans from the right. That is O of n. A plain binary search finds some eight quickly, but not necessarily the first or the last. If a million numbers were all eight, we would have to walk outwards, and that is O of n again. The bottleneck is that finding any eight is not enough. We need the edges of the run.
+
+So change the question. Not where is eight, but where is the first number that is not smaller than eight. In a sorted array, that is the left edge of the eights. And the first number not smaller than nine is just past the right edge. This small search is called a lower bound.
+
+Now the code. It has two parts.
+
+First, a helper called lower. Lo starts at zero, and hi starts at the length, one past the end, so the answer can be that spot. While lo is below hi, find the middle. If the number at mid is smaller than x, the answer is to the right, so lo moves to mid plus one. Otherwise mid might itself be the answer, so hi moves to mid. When they meet, that is the answer.
+
+Second, the main part. First is lower of the target. If that is past the end, or the number there is not the target, the target is missing, and we return minus one and minus one. Otherwise, last is lower of target plus one, minus one.
+
+Now run it. Lower of eight. Lo is zero, hi is seven. Mid is three, and the number is eight. Not smaller, so hi moves to three.
+
+Mid is one, and the number is seven. Smaller, so lo moves to two. Mid is two, and the number is seven. Smaller, so lo moves to three. Lo and hi are both three. First is three.
+
+Now lower of nine. Mid is three, and the number is eight, which is smaller than nine, so lo moves to four. Mid is five, and the number is eight, smaller again, so lo moves to six. Mid is six, and the number is ten. Not smaller, so hi moves to six. The answer is six. Minus one, and last is five.
+
+We return three and five.
+
+To check it: indexes three, four, and five hold eights. Index two holds a seven, and index six holds a ten. If the target were six, lower would return index one, where the number is seven. That is not six, so we would return minus one and minus one.
+
+Each search halves the range: O of log n. Only a few variables: O of one space. The direct way was O of n.
+
+So that is Find First and Last Position. Do not search for the number. Search for the edge, the first spot not smaller than it.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

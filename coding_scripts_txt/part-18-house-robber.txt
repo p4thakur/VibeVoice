@@ -1,0 +1,35 @@
+Today, LeetCode problem one hundred ninety eight. House Robber.
+
+Here is the plan. Walk past the houses one by one. At each house there are only two choices. Rob it, and add it to the best total from two houses back. Or skip it, and keep the best total from the house before. Take the bigger one. Two running numbers are all we need.
+
+The houses hold two, one, one, and nine. You cannot rob two houses that are next to each other. We want the most money.
+
+The tempting shortcut is to rob every other house. Houses one and three give two plus one, three. Houses two and four give one plus nine, ten. Both are wrong. The best plan is two plus nine, eleven, which skips two houses in a row.
+
+The direct way tries every plan with no neighbours. Four houses allow eight such plans, counting robbing nothing. Twenty houses allow over seventeen thousand. The number of plans grows exponentially. The bottleneck is that plans with the same beginning work out the same partial totals again and again.
+
+But the best total up to any house depends on only two earlier facts: the best total up to the house before, and the best total up to two houses before. That is dynamic programming again.
+
+Now the code. It has two parts.
+
+First, prev and curr both start at zero. Curr is the best total so far. Prev is the best total one house earlier.
+
+Second, the loop over the houses. Taking this house gives prev plus its money. Skipping it gives curr. Curr becomes the larger, and prev takes the old curr.
+
+Now run it. House one holds two. Take it: zero plus two, two. Skip it: zero. Best is two.
+
+House two holds one. Take it: zero plus one, one. Skip it: two. Best stays two.
+
+House three holds one. Take it: two plus one, three. Skip it: two. Best is three.
+
+House four holds nine. Take it: two plus nine, eleven. Skip it: three. Best is eleven.
+
+We return eleven.
+
+To check it: rob the first house and the last. Two plus nine is eleven, and they are not neighbours.
+
+One pass: O of n time. Two numbers: O of one space. The direct way was exponential.
+
+So that is House Robber. At each house, the best is either this house plus the best from two back, or the best so far.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

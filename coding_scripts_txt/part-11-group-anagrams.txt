@@ -1,0 +1,37 @@
+Today, LeetCode problem forty nine. Group Anagrams.
+
+Here is the plan. Give every word a signature that is the same for all of its anagrams: its letters in sorted order. Then put each word in a hash map, under its signature. Each bucket of the map is one group.
+
+The words are eat, tea, tan, ate, nat, bat. Two words are anagrams when they use exactly the same letters, the same number of times. We want the words grouped that way.
+
+The direct way compares words in pairs. Six words make fifteen pairs, and each comparison has to sort or count both words. For n words, that is O of n squared comparisons. The bottleneck is the pairing: every word is checked against every other word.
+
+Now ask what anagrams have in common. Sort the letters of eat, and you get a, e, t. Sort tea, and you get a, e, t too. Sorting turns every anagram into the same string. That string is called a canonical key. Two words share a key exactly when they are anagrams. So we never compare words with each other. Each word is only turned into its own key.
+
+Now the code. It has two parts.
+
+First, a dictionary called groups, where a missing key starts as an empty list.
+
+Second, the loop over the words. For each word, the key is its letters, sorted and joined back into a string. The word is appended to the list under that key. At the end, we return all the lists.
+
+Now run it. Eat sorts to a, e, t. A new key, so a new group: eat.
+
+Tea also sorts to a, e, t. It joins eat.
+
+Tan sorts to a, n, t. A new group.
+
+Ate sorts to a, e, t, and joins eat and tea. Nat sorts to a, n, t, and joins tan.
+
+Bat sorts to a, b, t. A group of its own.
+
+We return three groups. Eat, tea, ate. Tan, nat. And bat.
+
+To check it: each group shares its letters exactly, and no two groups do.
+
+Each of the n words is sorted once. If a word has k letters, that is O of n times k log k time. The map stores every word once: O of n times k space. The direct way needed O of n squared comparisons.
+
+If an interviewer asks for better, count the letters instead of sorting them. For lowercase words, a count of twenty six numbers is also a key, and building it is O of k.
+
+So that is Group Anagrams. Turn each word into a key all its anagrams share, and let a hash map do the grouping.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

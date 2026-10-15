@@ -1,0 +1,37 @@
+Today, LeetCode problem fifty three. Maximum Subarray.
+
+Here is the plan. Walk through the numbers once. At each number, keep the best sum of a stretch that ends right here. That is either the number alone, or the number added to the best stretch that ended just before. Remember the biggest value we ever see.
+
+The numbers are two, minus five, three, four, minus one, two. A subarray is a stretch of neighbouring numbers. We want the largest sum any stretch can have.
+
+The direct way tries every start and every end, and adds up the numbers. Six numbers have twenty one stretches. A thousand numbers have about half a million. Even with a running total for each start, that is O of n squared. The bottleneck is that the stretches overlap almost completely, and each one is summed again as if the others never existed.
+
+Here is what removes it. Stand on one number, and ask: should the stretch ending here reach back, or start fresh? Reaching back only helps if the stretch behind us adds something. If the stretch behind us sums to less than zero, it only drags us down, so we drop it and start fresh at this number. This idea is known as Kadane's algorithm.
+
+Now the code. It has two parts.
+
+First, two variables, cur and best. Both start as the first number. Cur is the best sum of a stretch ending at the current number. Best is the best sum we have seen anywhere.
+
+Second, a loop over the remaining numbers. Cur becomes the larger of two things: the number alone, or cur plus the number. Then best becomes the larger of best and cur. At the end, we return best.
+
+Now run it. Cur and best both start at two.
+
+Minus five. Reaching back gives two minus five, which is minus three. Alone, it is minus five. Minus three wins. Cur is minus three, and best stays two.
+
+Three. Reaching back gives minus three plus three, which is zero. Alone, it is three. Alone wins, because the stretch behind us was negative. We start fresh. Cur is three, and best becomes three.
+
+Four. Reaching back gives seven. Cur is seven, and so is best.
+
+Minus one. Reaching back gives six. Cur is six, and best stays seven.
+
+Two. Reaching back gives eight. Cur is eight, and best becomes eight.
+
+We return eight.
+
+To check it: three, plus four, minus one, plus two, is eight. Adding the two and the minus five in front would only lower it. And trying all twenty one stretches finds nothing bigger than eight.
+
+There is one pass, so the time is O of n. Only two variables are kept, so the space is O of one. The direct way was O of n squared.
+
+So that is Maximum Subarray. A stretch is worth extending only while it is adding something. The moment it goes negative, start fresh.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

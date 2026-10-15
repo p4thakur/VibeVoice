@@ -1,0 +1,31 @@
+Today, LeetCode problem one hundred four. Maximum Depth of Binary Tree.
+
+Here is the plan. The depth of a tree is one, for the root, plus the depth of its deeper subtree. Each subtree is a smaller tree, so we answer it the same way. An empty tree has depth zero, and that is where the recursion stops.
+
+Our tree has root three. Its left child is nine, a leaf. Its right child is twenty, which has two children, fifteen and seven. Depth is the number of nodes on the longest path from the root down to a leaf.
+
+What makes this hard is that the root cannot see the bottom. The longest path could go anywhere. Listing every root to leaf path, and measuring each one, works, but it stores paths we do not need.
+
+Instead, let every node answer one question for its parent: how deep am I? A leaf answers one. Any other node answers one, plus the larger of its children's answers. The answers flow upward, and the root's answer is the depth. This is called recursion, and here it works in post order: children first, then the parent.
+
+Now the code. It has two parts.
+
+First, the stopping case. If the node is empty, return zero.
+
+Second, the recursive case. Ask the left subtree for its depth, then the right subtree. Return one plus the larger of the two.
+
+Now run it. We start at three, which first asks nine. Nine's children are empty, so they return zero. Nine returns one plus zero: one.
+
+Then three asks twenty. Twenty asks fifteen, which returns one. Twenty asks seven, which returns one. Twenty returns one plus one: two.
+
+Back at three. The left side said one, and the right side said two. Three returns one plus two: three.
+
+The depth is three.
+
+To check it: the path three, twenty, fifteen has three nodes, and no path is longer.
+
+Every node is visited once: O of n time. The recursion keeps one call per level of the current path, so the space is O of the tree's height. That is O of log n for a balanced tree, and O of n if the tree is a single line. Listing every path would also store them; this stores only the calls.
+
+So that is Maximum Depth. Each node asks its children how deep they are, and adds one.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

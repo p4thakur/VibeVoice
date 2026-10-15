@@ -1,0 +1,39 @@
+Today, LeetCode problem nine hundred ninety four. Rotting Oranges.
+
+Here is the plan. Put every rotten orange in a queue. Each minute, the oranges in the queue rot their fresh neighbours, and those newly rotten oranges become the next minute's queue. Count the minutes until nothing fresh is left.
+
+The grid has three rows and three columns. Two is a rotten orange, one is fresh, and zero is empty. The top row is two, one, one. The middle row is one, one, zero. The bottom row is zero, one, one. Each minute, a rotten orange rots the fresh ones up, down, left, and right of it. We want the minutes until no fresh orange is left, or minus one if some can never rot.
+
+The direct way scans the whole grid every minute, rots every fresh orange that touches a rotten one, and repeats. Here that is five scans of nine cells: forty five cell checks. On a large grid, that is O of cells squared. The bottleneck is that each scan looks at oranges that rotted long ago. Only the ones that rotted last minute can spread anything new.
+
+So we only keep track of the newest rotten oranges. That moving edge is called the frontier. Spreading outward one layer at a time, from all the starting points together, is a multi source breadth first search.
+
+Now the code. It has three parts.
+
+First, the setup. Two loops look at every cell once. Rotten oranges go into the queue, and fresh ones are counted.
+
+Second, a helper called rot. It takes a cell. If the cell is inside the grid and holds a fresh orange, it marks it rotten, lowers the fresh count, and adds it to the queue.
+
+Third, the minute loop, which runs while the queue has oranges and fresh ones remain. We read the queue's length, so we only process this minute's oranges. Each one calls rot on its four neighbours. Then a minute is added. At the end, if nothing is fresh, we return the minutes. Otherwise, minus one.
+
+Now run it. Six oranges are fresh, and one is rotten, in the top left corner.
+
+Minute one. The corner rots the orange below it, and the one to its right. Four fresh left.
+
+Minute two. Those two spread. The center rots, and so does the top right. Two fresh left.
+
+Minute three. The center rots the orange below it. One fresh left.
+
+Minute four. That orange rots the last one, in the bottom right. None left.
+
+We return four.
+
+To check it: the bottom right orange is the farthest from the corner. The shortest path to it, around the empty cells, takes four steps.
+
+Notice that rot marks an orange the moment it is queued. So no orange is ever queued twice, and an orange rotted this minute does not spread until the next.
+
+Each cell enters the queue at most once: O of rows times columns time. The queue can hold every cell: O of rows times columns space. The direct way was O of cells squared.
+
+So that is Rotting Oranges. Start from every rotten orange at once, and spread one layer per minute.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

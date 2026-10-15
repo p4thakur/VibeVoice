@@ -1,0 +1,39 @@
+Today, LeetCode problem seventy six. Minimum Window Substring.
+
+Here is the plan. Slide a window over the string. Grow it on the right until it contains every character we need. Then shrink it from the left for as long as it still contains them, recording the smallest window seen. Then grow again.
+
+The string is a, x, b, c, a, b. The target is a, b, c. We want the shortest stretch of the string that contains a, b, and c.
+
+The direct way checks every substring. Six characters give twenty one substrings, and each one has to be counted. For a long string, that is O of n squared substrings, or more. The bottleneck is that neighbouring substrings are counted from scratch, though they differ by one character.
+
+A window can be updated one character at a time instead. Adding a character on the right changes one count. Removing one on the left changes one count. We just need to know, at every moment, whether the window is complete.
+
+For that, we keep two things. Need maps each character to how many more of it the window still owes. Missing is the total number of target characters still absent. When missing is zero, the window is valid.
+
+Now the code. It has three parts.
+
+First, the setup. Need is the count of the target's characters. Missing starts at the target's length. Left starts at zero, and the best window starts empty, with infinite length.
+
+Second, the right edge walks over the string. If the window still owed this character, missing goes down by one. Either way, its need goes down. A character the target does not want simply goes below zero.
+
+Third, while missing is zero, the window is valid. We record it if it is the smallest so far. Then we give back the leftmost character. Its need goes up by one, and if that need becomes positive, the window now owes it, so missing goes up. Left moves forward.
+
+At the end, we return the best window, or an empty string if there never was one.
+
+Now run it. A is needed. Missing two. X is not needed. B is needed. Missing one. C is needed. Missing zero.
+
+The window a, x, b, c is valid, length four. Recorded. Drop a. Now a is owed again. Missing one.
+
+A arrives on the right. Missing zero. The window x, b, c, a is valid, length four, no better. Drop x. X was extra, so nothing is owed. Still valid: b, c, a, length three. Recorded. Drop b. Missing one.
+
+B arrives. The window c, a, b is valid, length three, but not shorter. Drop c. Missing one.
+
+The string ends. We return b, c, a.
+
+To check it: b, c, a contains all three, and no stretch of two characters can hold three different letters.
+
+Each character enters the window once, and leaves it at most once: O of the string's length plus the target's length. The counts take O of the alphabet size in space. The direct way was O of n squared, or more.
+
+So that is Minimum Window Substring. Grow until the window is complete, shrink while it stays complete, and two counts tell you which is which.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

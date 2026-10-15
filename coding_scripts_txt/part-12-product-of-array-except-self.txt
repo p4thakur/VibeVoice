@@ -1,0 +1,39 @@
+Today, LeetCode problem two hundred thirty eight. Product of Array Except Self.
+
+Here is the plan. The product of everything except one number is two parts multiplied together: everything to its left, and everything to its right. One pass from the left builds the left parts. One pass from the right multiplies in the right parts. No division needed.
+
+The numbers are two, three, four, five. For each position, we want the product of all the other numbers. The problem forbids division, and asks for O of n time.
+
+Dividing the total product by each number would be the obvious trick, and it is not allowed. It would also break when a number is zero.
+
+The direct way multiplies the other numbers for each position. Four positions, each multiplying three numbers. For n numbers, that is O of n squared. The bottleneck: neighbouring positions recompute almost the same product. The left side of position two is the left side of position one, times one more number.
+
+So we carry the products forward. The product of everything before a position is called a prefix product. The product of everything after it is a suffix product. Each one grows with a single multiplication per step.
+
+Now the code. It has three parts.
+
+First, an answer array, filled with ones.
+
+Second, the left pass. Prefix starts at one. At each index, the answer takes the current prefix, and then prefix is multiplied by that index's number. So each answer holds the product of everything to its left.
+
+Third, the right pass, from the last index down. Suffix starts at one. Each answer is multiplied by the current suffix, and then suffix is multiplied by that index's number. Now each answer also includes everything to its right.
+
+Now run the left pass. Index zero gets one, since nothing is to its left. Index one gets two. Index two gets two times three, six. Index three gets six times four, twenty four.
+
+Now the right pass. Index three is multiplied by one, since nothing is to its right. It stays twenty four. Suffix becomes five.
+
+Index two: six times five, thirty. Suffix becomes twenty.
+
+Index one: two times twenty, forty. Suffix becomes sixty.
+
+Index zero: one times sixty, sixty.
+
+We return sixty, forty, thirty, twenty four.
+
+To check it: for index zero, three times four times five is sixty. For index three, two times three times four is twenty four.
+
+Two passes: O of n time. Apart from the answer array, only two numbers: O of one extra space. The direct way was O of n squared.
+
+So that is Product of Array Except Self. Everything except you is everything before you, times everything after you.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

@@ -1,0 +1,39 @@
+Today, LeetCode problem two hundred twenty seven. Basic Calculator Two.
+
+Here is the plan. Times and divide bind tighter than plus and minus. So treat the expression as a sum of terms. Keep a stack of terms. A plus or minus starts a new term, so we push the number. A times or divide changes the term on top, so we combine the number with it right away. At the end, the answer is the sum of the stack.
+
+The expression is three, plus, twelve, times, two, minus, eight, divide, four. It has only whole numbers and four operators. Division throws away the fraction, rounding toward zero. We return the value.
+
+What makes this hard is the order of things. An operator comes before the number it applies to. But we only know a number is finished when we reach the next operator, or the end. So we cannot act when we see an operator. We must remember the operator that came before the number, and act when the number is complete.
+
+Reading the digits is the first part of that. A number can have several digits. For each new digit, the number so far is multiplied by ten, and the digit is added. Twelve is one, then ten plus two.
+
+Now the code. It has four parts.
+
+First, the setup. Remove the spaces. Make an empty stack. Num is zero. And op, the previous operator, starts as plus. A made up plus in front of the first number is the same as no sign at all.
+
+Second, the loop over each character. If it is a digit, extend num.
+
+Third, when the character is an operator, or it is the very last one, the number is finished. Look at the previous operator. Plus pushes the number. Minus pushes the number made negative. Times pops the top of the stack, and pushes the top times the number. Divide pops the top, and pushes the top divided by the number, with int cutting the fraction toward zero. Then op becomes this character, and num goes back to zero.
+
+Fourth, return the sum of the stack.
+
+Now run it. Three is read. Then the plus ends it. The previous operator is the made up plus, so three is pushed. The stack holds three.
+
+Twelve is read. Then the times ends it. The previous operator is plus, so twelve is pushed. The stack holds three and twelve. The previous operator is now times.
+
+Two is read. The minus ends it. The previous operator is times, so we pop twelve, and push twelve times two. The stack holds three and twenty four. The previous operator is now minus.
+
+Eight is read. The divide ends it. The previous operator is minus, so we push minus eight. The stack holds three, twenty four, and minus eight. The previous operator is now divide.
+
+Four is read, and it is the last character. The previous operator is divide, so we pop minus eight, and push minus eight divided by four. That is minus two. The stack holds three, twenty four, and minus two.
+
+The sum is twenty five.
+
+To check it by hand: twelve times two is twenty four. Eight divided by four is two. Three, plus twenty four, minus two, is twenty five.
+
+One pass over the characters: O of n time. The stack can hold up to one term per number: O of n space.
+
+So that is Basic Calculator Two. Remember the operator before each number, and finish multiplication on the spot. What is left on the stack only needs adding.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

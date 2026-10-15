@@ -1,0 +1,41 @@
+Today, LeetCode problem twenty three. Merge k Sorted Lists.
+
+Here is the plan. In each sorted list, only the front node matters, because it is the smallest one left in that list. So the next number in the answer is always the smallest of the fronts. Keep the fronts in a min heap. Take the smallest, add it to the answer, and put its next node into the heap.
+
+There are three sorted linked lists. One, four, five. One, three, four. Two, six. We want one sorted list with all eight nodes.
+
+The direct way looks at the front of every list, picks the smallest, and moves on. That is k comparisons for every node we place. With n nodes in total, that is O of n times k. The bottleneck is that after one pick, only one front has changed, but we compare all of them again.
+
+So we want a collection that remembers the smallest front, and is cheap to update when one front changes. That is a min heap. Taking the smallest, and adding a new front, each cost about log of its size. And the heap never holds more than one front per list.
+
+Now the code. It has three parts.
+
+First, fill the heap. For each list that is not empty, push a tuple holding three things: the value of its front node, the list's index, and the node itself. The heap orders tuples by their first item. The index sits second for a reason. If two values are equal, Python moves on to the next item, and nodes cannot be compared. The index always settles the tie.
+
+Second, a dummy node, and a tail that points at it. The answer grows behind the tail.
+
+Third, the loop, while the heap is not empty. Pop the smallest. Attach that node to the tail, and move the tail onto it. If that node has a next node, push the next node into the heap. At the end, the answer starts at dummy dot next.
+
+Now run it. The heap holds the three fronts: one from the first list, one from the second, and two from the third.
+
+Pop the one from the first list. Its next node, four, goes in.
+
+Pop the one from the second list. Its next node, three, goes in.
+
+Pop the two. Its next node, six, goes in.
+
+Pop the three. Its next node, four, goes in. The heap holds four, four, and six.
+
+Pop the four from the first list. Its next node, five, goes in. Pop the four from the second list. That list has no next node, so nothing goes in.
+
+Pop the five. That list is finished too. Pop the six. The heap is empty.
+
+The answer is one, one, two, three, four, four, five, six.
+
+To check it: that is all eight numbers, in order. Every node was attached exactly once.
+
+Every node is pushed once and popped once, and the heap holds at most k nodes: O of n log k time. The heap itself takes O of k space, since we reuse the original nodes. The direct way was O of n times k.
+
+So that is Merge k Sorted Lists. Only the fronts matter, and a heap always knows which front is smallest.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

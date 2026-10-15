@@ -1,0 +1,33 @@
+Today, LeetCode problem one thousand two hundred thirty six. Web Crawler.
+
+Here is the plan. A website is a graph. Pages are the points, and links are the lines between them. Start at the home page, and spread outwards, one step at a time. Keep a record of every page we have seen, so that we never visit one twice. And follow only links that stay on the same host as the start page.
+
+You are given a start page, and a helper that can return the links on any page. Our example has four pages. The home page, on news dot site dot com. The sports page, and the world page, also on news dot site dot com. And one page on other dot com. The home page links to the sports page, and to the other dot com page. The sports page links back to home, and on to the world page. The world page links to the other dot com page, and back to sports. We return every page we can reach that is on news dot site dot com.
+
+What makes this hard is two things. First, links form loops. Sports links back to home. Without memory, we would go round forever. Second, links leave the site. The other dot com page must be ignored, and everything it links to.
+
+Now the code. It has three parts.
+
+First, a small helper called host. It splits the address at the slashes. The third piece is the host name. Domain is the host of the start page.
+
+Second, the memory. Seen is a set that starts holding the start page. The queue also starts with the start page.
+
+Third, the loop. Take a page from the queue. Ask the helper for its links. For each link, if its host is not the domain, or we have already seen it, skip it. Otherwise add it to seen, and to the queue. We mark it seen the moment we queue it, so it can never be queued twice. At the end, we return everything in seen.
+
+Now run it. The queue holds the home page.
+
+Take home. Its first link is sports. Same host, not seen. Add it. Its second link is the other dot com page. A different host. Skip.
+
+Take sports. Its first link is home. Already seen. Skip. Its second link is world. Same host, new. Add it.
+
+Take world. Its first link is the other dot com page. Wrong host. Skip. Its second link is sports. Already seen. Skip.
+
+The queue is empty. We return home, sports, and world.
+
+To check it: the other dot com page was never added. And each page appears once, even though the pages link to each other in circles.
+
+Each page is queued once, and each link is looked at once. If a pages and b links, time is O of a plus b. The seen set and the queue hold up to every page: O of a space.
+
+So that is Web Crawler. A crawl is just a graph search, with two guards: remember where you have been, and stay on your own site.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

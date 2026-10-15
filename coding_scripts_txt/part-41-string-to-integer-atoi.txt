@@ -1,0 +1,33 @@
+Today, LeetCode problem eight. String to Integer, also called atoi.
+
+Here is the plan. There is no clever trick here. The problem is a list of rules, and the skill is doing them in the right order. Skip the spaces at the front. Read an optional sign. Read digits until something that is not a digit. Apply the sign, and keep the result inside the range of a thirty two bit integer.
+
+The string is two spaces, a minus sign, the digits nine one two eight three four seven two three three two, a space, and then the letters a and b. We return the integer the string starts with.
+
+What makes this hard is not the work. It is the edge cases. Spaces can come first. The sign is optional. Anything after the digits is ignored. If there are no digits at all, the answer is zero. And a number too big for thirty two bits must be cut back to the nearest limit. Those limits are minus two billion, one hundred forty seven million, four hundred eighty three thousand, six hundred forty eight, and two billion, one hundred forty seven million, four hundred eighty three thousand, six hundred forty seven.
+
+Now the code. It has four parts.
+
+First, an index i, which marks where we are in the string. While the character at i is a space, move i forward.
+
+Second, the sign. Start with sign set to one. If the character at i is a plus or a minus, set sign to minus one for a minus, and step past it.
+
+Third, the digits. Result starts at zero. While we are inside the string, and the character at i is a digit from zero to nine, result becomes result times ten, plus that digit. Then i moves forward. The loop stops at the first character that is not a digit, or at the end.
+
+Fourth, the finish. Multiply by the sign. Then clamp: take the smaller of the result and the top limit, and then the larger of that and the bottom limit. Python never overflows, so we can clamp at the end. In a language with fixed size integers, the check has to happen before each digit is added.
+
+Now run it. The index skips the two spaces, and stands on the minus sign. The sign is minus one, and the index moves past it.
+
+Now the digits. Nine. Ninety one. Nine hundred twelve. Each new digit moves the result one place left, and adds itself. After eleven digits, the result is ninety one billion, two hundred eighty three million, four hundred seventy two thousand, three hundred thirty two.
+
+The next character is a space, which is not a digit. The loop stops. The letters a and b are never read.
+
+Times minus one, the result is minus ninety one billion and change. That is below the bottom limit. So the clamp returns the bottom limit, minus two billion, one hundred forty seven million, four hundred eighty three thousand, six hundred forty eight.
+
+To check the edge cases: the string words and nine eight seven gives zero, because the first character is not a digit. A plain plus one gives one. And minus, then a leading zero, then four two, gives minus forty two, because leading zeros do nothing.
+
+One pass over the string: O of n time. A few variables: O of one space.
+
+So that is String to Integer. A problem made of rules is solved by doing the rules one at a time, in order, and writing down which edge case each line covers.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

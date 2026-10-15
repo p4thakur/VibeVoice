@@ -1,0 +1,37 @@
+Today, LeetCode problem twenty. Valid Parentheses.
+
+Here is the plan. Walk through the string once. Every opening bracket waits on a stack. Every closing bracket must match the bracket on top of the stack, the one opened most recently. If it does, both are done. If anything fails to match, or something is left waiting at the end, the string is invalid.
+
+Our string is: open round, open square, close square, open curly, close curly, close round. Six characters. It is valid when every opener is closed by the same type, in the right order.
+
+The direct way deletes every adjacent pair, like an open and close round, again and again, until nothing changes. If the string ends up empty, it was valid. Here, two passes delete pairs, and a third finds nothing left to delete. The bottleneck is the rescanning. Each pass reads the whole string again, to find pairs that only appeared because of the last deletion. In the worst case, that is O of n squared.
+
+Notice which pair always disappears first. It is a closer right after its opener. So the bracket a closer must match is always the latest opener that is still unclosed. Last in, first out. That structure is called a stack.
+
+Now the code. It has three parts.
+
+First, a map from each closing bracket to its opening partner, and an empty stack.
+
+Second, the loop over every character. An opener is pushed on the stack. A closer checks the top. If the stack is empty, or the top is not its partner, we return false right away. Otherwise, we pop the top.
+
+Third, after the loop, we return true only if the stack is empty, so no opener is left waiting.
+
+Now run it. Open round. Pushed. The stack holds round.
+
+Open square. Pushed. The stack holds round, square.
+
+Close square. Its partner is open square, and that is on top. Pop. The stack holds round again.
+
+Open curly is pushed, and close curly pops it, the same way.
+
+Close round. Its partner is open round, and it is on top. Pop. The stack is empty.
+
+The loop ends with an empty stack. We return true.
+
+To check the failure cases: open round, then close square, fails at once, because the top is round, not square. And two open rounds with nothing else fail at the end, because the stack still holds them.
+
+Each character is pushed or popped once. O of n time. The stack can hold up to n openers, so O of n space. The direct way was O of n squared.
+
+So that is Valid Parentheses. A closer must always match the most recent unclosed opener, and a stack keeps exactly that bracket on top.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

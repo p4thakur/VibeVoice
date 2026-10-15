@@ -1,0 +1,31 @@
+Checking that every node is bigger than its left child, and smaller than its right child, sounds like enough to validate a binary search tree. It is not. Today, LeetCode problem ninety eight. Validate Binary Search Tree.
+
+Here is the plan. Every node carries a range it must fall inside. The root may be anything. Going left, the parent's value becomes the upper limit. Going right, it becomes the lower limit. One node outside its range makes the whole tree invalid.
+
+Our tree has root five. Its left child is three, and its right child is eight. Three has two children: two on the left, and six on the right. In a valid tree, everything in a node's left subtree is smaller than it, and everything in its right subtree is bigger.
+
+Now check each parent with its children. Five has three on the left and eight on the right: fine. Three has two on the left and six on the right: fine. Every local check passes. But six sits in five's left subtree, and six is bigger than five. The tree is invalid. The local check never compares six with five.
+
+So a node must respect every ancestor above it, not only its parent. We do not need to remember all of them. Only two numbers matter: the tightest lower limit, and the tightest upper limit. That pair is called the node's bounds.
+
+Now the code. It has two parts.
+
+First, a helper called check, which takes a node and its bounds, low and high. An empty node is valid. If the node's value is not strictly between low and high, it returns false. Otherwise, it checks the left child with the upper bound tightened to this value, and the right child with the lower bound raised to this value. Both must pass.
+
+Second, the main function calls check on the root, with minus infinity and plus infinity as the bounds.
+
+Now run it. Five, with no limits. Fine. Its left child, three, must be below five. Fine.
+
+Two, on the left of three, must be below three. Fine. Its children are empty.
+
+Six, on the right of three, must be above three and below five. The upper limit five came from the root. Six is not below five, so it returns false.
+
+That false travels up through three, and through five. The right subtree, eight, is never even checked. We return false.
+
+To check it: six is in the left subtree of five, so it must be smaller than five, and it is not.
+
+Each node is checked once: O of n time. The recursion uses one call per level: O of the tree's height in space.
+
+So that is Validate Binary Search Tree. A node answers to all of its ancestors, and two bounds carry everything they require.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

@@ -1,0 +1,33 @@
+Today, LeetCode problem seven hundred four. Binary Search.
+
+Here is the plan. The array is sorted, so one look at the middle tells us which half cannot hold the target. We throw that half away, and look at the middle of what is left. Each look halves the search.
+
+The array is one, three, five, seven, nine, eleven, thirteen. Seven numbers, sorted. The target is nine. We return its index, or minus one if it is not there.
+
+The direct way checks the numbers one by one from the left. Nine is found on the fifth check. For n numbers, that is up to n checks: O of n. The bottleneck is that each check rules out only one number, even though the array is sorted.
+
+Now use the order. If the middle number is smaller than the target, every number to its left is smaller too. So one comparison rules out half the array. Repeating this is called binary search.
+
+Now the code. It has two parts.
+
+First, two edges. Lo starts at index zero, and hi at the last index. If the target is present, it is always between them.
+
+Second, the loop, which runs while lo is not past hi. Mid is the middle index. If the number there is the target, we return mid. If it is smaller than the target, the answer is to the right, so lo moves to mid plus one. Otherwise, hi moves to mid minus one. If the loop ends, the edges have crossed, and we return minus one.
+
+Now run it. Lo is zero, hi is six. Mid is three, and the number there is seven. Seven is smaller than nine, so lo moves to four. The left half is gone.
+
+Now lo is four, and hi is six. Mid is five, and the number is eleven. Eleven is bigger than nine, so hi moves to four.
+
+Lo and hi are both four. Mid is four, and the number is nine. Found. We return four.
+
+Three checks instead of five.
+
+To check it: index four holds nine. And if the target were eight, the same three steps would end with lo at four and hi at three. The edges cross, so we return minus one.
+
+That is why the loop runs while lo is less than or equal to hi. When they are equal, one number is still left to check.
+
+Each check halves the range: O of log n time. A million numbers need at most twenty checks. Only a few indexes are stored: O of one space. The direct way was O of n.
+
+So that is binary search. In a sorted array, one comparison at the middle removes half of what is left.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

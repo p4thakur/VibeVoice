@@ -1,0 +1,39 @@
+Today, LeetCode problem fifteen. Three Sum.
+
+Here is the plan. Sort the numbers. Fix one number at a time, and look for two more that cancel it out. Because the array is sorted, two pointers find that pair in one sweep. Skipping repeated values keeps every answer unique.
+
+The numbers are minus one, zero, one, two, minus one, minus four. We want every group of three that adds up to zero, with no group repeated.
+
+The direct way tries every group of three. Six numbers give twenty groups. A thousand numbers give over a hundred and sixty six million. That is O of n cubed, and it still needs extra work to remove repeated groups. The bottleneck is the innermost search: for each pair, it scans for the third number.
+
+Once we fix the first number, the problem becomes: find two numbers that add up to its opposite. In a sorted array, that is a two pointer search. If the sum is too small, move the left pointer right. If it is too big, move the right pointer left.
+
+Sorted, the numbers are minus four, minus one, minus one, zero, one, two.
+
+Now the code. It has three parts.
+
+First, sort, and prepare the result list.
+
+Second, the outer loop picks index i as the fixed number. If it equals the number before it, we skip it, since it would find the same groups again. Then j starts just after i, and k at the end.
+
+Third, the inner loop runs while j is before k. If the total is below zero, j moves right. If it is above zero, k moves left. If it is exactly zero, we record the group, move j right, and keep moving it while it lands on the same value as before.
+
+Now run it. Fix minus four. Even its two biggest partners, one and two, only reach minus one. Every total stays below zero, so j walks until it meets k. No group.
+
+Fix minus one. J is the other minus one, and k is two. Minus one, minus one, two: zero. Recorded. J moves to zero.
+
+Now minus one, zero, two is one. Too big, so k moves to one. Minus one, zero, one: zero. Recorded.
+
+The next i is minus one again. It repeats the value before it, so it is skipped.
+
+Fix zero. Zero, one, two is three. Too big. K moves left, and the pointers meet.
+
+We return two groups: minus one, minus one, two. And minus one, zero, one.
+
+To check it: both groups add up to zero, and among all twenty groups of three, these are the only two distinct ones that do.
+
+Sorting is O of n log n. Then, for each fixed number, one sweep of the pointers: O of n squared in total. Extra space is just the pointers, plus whatever the sort uses. The direct way was O of n cubed.
+
+So that is Three Sum. Sort, fix one number, and turn the rest into a two pointer search, skipping repeats.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

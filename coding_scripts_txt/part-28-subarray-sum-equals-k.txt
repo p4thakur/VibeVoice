@@ -1,0 +1,41 @@
+A sliding window finds subarray sums easily, until the numbers can be negative. Today, LeetCode problem five hundred sixty. Subarray Sum Equals K.
+
+Here is the plan. Keep a running total from the start. The sum of any stretch is the difference between two of those totals. So at each position, we ask one question: how many earlier totals are exactly k below the current one? A hash map answers it in one step.
+
+The numbers are one, minus one, one, two. K is two. We want how many stretches of neighbouring numbers add up to exactly two.
+
+First, why not a window. With only positive numbers, growing a window always raises its sum, so we know when to shrink it. A negative number breaks that. Growing the window can lower the sum, so the window can never tell which way to move.
+
+The direct way tries every start, and extends it to the right, adding as it goes. Four numbers have ten stretches. A thousand numbers have about half a million. That is O of n squared. The bottleneck is that every start adds up the same numbers again.
+
+Now the running total. Before any number, it is zero. After the numbers it reads one, zero, one, three. A stretch sums to k exactly when the total at its end, minus the total just before its start, is k. So at each position, we look for earlier totals equal to the current total minus k.
+
+And the same total can appear more than once. Here zero appears twice, and one appears twice. So the map must store how many times each total has appeared.
+
+Now the code. It has three parts.
+
+First, seen is a map from a total to how many times it has appeared. It starts with zero seen once, which is the empty start. Total and count start at zero.
+
+Second, the loop. Add the number to the total. Then add to count however many times total minus k has been seen.
+
+Third, record the new total in the map, one more time. We look up first and store second, so a stretch can never be made of nothing. Then we return count.
+
+Now run it. Seen holds zero once.
+
+The first number is one. Total is one. We need minus one, never seen. Store one.
+
+Minus one. Total is zero. We need minus two, never seen. Zero has now been seen twice.
+
+One. Total is one. We need minus one, never seen. One has now been seen twice.
+
+Two. Total is three. We need one, and one has been seen twice. Count jumps by two. Count is two.
+
+We return two.
+
+To check it: minus one, plus one, plus two is two. And the number two alone is two. Trying all ten stretches finds exactly these.
+
+One pass, with one map lookup per number: O of n time. The map holds up to one entry per total: O of n space. We paid memory to get rid of the repeated adding.
+
+So that is Subarray Sum Equals K. A stretch is the gap between two running totals, so counting stretches means counting earlier totals.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.

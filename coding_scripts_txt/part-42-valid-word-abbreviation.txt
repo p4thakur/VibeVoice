@@ -1,0 +1,33 @@
+Today, LeetCode problem four hundred eight. Valid Word Abbreviation.
+
+Here is the plan. Put one pointer on the word, and one on the abbreviation. A letter in the abbreviation must match the letter in the word, and both pointers step forward. A number in the abbreviation tells the word pointer to jump that many letters. If both pointers land exactly at the end together, the abbreviation is valid.
+
+The word is substitution, which has twelve letters. The abbreviation is s, one, zero, n. Is it a valid abbreviation of the word? A number stands for that many letters, skipped. A number may have several digits, and it may never start with a zero.
+
+What makes this tricky is the numbers. One digit and two digits are read differently, one zero is not the number ten, and a number can jump past the end of the word. So we must read the whole number, check it, and only then jump.
+
+Now the code. It has three parts.
+
+First, the setup. M and n are the two lengths. I is the pointer in the word. J is the pointer in the abbreviation. Both start at zero.
+
+Second, a digit. While both pointers are inside, look at the abbreviation. If it is a digit, and it is a zero, we return false, because numbers cannot start with a zero. Otherwise read the whole number. While the next characters are digits, the number becomes itself times ten, plus the digit, and j moves forward. Then i jumps ahead by the number.
+
+Third, a letter. It must equal the word's letter at i. If not, we return false. If it does, both pointers move one step.
+
+After the loop, we return whether i reached the end of the word, and j reached the end of the abbreviation. Both, exactly.
+
+Now run it. I is zero, and j is zero. The abbreviation says s. The word says s. A match. Both move to one.
+
+Now the abbreviation says one. A digit, and not a zero. Read the whole number. One, then ten. J moves past both digits, to three. I jumps ahead by ten, from one to eleven.
+
+The abbreviation says n. The word at index eleven is n. A match. I is twelve, and j is four.
+
+The loop ends. Twelve is the length of the word, and four is the length of the abbreviation. Both at the end. We return true.
+
+To check the failures. Write s, zero, one, zero, n, and we return false at the first zero. Write s, eleven, n, and the jump goes to the end of the word, but the letter n is still waiting, so j is not at its end. False. Write s, nine, n, and the jump lands on o, not n. False.
+
+Each pointer only moves forward, so we do one pass: O of m plus n time. A few variables: O of one space.
+
+So that is Valid Word Abbreviation. Read the number completely, jump once, and check at the end that both sides finished together.
+
+Follow for more if you want to really understand the problems interviews ask. Code included.
